@@ -6,16 +6,22 @@ open('_t.js','w',encoding='utf8').write(js)
 texts = json.loads(subprocess.check_output(['node','_t.js']).decode('utf8'))
 os.remove('_t.js')
 VOICE = 'fr-FR-DeniseNeural'
+def spoken(t):
+    t = re.sub(r'\bils / elles\b', 'ils', t)
+    t = re.sub(r'\bil / elle\b', 'il', t)
+    t = re.sub(r'\(e\)|\(ne\)|\(se\)', '', t)
+    t = t.replace('…', '').replace(' / ', ', ').replace('/', ', ')
+    return re.sub(r'\s+', ' ', t).strip()
 amap = {}
 async def one(t, sem):
     h = hashlib.md5(t.encode('utf8')).hexdigest()[:10] + '.mp3'
     amap[t] = h
     p = os.path.join('audio-fr', h)
-    if os.path.exists(p): return
+    if os.path.exists(p) and spoken(t) == t: return
     async with sem:
         for _ in range(3):
             try:
-                await edge_tts.Communicate(t, VOICE, rate='-10%').save(p); return
+                await edge_tts.Communicate(spoken(t), VOICE, rate='-10%').save(p); return
             except Exception as e:
                 await asyncio.sleep(1)
 async def main():

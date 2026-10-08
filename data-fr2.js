@@ -42,30 +42,6 @@ Je viens de Chine|ʒə vjɛ̃ də ʃin|我来自中国|wǒ láizì Zhōngguó|�
 Quelle est ta nationalité ?|kɛl ɛ ta na.sjɔ.na.li.te|你的国籍是什么？|nǐ de guójí shì shénme|🛂
 Je suis chinois(e)|ʒə sɥi ʃi.nwa|我是中国人|wǒ shì Zhōngguórén|🏮
 J'ai vingt-cinq ans|ʒe vɛ̃.sɛ̃k ɑ̃|我二十五岁|wǒ èrshíwǔ suì|🎂`);
-ext("nombres",`
-onze|ɔ̃z|十一|shíyī|1️⃣1️⃣
-douze|duz|十二|shí'èr|1️⃣2️⃣
-treize|tʁɛz|十三|shísān|1️⃣3️⃣
-quatorze|ka.tɔʁz|十四|shísì|1️⃣4️⃣
-quinze|kɛ̃z|十五|shíwǔ|1️⃣5️⃣
-seize|sɛz|十六|shíliù|1️⃣6️⃣
-dix-sept|di.sɛt|十七|shíqī|1️⃣7️⃣
-dix-huit|di.zɥit|十八|shíbā|1️⃣8️⃣
-dix-neuf|diz.nœf|十九|shíjiǔ|1️⃣9️⃣`);
-addCat("nombres2","Nombres 30 – 1000 · 30到1000的数字","💯","#2a9d8f",`
-trente|tʁɑ̃t|三十|sānshí|3️⃣0️⃣
-quarante|ka.ʁɑ̃t|四十|sìshí|4️⃣0️⃣
-cinquante|sɛ̃.kɑ̃t|五十|wǔshí|5️⃣0️⃣
-soixante|swa.sɑ̃t|六十|liùshí|6️⃣0️⃣
-soixante-dix|swa.sɑ̃t dis|七十 (60+10)|qīshí|7️⃣0️⃣
-quatre-vingts|ka.tʁə.vɛ̃|八十 (4×20)|bāshí|8️⃣0️⃣
-quatre-vingt-dix|ka.tʁə.vɛ̃ dis|九十 (4×20+10)|jiǔshí|9️⃣0️⃣
-cent|sɑ̃|一百|yībǎi|💯
-deux cents|dø sɑ̃|两百|liǎngbǎi|2️⃣0️⃣0️⃣
-mille|mil|一千|yīqiān|🔟
-un million|œ̃ mi.ljɔ̃|一百万|yībǎiwàn|💰
-Quel âge avez-vous ?|kɛl aʒ a.ve vu|您几岁？|nín jǐ suì|🎈
-J'ai vingt-cinq ans|ʒe vɛ̃.sɛ̃k ɑ̃|我二十五岁|wǒ èrshíwǔ suì|🎂`);
 
 /* ---- 3. Météo & saisons, jours ---- */
 setItems("meteo",`
@@ -87,12 +63,6 @@ Il y a de l'orage|i li a də lɔ.ʁaʒ|有雷雨|yǒu léiyǔ|⛈️
 la température|la tɑ̃.pe.ʁa.tyʁ|温度|wēndù|🌡️
 vingt degrés|vɛ̃ də.gʁe|二十度|èrshí dù|🌡️
 moins cinq degrés|mwɛ̃ sɛ̃k də.gʁe|零下五度|língxià wǔ dù|🧊`);
-ext("temps",`
-le lundi|lə lœ̃.di|每个星期一|měi gè xīngqī yī|🔄
-la semaine|la sə.mɛn|星期 / 周|zhōu|🗓️
-le week-end|lə wi.kɛnd|周末|zhōumò|🎉
-le mois|lə mwa|月|yuè|📅
-l'année|la.ne|年|nián|🎆`);
 
 /* ---- 4. Vêtements & couleurs ---- */
 setItems("vetements",`
@@ -474,6 +444,151 @@ le passeport|lə pas.pɔʁ|护照|hùzhào|📘
 la valise|la va.liz|行李箱|xínglixiāng|🧳
 la clé|la kle|钥匙|yàoshi|🔑`);
 
+/* ---- Nombres, jours, mois, heure : par étapes logiques ---- */
+setItems("nombres",`
+zéro|ze.ʁo|零|líng|0️⃣
+un|œ̃|一|yī|1️⃣
+deux|dø|二|èr|2️⃣
+trois|tʁwa|三|sān|3️⃣
+quatre|katʁ|四|sì|4️⃣
+cinq|sɛ̃k|五|wǔ|5️⃣
+six|sis|六|liù|6️⃣
+sept|sɛt|七|qī|7️⃣
+huit|ɥit|八|bā|8️⃣
+neuf|nœf|九|jiǔ|9️⃣
+dix|dis|十|shí|1️⃣0️⃣`,"Les nombres de 0 à 10 · 数字0到10","🔢");
+addCat("n11","Les nombres de 11 à 20 · 数字11到20","🔢","#2a9d8f",`
+onze|ɔ̃z|十一|shíyī|1️⃣1️⃣
+douze|duz|十二|shíèr|1️⃣2️⃣
+treize|tʁɛz|十三|shísān|1️⃣3️⃣
+quatorze|ka.tɔʁz|十四|shísì|1️⃣4️⃣
+quinze|kɛ̃z|十五|shíwǔ|1️⃣5️⃣
+seize|sɛz|十六|shíliù|1️⃣6️⃣
+dix-sept|di.sɛt|十七|shíqī|1️⃣7️⃣
+dix-huit|di.zɥit|十八|shíbā|1️⃣8️⃣
+dix-neuf|diz.nœf|十九|shíjiǔ|1️⃣9️⃣
+vingt|vɛ̃|二十|èrshí|2️⃣0️⃣`);
+addCat("age","L'âge & les nombres de 20 à 30 · 年龄与20到30","🎂","#2a9d8f",`
+vingt et un|vɛ̃.te.œ̃|二十一|èrshíyī|2️⃣1️⃣
+vingt-deux|vɛ̃t.dø|二十二|èrshíèr|2️⃣2️⃣
+vingt-trois|vɛ̃t.tʁwa|二十三|èrshísān|2️⃣3️⃣
+vingt-quatre|vɛ̃t.katʁ|二十四|èrshísì|2️⃣4️⃣
+vingt-cinq|vɛ̃t.sɛ̃k|二十五|èrshíwǔ|2️⃣5️⃣
+vingt-six|vɛ̃t.sis|二十六|èrshíliù|2️⃣6️⃣
+vingt-sept|vɛ̃t.sɛt|二十七|èrshíqī|2️⃣7️⃣
+vingt-huit|vɛ̃t.ɥit|二十八|èrshíbā|2️⃣8️⃣
+vingt-neuf|vɛ̃t.nœf|二十九|èrshíjiǔ|2️⃣9️⃣
+trente|tʁɑ̃t|三十|sānshí|3️⃣0️⃣
+Quel âge as-tu ?|kɛl aʒ a ty|你几岁？|nǐ jǐ suì|🎈
+Quel âge avez-vous ?|kɛl aʒ a.ve vu|您几岁？（礼貌）|nín jǐ suì|🎩
+J'ai vingt ans|ʒe vɛ̃.tɑ̃|我二十岁|wǒ èrshí suì|🎂
+J'ai vingt-cinq ans|ʒe vɛ̃t.sɛ̃k ɑ̃|我二十五岁|wǒ èrshíwǔ suì|🎂
+l'âge|laʒ|年龄|niánlíng|🎂
+un an|œ̃ nɑ̃|一年 / 一岁|yì nián|1️⃣
+l'anniversaire|la.ni.vɛʁ.sɛʁ|生日|shēngrì|🎁
+Bon anniversaire !|bɔ̃ na.ni.vɛʁ.sɛʁ|生日快乐！|shēngrì kuàilè|🎉`);
+addCat("jours","Les jours de la semaine · 星期","📅","#06a77d",`
+lundi|lœ̃.di|星期一|xīngqī yī|1️⃣
+mardi|maʁ.di|星期二|xīngqī èr|2️⃣
+mercredi|mɛʁ.kʁə.di|星期三|xīngqī sān|3️⃣
+jeudi|ʒø.di|星期四|xīngqī sì|4️⃣
+vendredi|vɑ̃.dʁə.di|星期五|xīngqī wǔ|5️⃣
+samedi|sam.di|星期六|xīngqī liù|6️⃣
+dimanche|di.mɑ̃ʃ|星期日|xīngqī rì|7️⃣
+la semaine|la sə.mɛn|星期 / 周|zhōu|🗓️
+le week-end|lə wi.kɛnd|周末|zhōumò|🎉
+le lundi|lə lœ̃.di|每个星期一|měi gè xīngqī yī|🔄
+Quel jour sommes-nous ?|kɛl ʒuʁ sɔm.nu|今天星期几？|jīntiān xīngqī jǐ|❓
+Aujourd'hui, c'est lundi|o.ʒuʁ.dɥi sɛ lœ̃.di|今天是星期一|jīntiān shì xīngqī yī|📍
+Demain, c'est mardi|də.mɛ̃ sɛ maʁ.di|明天是星期二|míngtiān shì xīngqī èr|⏭️
+Hier, c'était dimanche|jɛʁ se.tɛ di.mɑ̃ʃ|昨天是星期日|zuótiān shì xīngqī rì|⏮️`);
+addCat("mois","Les mois & la date · 月份和日期","🗓️","#06a77d",`
+janvier|ʒɑ̃.vje|一月|yīyuè|❄️
+février|fe.vʁi.je|二月|èryuè|💘
+mars|maʁs|三月|sānyuè|🌱
+avril|a.vʁil|四月|sìyuè|🌦️
+mai|mɛ|五月|wǔyuè|🌷
+juin|ʒɥɛ̃|六月|liùyuè|☀️
+juillet|ʒɥi.jɛ|七月|qīyuè|🏖️
+août|ut|八月|bāyuè|🌞
+septembre|sɛp.tɑ̃bʁ|九月|jiǔyuè|🎒
+octobre|ɔk.tɔbʁ|十月|shíyuè|🍂
+novembre|nɔ.vɑ̃bʁ|十一月|shíyīyuè|🌧️
+décembre|de.sɑ̃bʁ|十二月|shí'èryuè|🎄
+le mois|lə mwa|月|yuè|📅
+l'année|la.ne|年|nián|🎆
+la date|la dat|日期|rìqī|🗓️
+Quelle est la date ?|kɛl ɛ la dat|今天几号？|jīntiān jǐ hào|❓
+C'est le cinq octobre|sɛ lə sɛ̃k ɔk.tɔbʁ|今天是十月五号|jīntiān shì shíyuè wǔ hào|📆
+le premier janvier|lə pʁə.mje ʒɑ̃.vje|一月一日|yīyuè yī rì|🎆`);
+addCat("n40","Les nombres de 30 à 40 · 数字30到40","🔢","#2a9d8f",`
+trente|tʁɑ̃t|三十|sānshí|3️⃣0️⃣
+trente et un|tʁɑ̃.te.œ̃|三十一|sānshíyī|3️⃣1️⃣
+trente-deux|tʁɑ̃t.dø|三十二|sānshíèr|3️⃣2️⃣
+trente-trois|tʁɑ̃t.tʁwa|三十三|sānshísān|3️⃣3️⃣
+trente-quatre|tʁɑ̃t.katʁ|三十四|sānshísì|3️⃣4️⃣
+trente-cinq|tʁɑ̃t.sɛ̃k|三十五|sānshíwǔ|3️⃣5️⃣
+trente-six|tʁɑ̃t.sis|三十六|sānshíliù|3️⃣6️⃣
+trente-sept|tʁɑ̃t.sɛt|三十七|sānshíqī|3️⃣7️⃣
+trente-huit|tʁɑ̃t.ɥit|三十八|sānshíbā|3️⃣8️⃣
+trente-neuf|tʁɑ̃t.nœf|三十九|sānshíjiǔ|3️⃣9️⃣
+quarante|ka.ʁɑ̃t|四十|sìshí|4️⃣0️⃣
+Le trente et un décembre|lə tʁɑ̃.te.œ̃ de.sɑ̃bʁ|十二月三十一日|shí'èryuè sānshíyī rì|🎇`);
+addCat("n100","Les nombres de 40 à 100 · 数字40到100","💯","#2a9d8f",`
+quarante|ka.ʁɑ̃t|四十|sìshí|4️⃣0️⃣
+cinquante|sɛ̃.kɑ̃t|五十|wǔshí|5️⃣0️⃣
+cinquante-cinq|sɛ̃.kɑ̃t.sɛ̃k|五十五|wǔshíwǔ|5️⃣5️⃣
+soixante|swa.sɑ̃t|六十|liùshí|6️⃣0️⃣
+soixante et un|swa.sɑ̃.te.œ̃|六十一|liùshíyī|6️⃣1️⃣
+soixante-dix|swa.sɑ̃t.dis|七十 (60+10)|qīshí|7️⃣0️⃣
+soixante et onze|swa.sɑ̃.te.ɔ̃z|七十一 (60+11)|qīshíyī|7️⃣1️⃣
+soixante-quinze|swa.sɑ̃t.kɛ̃z|七十五 (60+15)|qīshíwǔ|7️⃣5️⃣
+quatre-vingts|ka.tʁə.vɛ̃|八十 (4×20)|bāshí|8️⃣0️⃣
+quatre-vingt-un|ka.tʁə.vɛ̃.œ̃|八十一 (4×20+1)|bāshíyī|8️⃣1️⃣
+quatre-vingt-dix|ka.tʁə.vɛ̃.dis|九十 (4×20+10)|jiǔshí|9️⃣0️⃣
+quatre-vingt-quinze|ka.tʁə.vɛ̃.kɛ̃z|九十五 (4×20+15)|jiǔshíwǔ|9️⃣5️⃣
+cent|sɑ̃|一百|yībǎi|1️⃣0️⃣0️⃣`);
+addCat("heure","L'heure · 时间点","🕐","#06a77d",`
+Quelle heure est-il ?|kɛl œʁ ɛ.til|现在几点？|xiànzài jǐ diǎn|🕐
+Il est une heure|i lɛ tyn œʁ|一点钟|yī diǎn zhōng|🕐
+Il est huit heures|i lɛ ɥi tœʁ|八点钟|bā diǎn zhōng|🕗
+Il est midi|i lɛ mi.di|中午十二点|zhōngwǔ shí'èr diǎn|🌞
+Il est minuit|i lɛ mi.nɥi|午夜十二点|wǔyè shí'èr diǎn|🌙
+et quart|e kaʁ|一刻（十五分）|yí kè|🕞
+et demie|e də.mi|半（三十分）|bàn|🕧
+moins le quart|mwɛ̃ lə kaʁ|差一刻|chà yí kè|🕜
+Il est trois heures dix|i lɛ tʁwa zœʁ dis|三点十分|sān diǎn shí fēn|🕒
+À quelle heure ?|a kɛl œʁ|几点？|jǐ diǎn|❓
+À huit heures|a ɥi tœʁ|在八点|zài bā diǎn|⏰
+la minute|la mi.nyt|分钟|fēnzhōng|⏱️
+le matin|lə ma.tɛ̃|早上|zǎoshang|🌅
+l'après-midi|la.pʁɛ.mi.di|下午|xiàwǔ|🌤️
+le soir|lə swaʁ|晚上|wǎnshang|🌆
+la nuit|la nɥi|夜晚|yèwǎn|🌃`);
+addCat("nombres2","Les nombres de 100 à 1 000 000 · 数字100到一百万","💰","#2a9d8f",`
+cent|sɑ̃|一百|yībǎi|💯
+deux cents|dø sɑ̃|两百|liǎngbǎi|2️⃣0️⃣0️⃣
+deux cent trois|dø sɑ̃ tʁwa|两百零三|liǎngbǎi líng sān|2️⃣0️⃣3️⃣
+trois cents|tʁwa sɑ̃|三百|sānbǎi|3️⃣0️⃣0️⃣
+mille|mil|一千|yīqiān|🔟
+deux mille|dø mil|两千|liǎngqiān|2️⃣0️⃣0️⃣0️⃣
+dix mille|di mil|一万|yīwàn|💴
+un million|œ̃ mi.ljɔ̃|一百万|yībǎiwàn|💰
+Ça coûte cent euros|sa kut sɑ̃ ø.ʁo|这个一百欧元|zhège yìbǎi Ōuyuán|💶`);
+setItems("temps",`
+aujourd'hui|o.ʒuʁ.dɥi|今天|jīntiān|📍
+demain|də.mɛ̃|明天|míngtiān|⏭️
+hier|jɛʁ|昨天|zuótiān|⏮️
+maintenant|mɛ̃t.nɑ̃|现在|xiànzài|⏱️
+le jour|lə ʒuʁ|天 / 白天|tiān|☀️
+l'heure|lœʁ|小时 / 点钟|xiǎoshí|🕐
+tôt|to|早|zǎo|🌅
+tard|taʁ|晚|wǎn|🌙
+toujours|tu.ʒuʁ|总是|zǒngshì|♾️
+souvent|su.vɑ̃|经常|jīngcháng|🔁
+parfois|paʁ.fwa|有时|yǒushí|🔂
+jamais|ʒa.mɛ|从不|cóngbù|🚫`,"Le temps · 时间副词");
+
 /* ---- Mots-outils : questions ---- */
 addCat("questions","Poser des questions · 提问","❓","#e76f51",`
 Est-ce que… ?|ɛs kə|是不是……？（疑问）|shìbushì|❔
@@ -557,8 +672,12 @@ On prend la voiture|ɔ̃ pʁɑ̃ la vwa.tyʁ|我们开车去|wǒmen kāichē qù
 
 /* ---- Parcours (ordre du cours FLE débutant) ---- */
 STEPS=[["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
-["Salutations, se présenter & nombres · 问候、自我介绍与数字",["salut","presente","nombres","nombres2","questions"]],
-["Le temps qu'il fait · 天气与时间",["meteo","temps"]],
+["Salutations & se présenter · 问候与自我介绍",["salut","presente","questions"]],
+["Les nombres de 0 à 10 · 数字0到10",["nombres"]],
+["L'âge & les nombres jusqu'à 30 · 年龄与30以内的数字",["n11","age"]],
+["Les jours, les mois & la date · 星期、月份与日期",["jours","mois"]],
+["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n40","n100","heure","nombres2"]],
+["Le temps qu'il fait · 天气",["meteo","temps"]],
 ["S'habiller · 穿衣打扮",["vetements","couleurs"]],
 ["Décrire une personne · 描述人物",["physique","cheveux","famille","possessifs","animaux"]],
 ["La chambre & la maison · 卧室与家",["chambre","maison"]],
@@ -570,6 +689,5 @@ STEPS=[["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
 ["Vacances & voyage · 度假与旅行",["vacances","retour","aeroport"]],
 ["Les verbes les plus utiles · 最常用动词",["etre","conj","conj3","verbes2","m:phr"]]];
 
-PH.push(["Tu/pars/en/vacances","ty paʁ ɑ̃ va.kɑ̃s","你去度假吗？"],["Je/vais/en/Bretagne","ʒə vɛ ɑ̃ bʁə.taɲ","我去布列塔尼。"],["On/prend/la/voiture","ɔ̃ pʁɑ̃ la vwa.tyʁ","我们开车去。"],["Je/vais/me/baigner","ʒə vɛ mə bɛ.ɲe","我要去游泳。"],["Il/fait/chaud/en/été","il fɛ ʃo ɑ̃ ne.te","夏天很热。"],["Je/porte/un/pull/bleu","ʒə pɔʁt œ̃ pyl blø","我穿一件蓝色毛衣。"],["Il/y/a/un/lit/dans/la/chambre","i li a œ̃ li dɑ̃ la ʃɑ̃bʁ","卧室里有一张床。"],["Je/fais/du/sport/le/lundi","ʒə fɛ dy spɔʁ lə lœ̃.di","我每个星期一做运动。"]);
 /* ---- Affiches du cours (images) ---- */
 const POSTER={verbes:"classe",meteo:"saisons",vetements:"vetements",couleurs:"vetements",physique:"physique",cheveux:"physique",animaux:"animaux",chambre:"chambre",fruits:"nourriture",viandes:"nourriture",cuisine:"cuisine",resto:"restaurant",commerces:"commerces",corps:"sante",docteur:"sante",medic:"sante",sports:"sport",ville:"ville",directions:"ville",taxi:"transports",vacances:"vacances"};
