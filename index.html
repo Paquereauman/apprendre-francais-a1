@@ -84,9 +84,9 @@ select{font:inherit;padding:4px;border-radius:8px}
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081314"></script>
-<script src="data-fr2.js?v=202610081314"></script>
-<script src="audio-fr/map.js?v=202610081314"></script>
+<script src="data-fr.js?v=202610081317"></script>
+<script src="data-fr2.js?v=202610081317"></script>
+<script src="audio-fr/map.js?v=202610081317"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -122,8 +122,9 @@ const estF=c=>c.mod?mastery(c)/100:Math.max((S.known[c.id]||[]).length/c.items.l
 function stats(){const rows=ALL().map(c=>({c,m:mastery(c),rem:c.items.length*(1-estF(c))}));const tot=rows.reduce((n,r)=>n+r.c.items.length,0),rem=rows.reduce((n,r)=>n+r.rem,0);return{all:rows.reduce((n,r)=>n+r.m,0)/rows.length,tot,rem,done:rows.filter(r=>r.m>=85).length,n:rows.length,rows}}
 const goalDay=()=>{if(!inWindow())return Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));const st=stats(),c=courseInfo();return Math.min(60,Math.max(1,Math.ceil(st.rem*1.25/c.left)))};
 /* ---- 15 janvier – 7 mars : vacances (pas de cours). Le chronomètre ne concerne que la Classe 2026 ; les autres élèves ont un rythme personnel. ---- */
-const inWindow=()=>S.cls==="classe2026";
-function courseWindow(){const n=new Date(),y=n.getFullYear();let s=new Date(y,0,15),e=new Date(y,2,7,23,59,59);if(n>e){s=new Date(y+1,0,15);e=new Date(y+1,2,7,23,59,59)}return{s,e}}
+const courseWindow=()=>{const p=S.cper;return p&&p.from&&p.to?{s:new Date(p.from+"T00:00:00"),e:new Date(p.to+"T23:59:59")}:null};
+const inWindow=()=>{const w=S.cls&&courseWindow();return !!(w&&new Date()<=w.e)};
+function periodLabel(){const{s,e}=courseWindow(),f=d=>d.toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"}),z=d=>d.getFullYear()+"年"+(d.getMonth()+1)+"月"+d.getDate()+"日";return "du "+f(s)+" au "+f(e)+" · 假期（无课）："+z(s)+"至"+z(e)}
 const dayDiff=(a,b)=>Math.ceil((b-a)/864e5);
 function courseInfo(){const{s,e}=courseWindow(),n=new Date(),before=n<s,from=before?s:n;return{s,e,before,left:Math.max(1,dayDiff(from,e)),toStart:before?dayDiff(n,s):0}}
 const fmtDate=d=>d.toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR",{day:"numeric",month:"long",year:"numeric"});
@@ -242,7 +243,7 @@ function setPace(v){S.pace=+v;save();plan()}function setUnit(u){S.unit=u;S.pace=
 const lvl=m=>m<30?["À démarrer · 待开始","#e63946"]:m<60?["En cours · 学习中","#f4a300"]:m<85?["Presque · 快掌握","#457b9d"]:["Acquis · 已掌握","#2bb673"];
 function plan(){cur=plan;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Mon plan · 我的计划"]]);const st=stats(),E=eta(st),u=S.unit,v=S.pace;
   $.innerHTML=`<h2>📊 Mon plan vers l'A1 · 我的A1计划</h2><div class="q" style="text-align:left"><div style="display:flex;justify-content:space-between"><b>Ce que tu maîtrises · 你已掌握</b><b>${Math.round(st.tot-st.rem)} / ${st.tot}</b></div><div class="bar" style="height:12px"><i style="width:${(st.tot-st.rem)/st.tot*100}%"></i></div>
-  ${inWindow()?`<p>📅 Vacances (pas de cours) : du 15 janvier au 7 mars · 假期（无课）：1月15日至3月7日</p><p>🎯 Objectif : <b>${goalDay()}</b> mots par jour · 目标：每天 <b>${goalDay()}</b> 个词</p>`:`<p>🎯 Je veux apprendre · 我想学 <select onchange="setPace(this.value)">${PACE[u].map(x=>`<option ${x===v?"selected":""} value="${x}">${x} mots · 个词</option>`).join("")}</select> <select onchange="setUnit(this.value)"><option value="day" ${u==="day"?"selected":""}>par jour · 每天</option><option value="week" ${u==="week"?"selected":""}>par semaine · 每周</option></select></p>`}
+  ${inWindow()?`<p>📅 Vacances (pas de cours) : ${periodLabel()}</p><p>🎯 Objectif : <b>${goalDay()}</b> mots par jour · 目标：每天 <b>${goalDay()}</b> 个词</p>`:`<p>🎯 Je veux apprendre · 我想学 <select onchange="setPace(this.value)">${PACE[u].map(x=>`<option ${x===v?"selected":""} value="${x}">${x} mots · 个词</option>`).join("")}</select> <select onchange="setUnit(this.value)"><option value="day" ${u==="day"?"selected":""}>par jour · 每天</option><option value="week" ${u==="week"?"selected":""}>par semaine · 每周</option></select></p>`}
   ${E?`<p style="font-size:1.15rem">⏳ ${E.dur}<br>📅 ${inWindow()?"Fin des vacances · 假期结束":"Fin prévue · 预计完成"} : <b>${E.date}</b></p><small style="color:var(--mut)">${inWindow()?"Objectif : mots restants + 25 % de révision, répartis sur les jours de vacances restants. · 目标：剩余词数加25%复习，平均分配到剩余的假期天数。":"Calcul : mots restants ÷ mots par jour, +25 % de révision. · 计算方法：剩余词数 ÷ 每日词数，另加25%复习。"}</small>`:`<p>🎉 <b>Niveau A1 atteint ! · 达到A1水平！</b></p>`}</div>
   <div class="tiles"><div class="tile" onclick="testStart(1)"><span>⚡</span><b>Test rapide · 快速测试</b><small>1 mot par thème · 每个主题1个词${S.testDate?" — "+S.testDate:""}</small></div><div class="tile" onclick="testStart(2)"><span>📝</span><b>Test complet · 完整测试</b><small>2 mots par thème · 每个主题2个词</small></div></div>
   <div class="nav" style="justify-content:flex-start"><button class="alt" onclick="resetAll()">🔄 Tout réinitialiser · 全部重置</button></div><h3>Ton parcours · 学习路径</h3>`+
@@ -307,7 +308,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   m.textContent="Connexion… · 连接中……";
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
     if(t==="null"&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
-    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}const sc=document.querySelector("input[name=pcl]:checked");if(t==="null")S.cls=sc?sc.value:"";
+    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}const sc=document.querySelector("input[name=pcl]:checked");if(t==="null"){S.cls=sc?sc.value:"";loadClasses()}
     S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();admStatus();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(t==="null")setTimeout(meOpen,700)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
@@ -321,7 +322,7 @@ let CLS=[{id:"classe2026",name:"Classe 2026"}];
 const dispName=()=>S.nick||PNAME;
 function renderPcls(){const e=document.getElementById("pcls");if(!e)return;const sel=document.querySelector("input[name=pcl]:checked"),cur=sel?sel.value:undefined;
   e.innerHTML=`<div class="evd" style="margin-top:8px">Pour un nouveau compte, je suis · 新账号请选择：</div>`+CLS.map((c,i)=>`<label class="pcl"><input type="radio" name="pcl" value="${escH(c.id)}" ${(cur!==undefined?cur===c.id:i===0)?"checked":""}> ${escH(c.name)}</label>`).join("")+`<label class="pcl"><input type="radio" name="pcl" value="" ${cur===""?"checked":""}> Élève individuel · 个人学员</label>`}
-async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ,{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length)CLS=j.classes}}catch(e){}renderPcls()}
+async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ,{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length){CLS=j.classes;const m=CLS.find(c=>c.id===S.cls);S.cper=m&&m.from&&m.to?{from:m.from,to:m.to}:null;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}}catch(e){}renderPcls();head();if(cur===home||cur===plan)cur()}
 /* ---- profil : pseudo + emoji personnage ---- */
 const EMOS=["🐼","🐯","🦊","🐱","🐶","🐰","🐻","🐨","🦁","🐸","🐵","🦄","🐲","🐧","🦉","🦋","🐢","🐙","🐬","🦖","🤖","👽","🧙","🥷","🧚","🦸","🧜","🎅","👩‍🎓","🧑‍🏫","🧑‍🍳","🧑‍🎨","😎","🤓","🥳","😺","👻","🎃","🌸","🍀","⭐","🔥","🍕","🥐","⚽","🎸","🚀","🌈"];
 let MEEMO="";
@@ -371,10 +372,13 @@ async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours 
     `<div style="overflow-x:auto"><table class="adt"><tr><th>Élève · 学生</th>${us.map(c=>`<th title="${escH(nmCur(c.name))}">${c.icon}</th>`).join("")}<th>Moy. · 平均</th></tr>`+
     (rows.map(({u,m})=>`<tr><td>${uTitle(u)}</td>${us.map(c=>{const v=uMastery(u,c);return `<td style="background:${heat(v)}">${Math.round(v)}</td>`}).join("")}<td style="background:${heat(m)}"><b>${Math.round(m)} %</b></td></tr>`).join("")||`<tr><td colspan="${us.length+2}">Aucun élève. · 没有学生。</td></tr>`)+`</table></div>`}
   else{body=`<div class="hm-card">Crée des classes, renomme-les, et range les élèves dedans (onglet Élèves). À la création du compte, l'élève choisit sa classe ou « Élève individuel ». · 创建和重命名班级，并在“学生”页签中为学生分班。创建账号时，学生选择班级或“个人学员”。</div>`+
-    cl.map(c=>`<div class="lb"><div class="lb-nm">🏫 ${escH(c.name)}<div class="lb-sub">${all.filter(u=>u.cls===c.id).length} élève(s) · 名学生</div></div><div style="display:flex;gap:6px"><button class="alt" style="padding:5px 9px" onclick="admRen('${escH(c.id)}')">Renommer · 重命名</button><button class="alt" style="padding:5px 9px" onclick="admDel('${escH(c.id)}')">Supprimer · 删除</button></div></div>`).join("")+
+    cl.map(c=>`<div class="hm-card"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="flex:1">🏫 ${escH(c.name)}</b><small style="color:var(--mut)">${all.filter(u=>u.cls===c.id).length} élève(s) · 名学生</small><button class="alt" style="padding:5px 9px" onclick="admRen('${escH(c.id)}')">Renommer · 重命名</button><button class="alt" style="padding:5px 9px" onclick="admDel('${escH(c.id)}')">Supprimer · 删除</button></div>
+    <div class="adact" style="margin-top:8px"><span>🏖️ Vacances · 假期 :</span><input type="date" id="pf_${escH(c.id)}" value="${escH(c.from||"")}"><span>→</span><input type="date" id="pt_${escH(c.id)}" value="${escH(c.to||"")}"><button onclick="admPer('${escH(c.id)}')">Enregistrer · 保存</button></div>
+    <div class="lb-sub">Pendant cette période, le chronomètre et l'objectif de mots par jour s'appliquent aux élèves de cette classe. Laisse vide pour ne pas en utiliser. · 在此假期内，计时器和每日词数目标对该班学生生效；留空则不启用。</div></div>`).join("")+
     `<div class="lb"><div class="lb-nm">👤 Élève individuel · 个人学员<div class="lb-sub">${all.filter(u=>u.cls==="").length} élève(s) · 名学生</div></div></div>`+
     `<div class="hm-card"><input id="ncl" class="t" style="margin:0 0 8px" placeholder="Nouvelle classe / 新班级（例如 Classe 2027）"><div class="nav" style="margin:0"><button onclick="admAdd()">➕ Créer la classe · 创建班级</button></div></div>`}
   $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🛡️ Administration · 管理</h2><small style="color:var(--mut)">${all.length} compte(s) · ${all.length} 个账号</small></div><div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div>${AV.tab==="classes"?"":`<div>${filt}</div>`}${body}</div>`}
+function admPer(id){const f=document.getElementById("pf_"+id).value,t=document.getElementById("pt_"+id).value;if((f===""&&t!=="")||(f!==""&&t==="")||(f&&t&&t<f)){toast("Dates invalides · 日期无效");return}admDo("setperiod",{cls:id,from:f,to:t})}
 function admAdd(){const n=document.getElementById("ncl").value.trim();if(n.length<2){toast("Nom trop court · 名称太短");return}admDo("addclass",{name:n})}
 function admRen(id){const c=((ADM&&ADM.classes)||[]).find(x=>x.id===id),n=prompt(locText("Nouveau nom de la classe · 班级新名称"),c?c.name:"");if(n&&n.trim().length>=2)admDo("renameclass",{cls:id,name:n.trim()})}
 function admDel(id){if(confirm(locText("Supprimer cette classe ? Ses élèves deviendront « individuels ». · 删除该班级？其学生将变为“个人学员”。")))admDo("delclass",{cls:id})}
@@ -404,5 +408,5 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
     (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+`</div>`}
 
 try{speechSynthesis.getVoices()}catch(e){}
-touchStreak();home();loc(document.body);pull();admStatus();if(!S.uiChosen)langOpen();
+touchStreak();home();loc(document.body);pull();admStatus();loadClasses();if(!S.uiChosen)langOpen();
 </script></body></html>

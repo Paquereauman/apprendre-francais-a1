@@ -94,7 +94,7 @@ function admin_load($base) { $f = "$base/admins.json"; $a = is_file($f) ? json_d
 function admin_save($base, $a) { file_put_contents("$base/admins.json", json_encode(array_values(array_unique($a))), LOCK_EX); }
 function classes_load($base) {
   $f = "$base/classes.json"; $a = is_file($f) ? json_decode(@file_get_contents($f), true) : null;
-  if (!is_array($a) || !$a) { $a = [["id" => "classe2026", "name" => "Classe 2026"]]; }
+  if (!is_array($a) || !$a) { $a = [["id" => "classe2026", "name" => "Classe 2026", "from" => "2027-01-15", "to" => "2027-03-07"]]; }
   return array_values($a);
 }
 function classes_save($base, $a) { file_put_contents("$base/classes.json", json_encode(array_values($a), JSON_UNESCAPED_UNICODE), LOCK_EX); }
@@ -141,6 +141,13 @@ function admin_main($k, $base, $app) {
       if ($cid === "") { $cid = "c" . time(); }
       if (class_exists_in($base, $cid)) { $cid .= substr((string)time(), -4); }
       $cls[] = ["id" => $cid, "name" => $name]; classes_save($base, $cls);
+    }
+    elseif ($act === "setperiod") {
+      $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $df = (string)($b["from"] ?? ""); $dt = (string)($b["to"] ?? "");
+      $okd = function ($d) { return $d === "" || (bool)preg_match("/^\d{4}-\d{2}-\d{2}$/", $d); };
+      if (!class_exists_in($base, $cid) || !$okd($df) || !$okd($dt) || (($df === "") !== ($dt === "")) || ($df !== "" && $dt < $df)) { http_response_code(400); echo "{\"error\":\"bad period\"}"; return; }
+      foreach ($cls as $i => $c) { if ($c["id"] === $cid) { if ($df === "") { unset($cls[$i]["from"], $cls[$i]["to"]); } else { $cls[$i]["from"] = $df; $cls[$i]["to"] = $dt; } } }
+      classes_save($base, $cls);
     }
     elseif ($act === "renameclass") {
       $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $name = clean_name($b["name"] ?? "", 30);
