@@ -22,7 +22,13 @@ const CATS=[
 ["je suis","ʒə sɥi","我是","wǒ shì","🙋"],["tu es","ty ɛ","你是","nǐ shì","👉"],["il est","il ɛ","他是","tā shì","👨"],["nous sommes","nu sɔm","我们是","wǒmen shì","👫"],["vous êtes","vu zɛt","您 / 你们是","nín shì","👥"],["ils sont","il sɔ̃","他们是","tāmen shì","👬"],
 ["j'ai","ʒe","我有","wǒ yǒu","🤲"],["tu as","ty a","你有","nǐ yǒu","🎁"],["il a","il a","他有","tā yǒu","👨"],["nous avons","nu za.vɔ̃","我们有","wǒmen yǒu","👫"],["je vais","ʒə vɛ","我去","wǒ qù","🚶"],["tu vas","ty va","你去","nǐ qù","🚶‍♀️"],
 ["nous allons","nu za.lɔ̃","我们去","wǒmen qù","🚌"],["je fais","ʒə fɛ","我做","wǒ zuò","🛠️"],["je peux","ʒə pø","我可以","wǒ kěyǐ","💪"],["je veux","ʒə vø","我想要","wǒ xiǎng yào","🙏"],["je parle","ʒə paʁl","我说","wǒ shuō","🗣️"],["je mange","ʒə mɑ̃ʒ","我吃","wǒ chī","🍽️"]]},
-{id:"verbes",name:"Verbes de la classe · 课堂与日常动词",icon:"🏫",color:"#9b5de5",items:[
+{id:"verbes",name:"Les verbes de la classe · 课堂动词",icon:"🏫",color:"#d62828",items:[
+["Regardez / Regarde","ʁə.gaʁ.de / ʁə.gaʁd","看","kàn","👀"],["Écoutez / Écoute","e.ku.te / e.kut","听","tīng","👂"],["Parlez / Parle","paʁ.le / paʁl","说","shuō","🗣️"],["Écrivez / Écris","e.kʁi.ve / e.kʁi","写","xiě","✍️"],
+["Coloriez / Colorie","kɔ.lɔ.ʁje / kɔ.lɔ.ʁi","涂色","túsè","🖍️"],["Soulignez / Souligne","su.li.ɲe / su.liɲ","划线","huàxiàn","🔠"],["Entourez / Entoure","ɑ̃.tu.ʁe / ɑ̃.tuʁ","圈出","quān chū","⭕"],["Coupez / Coupe","ku.pe / kup","剪","jiǎn","✂️"],
+["Ouvrez / Ouvre","u.vʁe / uvʁ","打开","dǎkāi","📕"],["Collez / Colle","kɔ.le / kɔl","粘贴","zhāntiē","🧴"],["Lisez / Lis","li.ze / li","读","dú","📖"],["Prenez / Prends","pʁə.ne / pʁɑ̃","拿","ná","🖊️"],
+["Répétez / Répète","ʁe.pe.te / ʁe.pɛt","重复","chóngfù","🔁"],["Distribuez / Distribue","dis.tʁi.bɥe / dis.tʁi.by","分发","fēnfā","📤"],["Asseyez-vous / Assis-toi","a.sɛ.je vu / a.si twa","请坐","qǐng zuò","🪑"],["Levez-vous / Lève-toi","lə.ve vu / lɛv twa","请起立","qǐng qǐlì","🧍"],
+["Levez le doigt / Lève le doigt","lə.ve lə dwa / lɛv lə dwa","举手","jǔ shǒu","☝️"],["Recopiez / Recopie","ʁə.kɔ.pje / ʁə.kɔ.pi","抄写","chāoxiě","📋"]]},
+{id:"verbes2",name:"Verbes du quotidien · 日常动词",icon:"🏃",color:"#9b5de5",items:[
 ["parler","paʁ.le","说话","shuōhuà","🗣️"],["écouter","e.ku.te","听","tīng","👂"],["regarder","ʁə.gaʁ.de","看","kàn","👁️"],["lire","liʁ","读","dú","📖"],["écrire","e.kʁiʁ","写","xiě","✏️"],["comprendre","kɔ̃.pʁɑ̃dʁ","明白 / 懂","dǒng","💡"],
 ["apprendre","a.pʁɑ̃dʁ","学习","xué","📚"],["répéter","ʁe.pe.te","重复","chóngfù","🔁"],["demander","də.mɑ̃.de","问 / 要求","wèn","🙋"],["répondre","ʁe.pɔ̃dʁ","回答","huídá","💬"],["ouvrir","u.vʁiʁ","打开","dǎkāi","🔓"],
 ["fermer","fɛʁ.me","关上","guān","🔒"],["chercher","ʃɛʁ.ʃe","找","zhǎo","🔍"],["trouver","tʁu.ve","找到 / 觉得","zhǎodào","✅"],["aider","e.de","帮助","bāngzhù","🤝"],["attendre","a.tɑ̃dʁ","等","děng","⏳"],
@@ -99,7 +105,6 @@ const CATS=[
 
 ];
 const STEPS=[["Les verbes de la classe · 课堂动词",["verbes"]],
-["Les verbes les plus utiles · 最常用动词",["etre","conj","m:phr"]],
 ["Premiers mots · 入门词汇",["salut","presente","nombres"]],
 ["La maison & la famille · 家和家人",["maison","famille","corps"]],
 ["S'habiller · 穿衣打扮",["vetements","couleurs"]],
@@ -107,7 +112,8 @@ const STEPS=[["Les verbes de la classe · 课堂动词",["verbes"]],
 ["Commerces & courses · 商店与购物",["commerces","courses"]],
 ["Santé · 健康",["docteur"]],
 ["Sports, loisirs & vacances · 运动、爱好与假期",["sports","loisirs","animaux","vacances"]],
-["Voyager · 出行",["lieux","taxi","temps","meteo"]]];
+["Voyager · 出行",["lieux","taxi","temps","meteo"]],
+["Les verbes les plus utiles · 最常用动词",["etre","conj","verbes2","m:phr"]]];
 // phrases : mots séparés par "/", prononciation, 中文
 const PH=[
 ["Je/m'appelle/Marie","ʒə ma.pɛl ma.ʁi","我叫玛丽。"],["Je/suis/chinois","ʒə sɥi ʃi.nwa","我是中国人。"],["Comment/vas/tu","kɔ.mɑ̃ va ty","你好吗？"],

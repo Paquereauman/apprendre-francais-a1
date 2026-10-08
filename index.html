@@ -150,8 +150,8 @@ function ordPick(i){const q=Q.qs[Q.i];if(Q.lock)return;q.pick.push(q.bank.find(b
 function ordUndo(i){const q=Q.qs[Q.i];if(Q.lock)return;q.pick=q.pick.filter(x=>x.i!==i);ordDraw()}
 function ordCheck(){const q=Q.qs[Q.i];qDone(q.pick.every((x,k)=>x.i===k),false,-1)}
 function pCheck(){if(Q.lock)return;const q=Q.qs[Q.i],v=document.getElementById("inp").value.trim();if(!v)return;q.note="";
-  const st=x=>x.normalize("NFC").toLowerCase().replace(/[’]/g,"'").replace(/\s+/g," ").trim();let ok=false;
-  if(st(v)===st(q.it[0]))ok=true;else if(norm(v)===norm(q.it[0])){ok=true;q.note="Bonnes lettres ! Pour être parfait : "+q.it[0]+" · 字母正确！完整写法："+q.it[0]}qDone(ok,false,-1)}
+  const st=x=>x.normalize("NFC").toLowerCase().replace(/[’]/g,"'").replace(/\s+/g," ").trim(),parts=q.it[0].split(" / ");let ok=false;
+  if(parts.some(p=>st(v)===st(p))||st(v)===st(q.it[0]))ok=true;else if(parts.some(p=>norm(v)===norm(p))||norm(v)===norm(q.it[0])){ok=true;q.note="Bonnes lettres ! Pour être parfait : "+q.it[0]+" · 字母正确！完整写法："+q.it[0]}qDone(ok,false,-1)}
 function ans(k){qDone(k===Q.qs[Q.i].right,false,k)}
 function evid(it,cid,t,ok){const k=nk(it[0]);if(!ok){delete S.ev[k];return false}const a=S.ev[k]||[];if(!a.includes(t))a.push(t);S.ev[k]=a;
   if(a.length>=2&&!(S.known[cid]||[]).includes(it[0])){setKnown(cid,it[0],true);return true}return false}
