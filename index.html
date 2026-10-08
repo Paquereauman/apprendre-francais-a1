@@ -555,9 +555,10 @@ const dbDefCols=(st,n)=>n==="skinColor"?SKINS:(dbSch(st,n).default||[]).map(c=>"
 const DBC={};
 function dbOpts(a){const st=dbStyle(a),o={randomizeIds:true,seed:"fr"};DBP[st].forEach(([n,t],i)=>{const v=a[DBK(i)];
   if(t==="c"){const d=dbDefCols(st,n);const c=/^#[0-9a-f]{6}$/i.test(v||"")?v:d[(v|0)%(d.length||1)]||d[0];if(c)o[n]=[c.replace("#","")]}
-  else{const en=dbEnum(st,n);if(!en.length)return;if(t==="o"||t==="k"){if(!(v>0)){o[n+"Probability"]=0}else{o[n+"Probability"]=100;o[n]=[en[(v-1)%en.length]]}}else o[n]=[en[(v|0)%en.length]]}});if(st==="avataaars"&&a.hat>0){o.top=[HATS[a.hat-1]];o.topProbability=100}return o}
-function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+(a.obj|0)+px;if(DBC[key])return DBC[key];
+  else{const en=dbEnum(st,n);if(!en.length)return;if(t==="o"||t==="k"){if(!(v>0)){o[n+"Probability"]=0}else{o[n+"Probability"]=100;o[n]=[en[(v-1)%en.length]]}}else o[n]=[en[(v|0)%en.length]]}});return o}
+function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+(a.obj|0)+"h"+(a.hat|0)+px;if(DBC[key])return DBC[key];
   let s;try{s=window.DB.createAvatar(window.DB.styles[dbStyle(a)],Object.assign({size:px},o)).toString()}catch(e){s=""}
+  if(a.hat>0&&HATS[a.hat-1]&&s){const m=s.match(/viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+)/),W=m?+m[1]:280;s=s.replace(/<\/svg>\s*$/,`<text fill="#000" text-anchor="middle" x="${W*.5}" y="${W*.4}" font-size="${W*.46}" style="font-family:'Segoe UI Emoji','Noto Color Emoji','Apple Color Emoji',sans-serif">${HATS[a.hat-1]}</text></svg>`)}
   if(a.obj>0&&OBJ[a.obj-1]&&s){const m=s.match(/viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+)/),W=m?+m[1]:280;s=s.replace(/<\/svg>\s*$/,`<text fill="#000" x="${W*.6}" y="${W*.9}" font-size="${W*.34}" style="font-family:'Segoe UI Emoji','Noto Color Emoji','Apple Color Emoji',sans-serif">${OBJ[a.obj-1][0]}</text></svg>`)}
   if(Object.keys(DBC).length>600)Object.keys(DBC).slice(0,200).forEach(k=>delete DBC[k]);return DBC[key]=s}
 /* cadeaux quotidiens : accessoires à collectionner (options facultatives du style choisi) */
@@ -592,17 +593,17 @@ function avRand(){const a={sty:avGet().sty,gen:avGet().gen,eth:avGet().eth},st=d
 const hs=[0,...HATS.map((_,j)=>j+1).filter(j=>owned(st,"hat",j))];if(st==="avataaars")a.hat=hs[Math.random()*hs.length|0];const os=[0,...OBJ.map((_,j)=>j+1).filter(j=>owned(st,"obj",j))];a.obj=os[Math.random()*os.length|0];S.av=a;save();avDraw()}
 function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avDone(S.av)?avSVG(avGet(),150):`<div style="height:100%;display:grid;place-items:center;font-size:4.5rem;color:#9aa8c4;font-weight:800">?</div>`}
 function avPrevItem(a,k,v){const b=Object.assign({},a);b[DBK(k)]=v;return avSVG(b,64)}
-const HATS=["hat","winterHat1","winterHat02","winterHat03","winterHat04"],HATN=["Chapeau · 帽子","Bonnet 1 · 毛线帽1","Bonnet 2 · 毛线帽2","Bonnet 3 · 毛线帽3","Bonnet 4 · 毛线帽4"],HATR=["r","c","c","r","s"];
+const HIDE=["hat","hijab","turban","winterHat1","winterHat02","winterHat03","winterHat04"],HATS=["🎩","🧢","👒","🎓","👑","🪖"],HATN=["Haut-de-forme · 礼帽","Casquette · 鸭舌帽","Chapeau de paille · 草帽","Toque de diplômé · 学士帽","Couronne · 皇冠","Casque · 头盔"],HATR=["r","c","c","r","e","s"];
 const OBJ=[["☕","Mug · 马克杯","c"],["🥐","Pain au chocolat · 巧克力面包","c"],["🥖","Baguette · 法棍","c"],["🍎","Pomme · 苹果","c"],["📚","Livres · 书","c"],["🎈","Ballon · 气球","c"],["🧀","Fromage · 奶酪","r"],["🎸","Guitare · 吉他","r"],["🏆","Trophée · 奖杯","r"],["🎧","Casque · 耳机","r"],["🍷","Verre de vin · 红酒","r"],["🪄","Sceptre magique · 魔杖","s"],["🔱","Trident · 三叉戟","s"],["⚔️","Épée · 剑","s"],["🛡️","Bouclier · 盾牌","s"],["🗼","Tour Eiffel · 埃菲尔铁塔","s"],["🐉","Dragon · 龙","e"],["💎","Diamant · 钻石","e"],["🦄","Licorne · 独角兽","e"],["🔥","Torche · 火炬","e"]];
 const SKINS=["#fdebdc","#ffdbb4","#f6cfa3","#f1c27d","#e0ac69","#d08b5b","#ae5d29","#8d5524","#614335","#3b2418"];
 const DBO={lorelei:["gen","skinColor","hair","hairColor","head","eyes","eyebrows","mouth","nose","glasses","beard","earrings","freckles","hairAccessories","obj","sty"],
- avataaars:["eth","gen","skinColor","top","hairColor","eyes","eyebrows","mouth","facialHair","facialHairColor","clothing","clothingGraphic","clothesColor","accessories","hat","hatColor","obj"],
+ avataaars:["eth","gen","skinColor","top","hairColor","eyes","eyebrows","mouth","facialHair","facialHairColor","clothing","clothingGraphic","clothesColor","accessories","hat","obj"],
  openPeeps:["gen","skinColor","head","headContrastColor","face","facialHair","accessories","mask","clothingColor","obj","sty"]};
 const ETHS=[["Européen · 欧洲人","#ffdbb4","#724133"],["Asiatique · 亚洲人","#f1c27d","#2c1b18"],["Africain · 非洲人","#614335","#2c1b18"],["Latino · 拉美人","#d08b5b","#4a312c"],["Moyen-Orient · 中东人","#e0ac69","#2c1b18"],["Métis · 混血","#ae5d29","#4a312c"]];
 const GEN_F=["bob","bun","curly","curvy","frida","longButNotTooLong","miaWallace","straight01","straight02","straightAndStrand","bigHair","dreads","froBand","hijab"],
  GEN_M=["shaggy","shaggyMullet","shortCurly","shortFlat","shortRound","shortWaved","sides","theCaesar","theCaesarAndSidePart","shavedSides","frizzle","dreads01","dreads02"];
 const genOf=a=>a.gen===undefined?0:a.gen;const avDone=a=>!!a&&a.eth!==undefined&&(a.gen===0||a.gen===1);
-function genOk(st,n,name,g){if(st==="avataaars"&&n==="top"&&(HATS.includes(name)||name==="hijab"))return false;if(g===2||st!=="avataaars"||n!=="top"||!name)return true;return g===0?!GEN_F.includes(name):!GEN_M.includes(name)}
+function genOk(st,n,name,g){if(st==="avataaars"&&n==="top"&&HIDE.includes(name))return false;if(g===2||st!=="avataaars"||n!=="top"||!name)return true;return g===0?!GEN_F.includes(name):!GEN_M.includes(name)}
 function avGen(g){let a=avGet();if(a.eth===undefined)a=avStart(0);AVH.push(JSON.stringify(S.av||{}));a.gen=g;const st=dbStyle(a);if(st==="avataaars"){const i=DBP[st].findIndex(p=>p[0]==="top"),en=dbEnum(st,"top"),cur=en[(a[DBK(i)]|0)-1];if(a[DBK(i)]>0&&!genOk(st,"top",cur,g)){const ok=en.map((x,j)=>[x,j+1]).filter(x=>genOk(st,"top",x[0],g));a[DBK(i)]=ok[0][1]}
   if(g===1){const f=DBP[st].findIndex(p=>p[0]==="facialHair");a[DBK(f)]=0}}S.av=a;save();avDraw()}
 function avEth(e){let a=avGet();if(!avDone(a)){const g=a.gen===0||a.gen===1?a.gen:undefined;a=avStart(0);if(g!==undefined)a.gen=g}AVH.push(JSON.stringify(S.av||{}));const st=dbStyle(a),s=DBP[st].findIndex(p=>p[0]==="skinColor"),hc=DBP[st].findIndex(p=>p[0]==="hairColor");a.eth=e;a[DBK(s)]=ETHS[e][1];if(hc>=0)a[DBK(hc)]=ETHS[e][2];S.av=a;save();if(a.gen===undefined)AVT="gen";avDraw()}
