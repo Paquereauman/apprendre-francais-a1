@@ -6,7 +6,9 @@ open('_t.js','w',encoding='utf8').write(js)
 texts = json.loads(subprocess.check_output(['node','_t.js']).decode('utf8'))
 os.remove('_t.js')
 VOICE = 'fr-FR-DeniseNeural'
+SPOKEN_FIX = {'Comment allez-vous ?': 'Commen tallez-vous ?', 'Comment aller à… ?': 'Commen taller à ?'}
 def spoken(t):
+    if t in SPOKEN_FIX: return SPOKEN_FIX[t]
     t = re.sub(r'\bils / elles\b', 'ils', t)
     t = re.sub(r'\bil / elle\b', 'il', t)
     t = re.sub(r'\(e\)|\(ne\)|\(se\)', '', t)

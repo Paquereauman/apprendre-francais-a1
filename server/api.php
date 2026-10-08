@@ -101,7 +101,7 @@ function rank_main($k, $base, $app) {
     list($mpts, $mts) = $qr ? month_pts($qr["hist"], $ym) : [0, 0];
     list($ppts, $pts2) = $qr ? month_pts($qr["hist"], $ymp) : [0, 0];
     $isme = ($id === $h); if ($isme) $me = true;
-    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
+    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "col" => max(0, min(9, (int)($S["col"] ?? 0))), "frm" => max(0, min(4, (int)($S["frm"] ?? 0))), "ttl" => title_ok((int)($S["ttl"] ?? 0), $chp), "motto" => clean_motto($S["motto"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
   }
   $byPts = ($app !== "");
   usort($out, function ($a, $b) use ($byPts) { return $byPts ? [-$a["pts"], $a["lts"] ?: PHP_INT_MAX] <=> [-$b["pts"], $b["lts"] ?: PHP_INT_MAX] : [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
@@ -433,3 +433,7 @@ function name_free($base, $name, $selfId) {
   }
   return true;
 }
+
+// ---- Personnalisation du profil : titre (débloqué par chapitres validés) et devise (texte court nettoyé)
+function title_ok($t, $chapters) { $need = [0, 1, 3, 6, 10, 15, 17]; return ($t >= 0 && $t <= 6 && $chapters >= $need[$t]) ? $t : 0; }
+function clean_motto($s) { return mb_substr(trim(preg_replace("/[^\p{L}\p{N} _.,!?'’\-]/u", "", (string)$s)), 0, 40); }

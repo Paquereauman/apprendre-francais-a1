@@ -72,15 +72,34 @@ select{font:inherit;padding:4px;border-radius:8px}
 @media(max-width:700px){.egrid{grid-template-columns:repeat(6,1fr)}}
 .gh{grid-column:1/-1;font-weight:700;font-size:.9rem;color:var(--blue);margin:10px 0 2px;padding-bottom:3px;border-bottom:2px solid #dbe4f5}.gh:first-child{margin-top:2px}.tip{grid-column:1/-1;background:#fff8e1;border-left:4px solid var(--gold);border-radius:8px;padding:6px 10px;font-size:.84rem;margin:2px 0 4px;line-height:1.4}
 .hm-t.chq{border-style:dashed;background:#f2fbf9}.hm-t.chq b{color:#16807a}
+.homegrid{display:block}.side{margin-bottom:12px}.side-box{background:#fff;border:1px solid #e3e9f5;border-radius:14px;padding:10px 14px;cursor:pointer}
+.side-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}.side-compact{font-size:.82rem;color:var(--mut);display:flex;gap:10px}.side-full{display:none}
+@media(min-width:1000px){#app:has(.homegrid){max-width:1180px}.homegrid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:start}.side{position:sticky;top:78px;order:2;margin:0}.side-compact{display:none}.side-full{display:block}.side-box:hover{box-shadow:0 2px 10px #0002}}
+button:active,.tile:active,.hm-t:active,.hm-act:active,.cat:active{transform:scale(.97)}button,.tile,.hm-t,.hm-act{transition:transform .08s}
+#app>*{animation:fin .25s ease-out}@keyframes fin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.podium{display:flex;align-items:flex-end;gap:8px}.pod{flex:1;min-width:0;text-align:center;background:#fff;border:1px solid #e3e9f5;border-radius:14px 14px 0 0;padding:8px 4px}.pod1{padding-top:18px;background:linear-gradient(#fff3c4,#fff);border-color:#f4a300}.pod2{padding-top:10px}.pod3{padding-top:4px}
+.pod.mine{box-shadow:0 0 0 2px var(--blue)}.pod-e{font-size:2rem;line-height:1.15}.pod-n{font-weight:700;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pod-p{color:var(--mut);font-size:.8rem}.pod-b{font-size:1.5rem}
+.coach{background:linear-gradient(90deg,#fff3c4,#ffe3e3);border-radius:14px;padding:12px 14px;font-weight:700;box-shadow:0 2px 0 #0001}
+#bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:12;background:#fff;border-top:1px solid #e3e9f5;padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -2px 10px #0001}
+#bnav button{flex:1;background:none;border:0;padding:4px 2px;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;border-radius:12px}#bnav i{font-style:normal;font-size:1.45rem;line-height:1}#bnav small{font-size:.66rem;font-weight:600}#bnav button.on{color:var(--blue);background:#eef4ff}
+@media(max-width:700px){#bnav{display:flex}body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}header #spd,header #cld,header #prfb,header #rkb{display:none}header h1{flex:1 1 auto;font-size:1rem}
+ .opts button{min-height:54px;font-size:1.05rem}.nav button,.alt,.speak{min-height:44px}.top{position:sticky;top:46px;background:var(--bg);z-index:4;padding:4px 0}.hm-t{min-height:60px}.q{border-radius:18px}}
+.av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;line-height:1;flex:none;box-sizing:border-box}
+.av.f1{box-shadow:0 0 0 3px #f4a300}.av.f2{box-shadow:0 0 0 3px #aab4c4}.av.f3{box-shadow:0 0 0 3px #00e5ff,0 0 10px #00e5ff}.av.f4{box-shadow:0 0 0 3px #e63946,0 0 0 6px #f4a300,0 0 0 9px #2bb673}
+.lb-av{flex:none}.ttl{background:#eef4ff;color:var(--blue);border-radius:99px;padding:1px 7px;font-weight:700}
+.cgrid{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.cb{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}.cb.on{border-color:var(--blue)}
+.fgrid{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.fb2{padding:6px 10px;border-radius:10px;border:2px solid #0002;background:#fff;cursor:pointer;font-size:.85rem}.fb2.on{border-color:var(--blue);background:#eef4ff}
+.egrid{max-height:210px;overflow-y:auto}
 </style></head><body>
-<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
+<nav id="bnav"><button data-k="home" onclick="home()"><i>🏠</i><small>Parcours · 路径</small></button><button data-k="rev" onclick="revStart()"><i>🔁</i><small>Réviser · 复习</small></button><button data-k="rank" onclick="rankPage()"><i>🏆</i><small>Classement · 排行</small></button><button data-k="me" onclick="profClick()"><i>👤</i><small>Profil · 我</small></button></nav>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
 <button class="langb" onclick="setLang('fr')">🇫🇷 Français</button><button class="langb" onclick="setLang('zh')">🇨🇳 中文</button><button class="langb" onclick="setLang('both')">🇫🇷 + 🇨🇳 Français + 中文</button></div></div>
 <div class="modal" id="me"><div class="box"><h3>🙂 Mon profil · 我的资料</h3><div id="mlogin" class="evd"></div>
 <div class="evd" style="margin-top:6px">Ma classe · 我的班级</div><select id="mcls" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div class="evd">Tu peux en changer à tout moment. · 你可以随时更换班级。</div>
-<div style="text-align:center;font-size:3rem" id="mprev">🙂</div>
-<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div id="mmsg" class="evd"></div>
+<div style="text-align:center" id="mprev">🙂</div>
+<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div class="evd">Couleur du médaillon · 头像底色</div><div id="cgrid" class="cgrid"></div><div class="evd">Cadre · 头像边框</div><div id="fgrid" class="fgrid"></div><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
 <div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
@@ -91,10 +110,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081949"></script>
-<script src="data-fr2.js?v=202610081949"></script>
-<script src="data-fr3.js?v=202610081949"></script>
-<script src="audio-fr/map.js?v=202610081949"></script>
+<script src="data-fr.js?v=202610081956"></script>
+<script src="data-fr2.js?v=202610081956"></script>
+<script src="data-fr3.js?v=202610081956"></script>
+<script src="audio-fr/map.js?v=202610081956"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -168,7 +187,7 @@ function setKnown(cid,h,on){const a=S.known[cid]=S.known[cid]||[],i=a.indexOf(h)
 /* ---- navigation / accueil ---- */
 let cat,Q,cur;
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
-  document.getElementById("prfb").textContent=PNAME?(S.emo||"🙂")+" "+dispName().slice(0,12):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%"}
+  document.getElementById("prfb").textContent=PNAME?(S.emo||"🙂")+" "+dispName().slice(0,12):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck))}
 function crumb(p){const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
@@ -182,11 +201,11 @@ function home(){cur=home;cat=null;head();crumb([]);const st=stats(),T=timerInfo(
   const acts=(nx?`<div class="hm-act main" onclick="${nx.fn}"><span style="font-size:1.4rem">${nx.quiz?"🏁":"▶"}</span><div>${nx.quiz?"Passer le quiz du chapitre · 参加章节测验":"Continuer · 继续"}<small>${nx.label}</small></div></div>`:`<div class="hm-act ok">🎉 Parcours A1 terminé ! · A1课程完成！</div>`)+
    (due?`<div class="hm-act" onclick="revStart()"><span style="font-size:1.4rem">🔁</span><div>Révision du jour · 今日复习<small>${due} mot${due>1?"s":""} à revoir · ${due}个词待复习</small></div></div>`:(Object.keys(S.rev).length?`<div class="hm-act ok"><span style="font-size:1.4rem">✅</span><div>Révisions à jour · 复习已完成<small>Rien à revoir aujourd'hui · 今天没有需要复习的</small></div></div>`:""));
   const sub=!PNAME?"Connecte-toi pour suivre ta progression · 登录后可查看进度":(T&&!T.noEnd&&!T.over?(T.onBreak?"⏸️ Pause vacances · 假期暂停":"⏳ "+T.days+" jours de travail restants · 剩余"+T.days+"个学习日")+(T.perWeek?"<br>🎯 ≈ "+T.perWeek+" chapitre(s)/semaine · 每周约"+T.perWeek+"章":""):(T&&T.onBreak?"⏸️ Pause vacances · 假期暂停":"Seuls les quiz de fin de chapitre comptent · 只有章节测验计入进度"));
-  $.innerHTML=`<div class="hm">${syncBanner()}<div class="hm-stats"><div class="hm-card hm-me"><div class="hm-lab">Niveau · 等级</div><div class="hm-val">Niveau ${L} · ${L}级 <small>⭐ ${S.xp} XP</small></div>${bar((S.xp-lo)/(hi-lo)*100)}</div>
+  $.innerHTML=`<div class="homegrid"><div class="hm">${syncBanner()}<div class="hm-stats"><div class="hm-card hm-me"><div class="hm-lab">Niveau · 等级</div><div class="hm-val">Niveau ${L} · ${L}级 <small>⭐ ${S.xp} XP</small></div>${bar((S.xp-lo)/(hi-lo)*100)}</div>
   <div class="hm-card"><div class="hm-lab">Aujourd'hui · 今天</div><div class="hm-val">${dn}<small> / ${gd} mots · 个词</small></div>${bar(dn/gd*100)}<div class="hm-sub">🔥 ${S.streak||0} jour${S.streak>1?"s":""} de suite · 连续${S.streak||0}天</div></div>
   <div class="hm-card" onclick="plan()" style="cursor:pointer"><div class="hm-lab">Parcours A1 · A1路径</div><div class="hm-val">${Math.round(st.all)} %<small> · ${st.done}/${st.n} chapitres · 章</small></div>${bar(st.all)}<div class="hm-sub">${sub}</div></div></div>
-  <div class="hm-acts">${acts}<div class="hm-act" onclick="plan()"><span style="font-size:1.4rem">📊</span><div>Mon plan · 我的计划<small>quiz de chaque chapitre, échéance · 各章测验与期限</small></div></div><div class="hm-act" onclick="rankPage()"><span style="font-size:1.4rem">🏆</span><div>Classement · 排行榜<small>🎁 le 1er du mois gagne une surprise · 每月第一名有小惊喜</small></div></div></div>`+
-  STEPS.map(([t,ids],n)=>`<section class="hm-sec"><h2><span class="hm-n">${n+1}</span>${t}<small>${PNAME?(chB(n)>=80?"✅ ":"")+chB(n)+" %":"🔒"}</small></h2><div class="hm-grid">${ids.map(tile).join("")}${chTile(n)}</div></section>`).join("")+`</div>`}
+  <div class="hm-acts">${acts}<div class="hm-act" onclick="plan()"><span style="font-size:1.4rem">📊</span><div>Mon plan · 我的计划<small>quiz de chaque chapitre, échéance · 各章测验与期限</small></div></div></div>`+
+  STEPS.map(([t,ids],n)=>`<section class="hm-sec"><h2><span class="hm-n">${n+1}</span>${t}<small>${PNAME?(chB(n)>=80?"✅ ":"")+chB(n)+" %":"🔒"}</small></h2><div class="hm-grid">${ids.map(tile).join("")}${chTile(n)}</div></section>`).join("")+`</div><aside id="side" class="side">${sideHtml(RKC)}</aside></div>`;loadSide()}
 function menu(id){cur=menu;if(id)cat=unit(id);head();crumb([["🏠 Parcours · 路径","home"],[cat.name]]);const k=(S.known[cat.id]||[]).length;
   $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut);margin:4px 0">${k}/${cat.items.length} mots connus · 已掌握 ${k}/${cat.items.length}</p><p style="color:var(--mut);margin:4px 0">Meilleur quiz : ${S.best[cat.id]||0} % · 最佳测验 ${S.best[cat.id]||0} %</p>${bar(mastery(cat))}
   <div class="tiles"><div class="tile" onclick="list()"><span>📖</span><b>Liste · 词表</b><small>emoji, prononciation et traduction · 表情、发音和翻译</small></div><div class="tile" onclick="cards()"><span>🃏</span><b>Cartes · 卡片</b><small>retourne et écoute · 翻转并收听</small></div>
@@ -369,23 +388,34 @@ function renderPcls(){const e=document.getElementById("pcls");if(!e)return;const
   e.innerHTML=`<div class="evd" style="margin-top:8px">Pour un nouveau compte, je suis · 新账号请选择：</div>`+CLS.map((c,i)=>`<label class="pcl"><input type="radio" name="pcl" value="${escH(c.id)}" ${(cur!==undefined?cur===c.id:i===0)?"checked":""}> ${escH(c.name)}</label>`).join("")+`<label class="pcl"><input type="radio" name="pcl" value="" ${cur===""?"checked":""}> Élève individuel · 个人学员</label>`}
 async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ+(PNAME?"&k="+CODE:""),{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length){CLS=j.classes;if(PNAME&&typeof j.mine==="string")S.cls=j.mine;const m=CLS.find(c=>c.id===S.cls);S.cper=m&&(m.from||m.end)?{from:m.from||"",to:m.to||"",end:m.end||""}:null;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}}catch(e){}renderPcls();head();if(cur===home||cur===plan)cur()}
 /* ---- profil : pseudo + emoji personnage ---- */
-const EMOS=["🐼","🐯","🦊","🐱","🐶","🐰","🐻","🐨","🦁","🐸","🐵","🦄","🐲","🐧","🦉","🦋","🐢","🐙","🐬","🦖","🤖","👽","🧙","🥷","🧚","🦸","🧜","🎅","👩‍🎓","🧑‍🏫","🧑‍🍳","🧑‍🎨","😎","🤓","🥳","😺","👻","🎃","🌸","🍀","⭐","🔥","🍕","🥐","⚽","🎸","🚀","🌈"];
+const EMOS=["🐼", "🐯", "🦊", "🐱", "🐶", "🐰", "🐻", "🐨", "🦁", "🐸", "🐵", "🦄", "🐲", "🐧", "🦉", "🦋", "🐢", "🐙", "🐬", "🦖", "🤖", "👽", "🧙", "🥷", "🧚", "🦸", "🧜", "🎅", "😎", "🤓", "🥳", "😺", "👻", "🎃", "🌸", "🍀", "⭐", "🔥", "🍕", "🥐", "⚽", "🎸", "🚀", "🌈", "🐘", "🦒", "🐳", "🦈", "🦅", "🦜", "🐝", "🐞", "🐌", "🦔", "🦦", "🦥", "🐊", "🦩", "🍉", "🍓", "🍜", "🍣", "🧋", "🍩", "🎨", "🎧", "🎮", "🏀", "🏄", "🚴", "🌙", "☀️", "⚡", "❄️", "🌊", "🎯", "🏆", "💎", "👑", "🎓", "🧠", "💪", "🎤", "🎬", "📚", "✈️", "🚗", "🏯", "🗼"];
+const COLS=["#e3edff","#ffe3e3","#e3ffe9","#fff3c4","#f1e3ff","#ffe8d1","#d9f7f5","#fbe3f1","#e8e8e8","#c9d8ff"];
+const FRMS=["Aucun · 无","Or · 金","Argent · 银","Néon · 霓虹","Arc-en-ciel · 彩虹"];
+const TITLES=[["Débutant · 初学者",0],["Curieux · 好奇宝宝",1],["Explorateur · 探索者",3],["Bavard · 小话痨",6],["Voyageur · 旅行家",10],["Francophone · 法语达人",15],["Maître du français · 法语大师",17]];
+const chDone=()=>STEPS.filter((s,i)=>chB(i)>=80).length;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v|0));
+function avHtml(u,sz){const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
+const titleOf=u=>{const k=clamp(u.ttl,0,6);return k>0?TITLES[k][0]:""};
 let MEEMO="";
 function profClick(){PNAME?meOpen():profOpen()}
 async function meOpen(){MEEMO=S.emo||"🙂";document.getElementById("nk").value=dispName();document.getElementById("mmsg").textContent="";
   document.getElementById("mlogin").textContent="Compte · 账号 : "+PNAME;
-  document.getElementById("mprev").textContent=MEEMO;
+  MECOL=S.col||0;MEFRM=S.frm||0;document.getElementById("mt").value=S.motto||"";mePrev();const dn=chDone();document.getElementById("cgrid").innerHTML=COLS.map((c,i)=>`<button type="button" class="cb${i===MECOL?" on":""}" style="background:${c}" onclick="meCol(${i})" aria-label="couleur"></button>`).join("");document.getElementById("fgrid").innerHTML=FRMS.map((f,i)=>`<button type="button" class="fb2${i===MEFRM?" on":""}" onclick="meFrm(${i})">${f}</button>`).join("");document.getElementById("tsel").innerHTML=TITLES.map((t,i)=>`<option value="${i}" ${dn<t[1]?"disabled":""} ${(S.ttl||0)===i?"selected":""}>${dn<t[1]?"🔒 ":""}${t[0]}${dn<t[1]?" ("+t[1]+" ch.)":""}</option>`).join("");
   document.getElementById("egrid").innerHTML=EMOS.map(e=>`<button type="button" class="eb${e===MEEMO?" on":""}" onclick="mePick(this)">${e}</button>`).join("");
   const fill=()=>{document.getElementById("mcls").innerHTML=CLS.map(c=>`<option value="${escH(c.id)}" ${S.cls===c.id?"selected":""}>${escH(c.name)}</option>`).join("")+`<option value="" ${!S.cls?"selected":""}>Élève individuel · 个人学员</option>`};
   fill();document.getElementById("me").classList.add("on");try{await loadClasses();fill()}catch(e){}}
 async function selfSetClass(c){try{const r=await fetch(API+"?setcls=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:c})});return r.ok}catch(e){return false}}
-function mePick(b){MEEMO=b.textContent;document.querySelectorAll("#egrid .eb").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mprev").textContent=MEEMO}
+let MECOL=0,MEFRM=0;
+function mePrev(){document.getElementById("mprev").innerHTML=avHtml({emo:MEEMO,col:MECOL,frm:MEFRM},84)}
+function mePick(b){MEEMO=b.textContent;document.querySelectorAll("#egrid .eb").forEach(x=>x.classList.toggle("on",x===b));mePrev()}
+function meCol(i){MECOL=i;document.querySelectorAll("#cgrid .cb").forEach((x,k)=>x.classList.toggle("on",k===i));mePrev()}
+function meFrm(i){MEFRM=i;document.querySelectorAll("#fgrid .fb2").forEach((x,k)=>x.classList.toggle("on",k===i));mePrev()}
 function meClose(){document.getElementById("me").classList.remove("on")}
 async function meSave(){const n=document.getElementById("nk").value.trim().replace(/\s+/g," "),m=document.getElementById("mmsg");
   if(!/^[\p{L}\p{N} _.\-]{2,20}$/u.test(n)){m.textContent="Pseudo : 2 à 20 caractères (lettres, chiffres, espace, _ . -). · 昵称：2到20个字符（字母、数字、空格、_ . -）。";return}
   const nc=document.getElementById("mcls").value;
   if(nc!==(S.cls||"")){if(!await selfSetClass(nc)){m.textContent="Impossible de changer de classe pour le moment. · 暂时无法更换班级。";return}S.cls=nc;S.cper=null}
-  S.nick=n;S.emo=MEEMO||"🙂";save();head();meClose();toast("✅ Profil enregistré · 资料已保存");loadClasses();if(cur)cur()}
+  S.nick=n;S.emo=MEEMO||"🙂";S.col=MECOL;S.frm=MEFRM;S.motto=document.getElementById("mt").value.trim().slice(0,40);{const t=clamp(document.getElementById("tsel").value,0,6);S.ttl=chDone()>=TITLES[t][1]?t:0}save();head();meClose();toast("✅ Profil enregistré · 资料已保存");loadClasses();if(cur)cur()}
 /* ---- administration (droits vérifiés par le serveur) ---- */
 let ADM=null,AV={tab:"eleves",cls:"*",chap:0};
 async function admStatus(){if(!PNAME){ADM=null;head();return}try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{cache:"no-store"});if(r.ok)ADM=await r.json()}catch(e){}head()}
@@ -484,11 +514,25 @@ async function srvSend(a){if(Q.lock)return;Q.lock=1;clearTimeout(Q.tm);const q=Q
   const box=document.querySelector(".q");box.querySelectorAll(":scope>.nav").forEach(e=>e.remove());box.insertAdjacentHTML("beforeend",fb(q,q.good,q.skip));
   say(q.say);if(r.next)Q.qs[Q.i+1]=mapPub(r.next);if(r.done)Q.sum=r;Q.tm=setTimeout(qNext,q.good?1500:60000)}
 function qSkip(){if(Q.srv)srvSend(null);else qDone(false,true,-1)}
-async function srvEnd(){const r=Q.sum||{};await loadQV();const pct=r.pct||0,i=Q.chap,pass=!!r.pass;addXp(Math.round(pct/10));if(pct>=80)celebrate("🏁 "+pct+" % ! · 太棒了！");
+async function srvEnd(){const r=Q.sum||{};const pb=myPos();await loadQV();await fetchRank();const pa=myPos();const pct=r.pct||0,i=Q.chap,pass=!!r.pass;addXp(Math.round(pct/10));if(pct>=80||(pb&&pa&&pa.pos<pb.pos))celebrate(pb&&pa&&pa.pos<pb.pos?"📈 n°"+pb.pos+" → n°"+pa.pos+" ! · 排名上升！":"🏁 "+pct+" % ! · 太棒了！");
   $.innerHTML=`<div class="q"><div class="emo">${pct>=80?"🏆":pct>=50?"👏":"💪"}</div><h2>${r.good} / ${r.n} — ${pct} %</h2><p><b>${STEPS[i][0]}</b></p>
   <p>${pass?(pct>=80?"✅ Chapitre validé (≥ 80 %) · 章节已通过（≥80%）":"✅ Chapitre déjà validé grâce à ton meilleur score · 凭借你的最佳成绩，本章已通过"):"Il faut 80 % pour valider le chapitre. · 需要80%才能通过本章。"}</p>
-  <p style="color:var(--mut)">Meilleur score · 最佳成绩 : <b>${r.best} %</b><br>Le classement compte ton meilleur score de chaque chapitre. · 排行榜按每章最佳成绩计分。</p>
+  ${pa?`<p style="font-size:1.05rem;font-weight:700">📈 ${pb&&pa.pos<pb.pos?"Tu montes : n°"+pb.pos+" → n°"+pa.pos+" ! · 排名上升：第"+pb.pos+"名 → 第"+pa.pos+"名！":"Classement du mois : n°"+pa.pos+" sur "+pa.n+" · 本月排名：第"+pa.pos+"名（共"+pa.n+"人）"}</p>`:""}<p style="color:var(--mut)">Meilleur score · 最佳成绩 : <b>${r.best} %</b><br>Le classement compte ton meilleur score de chaque chapitre. · 排行榜按每章最佳成绩计分。</p>
   <div class="nav">${(QV&&QV.left&&QV.left[stepKey(i)]>0)?`<button onclick="chapQuizStart(${i})">🔁 Rejouer · 再来</button>`:""}<button class="alt" onclick="home()">🏠 Parcours · 路径</button><button class="alt" onclick="rankPage()">🏆 Classement · 排行榜</button></div></div>`}
+
+/* ---- panneau classement : à côté sur ordinateur, bandeau intelligent sur téléphone ---- */
+let RKC=null;
+function sideHtml(R){if(!R||R.app!=="fr")return `<div class="side-box" onclick="rankPage()"><b>🏆 Classement · 排行榜</b><div class="lb-sub">🎁 Le 1er du mois gagne une petite surprise · 每月第一名有小惊喜</div></div>`;
+  const f=S.cls||"*",all=(R.list||[]).filter(u=>f==="*"||u.cls===f).slice().sort((a,b)=>b.m-a.m||(a.mt||9e15)-(b.mt||9e15)||b.pts-a.pts),pos=all.findIndex(u=>u.me),now=new Date(),dl=Math.max(0,new Date(now.getFullYear(),now.getMonth()+1,1)-now)/864e5|0;
+  const top=all.slice(0,5).map((u,i)=>`<div class="lb${u.me?" me":""}" style="padding:5px 8px"><div class="lb-n" style="width:24px;font-size:1rem">${u.m>0?medal(i):"·"}</div><div class="lb-av">${avHtml(u,26)}</div><div class="lb-nm" style="font-size:.88rem">${escH(u.name)}</div><div class="lb-xp" style="font-size:.85rem">${u.m}</div></div>`).join("");
+  const me=pos>=0?`<span>🎯 n°${pos+1}/${all.length} · 第${pos+1}名</span>`:"";
+  return `<div class="side-box" onclick="rankPage()"><div class="side-top"><b>🏆 Classement du mois · 本月排行</b><span class="side-compact">${me} <span>🎁 ${dl} j · ${dl}天</span></span></div>
+  <div class="side-full"><div class="lb-sub" style="margin:2px 0 6px">🎁 Le 1er du mois gagne une petite surprise · 每月第一名有小惊喜 — ${dl} j · ${dl}天</div>${top||'<div class="lb-sub">Personne pour l\'instant · 暂无</div>'}<div class="lb-sub" style="margin-top:6px">${me}</div><div class="lb-leave" style="margin-top:6px">Voir tout · 查看全部 ›</div></div></div>`}
+async function fetchRank(){try{const r=await fetch(API+"?rank=1"+(PNAME?"&k="+CODE:"")+APPQ,{cache:"no-store"});if(r.ok)RKC=await r.json()}catch(e){}return RKC}
+function monthList(R){const f=S.cls||"*";return (R&&R.list||[]).filter(u=>f==="*"||u.cls===f).slice().sort((a,b)=>b.m-a.m||(a.mt||9e15)-(b.mt||9e15)||b.pts-a.pts)}
+function myPos(){const l=monthList(RKC),i=l.findIndex(u=>u.me);return i>=0?{pos:i+1,n:l.length,m:l[i].m}:null}
+async function loadSide(){await fetchRank();const e=document.getElementById("side");if(e&&cur===home){e.innerHTML=sideHtml(RKC);loc(e)}}
+function goNext(){const a=nextAction();if(a)Function(a.fn)()}
 let RK={f:null,tab:"month"};
 const MONTHS_FR=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 function ymLabel(ym){const [y,m]=ym.split("-"),f=MONTHS_FR[+m-1]+" "+y,z=y+"年"+(+m)+"月";return UI()==="zh"?z:UI()==="fr"?f:f+" / "+z}
@@ -501,7 +545,7 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
   if(R.app!=="fr"){$.innerHTML=`<div class="hm">${H}<div class="hm-card">Le classement du français n'est pas encore activé sur le serveur. · 法语排行榜尚未在服务器上启用。</div></div>`;return}
   const cl=R.classes||[],cn=id=>(cl.find(c=>c.id===id)||{name:id}).name,all=R.list||[],month=RK.tab==="month";
   if(RK.f===null)RK.f=S.cls||"*";
-  const key=u=>month?u.m:u.pts;
+  const key=u=>month?u.m:u.pts;RKC=R;
   const shown=all.filter(u=>RK.f==="*"||u.cls===RK.f).slice().sort((a,b)=>month?(b.m-a.m||(a.mt||9e15)-(b.mt||9e15)||b.pts-a.pts):(b.pts-a.pts||(a.lts||9e15)-(b.lts||9e15))),pos=shown.findIndex(u=>u.me);
   const now=new Date(),dleft=Math.max(0,new Date(now.getFullYear(),now.getMonth()+1,1)-now)/864e5|0;
   const prize=`<div class="hm-card" style="background:#fff8e1;border-color:#f4a300"><b>🎁 Classement du mois · 本月排行榜</b> — ${ymLabel(R.ym||"")}<br><span style="font-size:.88rem">Le 1er du mois gagne une petite surprise ! Plus que ${dleft} jour(s). · 每月第一名可获得小惊喜！本月还剩 ${dleft} 天。</span>${R.winner?`<br><span style="font-size:.88rem">🏆 Vainqueur du mois dernier · 上月冠军 : <span>${ymLabel(R.winner.ym)} — ${escH(R.winner.emo||"🙂")} ${escH(R.winner.name)} (${R.winner.pts} pts)</span></span>`:""}</div>`;
@@ -511,8 +555,13 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
     :`<div class="hm-sync"><div style="flex:1 1 240px"><b>Tu n'es pas dans le classement · 你不在排行榜中</b></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Revenir · 加入</button></div></div>`;
   const tabs=[["month","📅 Ce mois-ci · 本月"],["total","🏆 Total · 总榜"]].map(([k,l])=>`<button style="padding:7px 13px;border:0;border-radius:10px;color:#fff;background:${RK.tab===k?"var(--blue)":"#8d99ae"}" onclick="RK.tab='${k}';rankPage()">${l}</button>`).join("");
   const chips=[["*","🌍 Tous · 全部",all.length],...cl.map(c=>[c.id,"🏫 "+c.name,all.filter(u=>u.cls===c.id).length]),["","👤 Individuels · 个人",all.filter(u=>!u.cls).length]].map(([f,l,n])=>`<button class="${RK.f===f?"":"alt"}" style="padding:6px 11px;border:0;border-radius:99px;color:#fff;background:${RK.f===f?"var(--blue)":"#8d99ae"};font-size:.85rem" onclick="RK.f='${escH(f)}';rankPage()">${l} (${n})</button>`).join("");
-  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${key(u)>0||!month?medal(i):"·"}</div><div class="lb-nm">${escH(u.emo||"🙂")} ${escH(u.name)}${u.me?" <small>(toi · 你)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub"><span>🏁 ${u.ch} chapitre(s) validé(s) · ${u.ch}章</span> &nbsp; <span>🔥 ${u.streak} j · ${u.streak}天</span></div></div><div class="lb-xp">🏆 ${key(u)}<small> pts · 分</small></div></div>`).join("");
-  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">${H}<small style="color:var(--mut)">${shown.length} participant${shown.length>1?"s":""} · ${shown.length} 位参与者</small></div>${prize}<div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${chips}</div>${info}`+
+  const pod=shown.filter(u=>key(u)>0).slice(0,3),podium=pod.length?`<div class="podium">${[1,0,2].map(k=>pod[k]?`<div class="pod pod${k+1}${pod[k].me?" mine":""}"><div class="pod-e">${k===0?"👑<br>":""}${avHtml(pod[k],k===0?64:52)}</div><div class="pod-n">${escH(pod[k].name)}</div><div class="pod-p">${key(pod[k])} pts</div><div class="pod-b">${medal(k)}</div></div>`:'<div class="pod" style="visibility:hidden"></div>').join("")}</div>`:"";
+  let coach="";if(PNAME&&R.me&&pos>=0){const kv=key(shown[pos]);if(kv===0)coach="🚀 Passe ton premier quiz de fin de chapitre pour entrer dans la course ! · 完成第一个章节测验，加入竞争！";
+    else if(pos===0)coach="👑 Tu es n°1"+(shown[1]?" ! Ton avance : "+(kv-key(shown[1]))+" pts sur "+escH(shown[1].name)+". · 你是第1名！领先 "+(kv-key(shown[1]))+" 分。":" ! · 你是第1名！");
+    else{const nx=shown[pos-1],gap=key(nx)-kv+1;coach="🔥 Plus que "+gap+" pt(s) pour dépasser "+escH(nx.name)+" (n°"+pos+") ! · 再得 "+gap+" 分即可超过 "+escH(nx.name)+"（第"+pos+"名）！"}
+    coach=`<div class="coach">${coach}<div class="nav" style="margin:8px 0 0;justify-content:flex-start"><button onclick="goNext()">▶ Gagner des points · 去赢分</button></div></div>`}
+  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${key(u)>0||!month?medal(i):"·"}</div><div class="lb-av">${avHtml(u,38)}</div><div class="lb-nm">${escH(u.name)}${titleOf(u)?` <small class="ttl">${titleOf(u)}</small>`:""}${u.me?" <small>(toi · 你)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub">${u.motto?`<i>« ${escH(u.motto)} »</i><br>`:""}<span>🏁 ${u.ch} chapitre(s) validé(s) · ${u.ch}章</span> &nbsp; <span>🔥 ${u.streak} j · ${u.streak}天</span></div></div><div class="lb-xp">🏆 ${key(u)}<small> pts · 分</small></div></div>`).join("");
+  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">${H}<small style="color:var(--mut)">${shown.length} participant${shown.length>1?"s":""} · ${shown.length} 位参与者</small></div>${prize}${coach}${podium}<div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${chips}</div>${info}`+
     (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+how+`</div>`}
 try{speechSynthesis.getVoices()}catch(e){}
 touchStreak();home();loc(document.body);pull();admStatus();loadClasses();loadQV();if(!S.uiChosen)langOpen();
