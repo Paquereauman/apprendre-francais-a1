@@ -672,11 +672,12 @@ On prend la voiture|ɔ̃ pʁɑ̃ la vwa.tyʁ|我们开车去|wǒmen kāichē qù
 
 /* ---- Parcours (ordre du cours FLE débutant) ---- */
 STEPS=[["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
-["Salutations & se présenter · 问候与自我介绍",["salut","presente","questions"]],
+["Salutations & se présenter · 问候与自我介绍",["salut","presente"]],
 ["Les nombres de 0 à 10 · 数字0到10",["nombres"]],
 ["L'âge & les nombres jusqu'à 30 · 年龄与30以内的数字",["n11","age"]],
 ["Les jours, les mois & la date · 星期、月份与日期",["jours","mois"]],
 ["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n40","n100","heure","nombres2"]],
+["Poser des questions · 提问",["questions"]],
 ["Le temps qu'il fait · 天气",["meteo","temps"]],
 ["S'habiller · 穿衣打扮",["vetements","couleurs"]],
 ["Décrire une personne · 描述人物",["physique","cheveux","famille","possessifs","animaux"]],
