@@ -90,8 +90,23 @@ button:active,.tile:active,.hm-t:active,.hm-act:active,.cat:active{transform:sca
 .cgrid{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.cb{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer}.cb.on{border-color:var(--blue)}
 .fgrid{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}.fb2{padding:6px 10px;border-radius:10px;border:2px solid #0002;background:#fff;cursor:pointer;font-size:.85rem}.fb2.on{border-color:var(--blue);background:#eef4ff}
 .egrid{max-height:210px;overflow-y:auto}
+#backb{background:rgba(255,255,255,.22);border:0;color:#fff;border-radius:99px;font-size:1.25rem;line-height:1;padding:4px 12px;cursor:pointer}
+body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{padding-bottom:12px}}
+.stars{font-size:2.4rem;letter-spacing:4px;animation:pop .7s cubic-bezier(.2,1.6,.4,1)}@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+.quest{background:linear-gradient(135deg,#fff,#f3f8ff)}.qrow{display:flex;justify-content:space-between;gap:8px;margin:7px 0 3px;font-size:.88rem;font-weight:600}.qv{color:var(--blue)}
+.emo{animation:pop .5s cubic-bezier(.2,1.6,.4,1)}.opts button:active{background:#eef4ff}
+.avtools{display:flex;gap:8px;justify-content:center;margin:6px 0}
+.avtabs{display:flex;gap:6px;overflow-x:auto;padding:6px 2px;margin:4px 0;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.avt{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:62px;padding:6px 8px;border-radius:12px;background:#eef2fa;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--mut);user-select:none}.avt span{font-size:1.15rem}
+.avt.on{background:var(--blue);color:#fff}
+.avgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;max-height:44vh;overflow:auto;padding:4px 2px}
+.avc{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border:2px solid transparent;border-radius:12px;background:#f4f6fb;cursor:pointer;text-align:center}.avc small{font-size:.66rem;line-height:1.1;color:var(--mut);font-weight:600}.avc svg{display:block}.avc.on{border-color:var(--blue);background:#fff}
+.avsw2{display:flex;flex-wrap:wrap;gap:8px;padding:6px 2px;justify-content:center}.avsw2 button{width:38px;height:38px;border-radius:50%;padding:0;border:3px solid #fff;box-shadow:0 0 0 1px #ccc;min-height:0}.avsw2 button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--blue)}
+.avcu{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 4px;padding:8px 12px;background:#f4f6fb;border-radius:12px;font-weight:600;font-size:.9rem}.avcu input{width:56px;height:36px;border:0;padding:0;background:none;cursor:pointer}
+.svgav svg{border-radius:50%;width:100%;height:100%;display:block}.svgav{overflow:visible}
+.avsvg{display:block}
 </style></head><body>
-<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
 <nav id="bnav"><button data-k="home" onclick="home()"><i>🏠</i><small>Parcours · 路径</small></button><button data-k="rev" onclick="revStart()"><i>🔁</i><small>Réviser · 复习</small></button><button data-k="rank" onclick="rankPage()"><i>🏆</i><small>Classement · 排行</small></button><button data-k="me" onclick="profClick()"><i>👤</i><small>Profil · 我</small></button></nav>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
@@ -99,21 +114,27 @@ button:active,.tile:active,.hm-t:active,.hm-act:active,.cat:active{transform:sca
 <div class="modal" id="me"><div class="box"><h3>🙂 Mon profil · 我的资料</h3><div id="mlogin" class="evd"></div>
 <div class="evd" style="margin-top:6px">Ma classe · 我的班级</div><select id="mcls" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div class="evd">Tu peux en changer à tout moment. · 你可以随时更换班级。</div>
 <div style="text-align:center" id="mprev">🙂</div>
-<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div class="evd">Couleur du médaillon · 头像底色</div><div id="cgrid" class="cgrid"></div><div class="evd">Cadre · 头像边框</div><div id="fgrid" class="fgrid"></div><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
+<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="nav" style="margin:6px 0"><button onclick="avOpen()">🧑 Créer mon visage (cheveux, lunettes, yeux…) · 设计我的头像</button></div><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div class="evd">Couleur du médaillon · 头像底色</div><div id="cgrid" class="cgrid"></div><div class="evd">Cadre · 头像边框</div><div id="fgrid" class="fgrid"></div><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
 <div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
 <input id="rn" placeholder="Nom de compte / 用户名" autocomplete="username"><input id="rc" placeholder="Code (xxxx-xxxx-xxxx) / 找回代码" autocomplete="off"><input id="rp" type="password" placeholder="Nouveau mot de passe (6 min.) / 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
 <div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
+<div class="modal" id="avp" onclick="if(event.target===this)avClose()"><div class="box" style="max-width:600px">
+ <h3 style="margin:0 0 8px">🧑 Mon visage · 我的头像</h3>
+ <div id="avprev" style="text-align:center"></div>
+ <div class="avtools"><button class="alt" onclick="avRand()">🎲 Au hasard · 随机</button><button class="alt" onclick="avUndo()">↩️ Annuler · 撤销</button><button class="alt" onclick="avNone()">🙂 Utiliser un emoji · 改用表情</button></div>
+ <div id="avtabs" class="avtabs"></div><div id="avrows"></div>
+ <div class="nav"><button onclick="avClose()">✔ Terminer · 完成</button></div></div></div>
 <div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081956"></script>
-<script src="data-fr2.js?v=202610081956"></script>
-<script src="data-fr3.js?v=202610081956"></script>
-<script src="audio-fr/map.js?v=202610081956"></script>
+<script src="data-fr.js?v=202610082019"></script>
+<script src="data-fr2.js?v=202610082019"></script>
+<script src="data-fr3.js?v=202610082019"></script>
+<script src="audio-fr/map.js?v=202610082019"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -133,7 +154,7 @@ function say(t){if(!t)return;const tok=++TOK;try{speechSynthesis.cancel()}catch(
   const f=window.AMAP&&AMAP[t];if(f){AU.src="audio-fr/"+f;AU.playbackRate=[.7,.85,1][S.sp];AU.onerror=()=>{if(tok===TOK)tts(t)};const p=AU.play();if(p)p.catch(()=>{if(tok===TOK)tts(t)});return}tts(t)}
 function tts(t){try{const u=new SpeechSynthesisUtterance(t);u.lang="fr-FR";u.rate=[.6,.8,.95][S.sp];const vs=speechSynthesis.getVoices().filter(v=>v.lang.startsWith("fr")),v=vs.find(v=>/Natural|Online/i.test(v.name))||vs[0];if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
 function cycSpd(){S.sp=(S.sp+1)%3;save();head();loc(document.getElementById("spd"))}
-function beep(ok){try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=ok?660:200;g.gain.value=.07;o.start();o.stop(c.currentTime+.15)}catch(e){}}
+function beep(ok){try{navigator.vibrate&&navigator.vibrate(ok?25:[40,30,40])}catch(e){}try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=ok?660+Math.min(8,(typeof Q!=="undefined"&&Q&&Q.c)||0)*55:200;g.gain.value=.07;o.start();o.stop(c.currentTime+.15)}catch(e){}}
 function fanfare(){try{const c=new AudioContext();[523,659,784,1046].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type="triangle";o.connect(g);g.connect(c.destination);o.frequency.value=f;const t=c.currentTime+i*.11;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.start(t);o.stop(t+.26)})}catch(e){}}
 function toast(m){const e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}
 function burst(x,y,n=22){for(let i=0;i<n;i++){const p=document.createElement("i");p.className="cf";p.style.cssText=`left:${x}px;top:${y}px;background:hsl(${Math.random()*360},90%,58%);--dx:${(Math.random()-.5)*(n>30?700:260)}px;--dy:${-60-Math.random()*(n>30?420:200)}px`;document.body.appendChild(p);setTimeout(()=>p.remove(),1200)}}
@@ -159,6 +180,13 @@ function wstats(){const rows=ALL().map(c=>({c,m:mastery(c),rem:c.items.length*(1
 function stats(){const rows=STEPS.map((s,i)=>{const b=chB(i);return{i,key:s[2],title:s[0],m:b,rem:1-Math.min(1,b/80)}});const n=rows.length;
   return{all:rows.reduce((a,r)=>a+r.m,0)/n,tot:n,rem:rows.reduce((a,r)=>a+r.rem,0),done:rows.filter(r=>r.m>=80).length,n,rows}}
 /* objectif du jour (entraînement aux mots) : rythme personnel */
+
+/* ---- quêtes du jour : petites missions avec récompense (+20 XP) ---- */
+const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","🎯"],["w",5,"Valider 5 mots · 掌握5个词","🧠"],["q",1,"Passer un quiz de chapitre · 参加1次章节测验","🏁"]];
+function dq(){if(!S.dq||S.dq.d!==tdy())S.dq={d:tdy(),a:0,w:0,q:0,done:{}};return S.dq}
+function dqAdd(k,n){const d=dq();d[k]=(d[k]||0)+(n||1);QUESTS.forEach(([key,goal,lab,ic])=>{if(key===k&&d[k]>=goal&&!d.done[key]){d.done[key]=1;setTimeout(()=>{celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20)},400)}});save()}
+function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">🎯 Quêtes du jour · 今日任务 ${all?"— ✅ 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow"><span>${d.done[k]?"✅":ic} ${lab}</span><span class="qv">${v}/${g}</span></div>${bar(v/g*100)}`}).join("")}</div>`}
+const stars=p=>p>=90?"⭐⭐⭐":p>=80?"⭐⭐☆":p>=50?"⭐☆☆":"☆☆☆";
 const goalDay=()=>Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));
 /* ---- Chronomètre de classe : date de fin du parcours ; PAUSE pendant les vacances (jours non comptés) ; seulement pour les élèves d'une classe ---- */
 const dayDiff=(a,b)=>Math.ceil((b-a)/864e5);
@@ -185,10 +213,13 @@ function srs(h,ok){const k=nk(h),e=S.rev[k];if(ok){const b=e?Math.min(e.b+1,6):1
 function dueItems(){const t=tdy(),seen={},out=[];words().forEach(c=>c.items.forEach(it=>{const k=nk(it[0]),e=S.rev[k];if(e&&e.d<=t&&!seen[k]){seen[k]=1;out.push({it,c,d:e.d})}}));return out.sort((a,b)=>a.d<b.d?-1:1)}
 function setKnown(cid,h,on){const a=S.known[cid]=S.known[cid]||[],i=a.indexOf(h);if(on&&i<0){a.push(h);S.day=S.day&&S.day.d===tdy()?S.day:{d:tdy(),n:0};S.day.n++;if(!S.rev[nk(h)])S.rev[nk(h)]={b:0,d:addD(1)}}else if(!on&&i>=0)a.splice(i,1);save()}
 /* ---- navigation / accueil ---- */
-let cat,Q,cur;
+let cat,Q,cur,IN_POP=false;
+function goBack(){if(document.body.classList.contains("inquiz")){clearTimeout(Q&&Q.tm);document.body.classList.remove("inquiz");(!cat||["test","rev","phr","chap"].includes(Q.mode))?home():menu();return}
+  if(cat&&(cur===list||cur===cards||cur===poster))menu();else home()}
+window.addEventListener("popstate",()=>{IN_POP=true;try{if(document.body.classList.contains("inquiz")||(cur&&cur!==home))goBack()}finally{IN_POP=false}});
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
-  document.getElementById("prfb").textContent=PNAME?(S.emo||"🙂")+" "+dispName().slice(0,12):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck))}
-function crumb(p){const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
+  document.getElementById("prfb").innerHTML=PNAME?(S.av?`<span class="svgav" style="display:inline-block;vertical-align:middle;width:22px;height:22px">${avSVG(S.av,22)}</span>`:escH(S.emo||"🙂"))+" "+escH(dispName().slice(0,12)):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck));document.getElementById("backb").style.display=(document.body.classList.contains("inquiz")||(cur&&cur!==home))?"":"none"}
+function crumb(p){document.body.classList.remove("inquiz");if(p.length&&!IN_POP){try{history.pushState({p:1},"")}catch(e){}}const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
 function openAny(id){const u=unit(id);if(u.mod)phrases();else menu(id)}
@@ -196,7 +227,7 @@ function nextAction(){for(let i=0;i<STEPS.length;i++){if(chB(i)>=80)continue;con
   if(u)return{label:u.icon+" "+u.name,fn:"openAny('"+u.id+"')"};
   return{label:"🏁 "+STEPS[i][0],fn:"chapQuizStart("+i+")",quiz:1}}return null}
 function chTile(i){const e=chRes(i),b=e?e.b:0,left=QV&&QV.left?QV.left[stepKey(i)]:null,pass=b>=80;
-  return`<div class="hm-t chq${pass?" done":""}" style="--c:#2a9d8f" onclick="chapQuizStart(${i})"><div class="ic">🏁</div><div><b>Quiz de fin de chapitre · 章节测验</b><div class="meta">${bar(b)}<span>${PNAME?(e?b+"%":"–"):"🔒"}</span></div><small style="color:var(--mut)">${!PNAME?"Connecte-toi pour le passer · 登录后可参加":`<span>${pass?"✅ Validé · 已通过":"À passer (80 % pour valider) · 待参加（80%通过）"}</span>${left!=null?`<br><span>${left} essai(s) aujourd'hui · 今日剩余${left}次</span>`:""}`}</small></div></div>`}
+  return`<div class="hm-t chq${pass?" done":""}" style="--c:#2a9d8f" onclick="chapQuizStart(${i})"><div class="ic">🏁</div><div><b>Quiz de fin de chapitre · 章节测验 ${e?stars(b):""}</b><div class="meta">${bar(b)}<span>${PNAME?(e?b+"%":"–"):"🔒"}</span></div><small style="color:var(--mut)">${!PNAME?"Connecte-toi pour le passer · 登录后可参加":`<span>${pass?"✅ Validé · 已通过":"À passer (80 % pour valider) · 待参加（80%通过）"}</span>${left!=null?`<br><span>${left} essai(s) aujourd'hui · 今日剩余${left}次</span>`:""}`}</small></div></div>`}
 function home(){cur=home;cat=null;head();crumb([]);const st=stats(),T=timerInfo(),L=lvOf(S.xp),lo=40*(L-1)**2,hi=40*L*L,dn=S.day&&S.day.d===tdy()?S.day.n:0,gd=goalDay(),due=dueItems().length,nx=nextAction();
   const acts=(nx?`<div class="hm-act main" onclick="${nx.fn}"><span style="font-size:1.4rem">${nx.quiz?"🏁":"▶"}</span><div>${nx.quiz?"Passer le quiz du chapitre · 参加章节测验":"Continuer · 继续"}<small>${nx.label}</small></div></div>`:`<div class="hm-act ok">🎉 Parcours A1 terminé ! · A1课程完成！</div>`)+
    (due?`<div class="hm-act" onclick="revStart()"><span style="font-size:1.4rem">🔁</span><div>Révision du jour · 今日复习<small>${due} mot${due>1?"s":""} à revoir · ${due}个词待复习</small></div></div>`:(Object.keys(S.rev).length?`<div class="hm-act ok"><span style="font-size:1.4rem">✅</span><div>Révisions à jour · 复习已完成<small>Rien à revoir aujourd'hui · 今天没有需要复习的</small></div></div>`:""));
@@ -204,7 +235,7 @@ function home(){cur=home;cat=null;head();crumb([]);const st=stats(),T=timerInfo(
   $.innerHTML=`<div class="homegrid"><div class="hm">${syncBanner()}<div class="hm-stats"><div class="hm-card hm-me"><div class="hm-lab">Niveau · 等级</div><div class="hm-val">Niveau ${L} · ${L}级 <small>⭐ ${S.xp} XP</small></div>${bar((S.xp-lo)/(hi-lo)*100)}</div>
   <div class="hm-card"><div class="hm-lab">Aujourd'hui · 今天</div><div class="hm-val">${dn}<small> / ${gd} mots · 个词</small></div>${bar(dn/gd*100)}<div class="hm-sub">🔥 ${S.streak||0} jour${S.streak>1?"s":""} de suite · 连续${S.streak||0}天</div></div>
   <div class="hm-card" onclick="plan()" style="cursor:pointer"><div class="hm-lab">Parcours A1 · A1路径</div><div class="hm-val">${Math.round(st.all)} %<small> · ${st.done}/${st.n} chapitres · 章</small></div>${bar(st.all)}<div class="hm-sub">${sub}</div></div></div>
-  <div class="hm-acts">${acts}<div class="hm-act" onclick="plan()"><span style="font-size:1.4rem">📊</span><div>Mon plan · 我的计划<small>quiz de chaque chapitre, échéance · 各章测验与期限</small></div></div></div>`+
+  ${questHtml()}<div class="hm-acts">${acts}<div class="hm-act" onclick="plan()"><span style="font-size:1.4rem">📊</span><div>Mon plan · 我的计划<small>quiz de chaque chapitre, échéance · 各章测验与期限</small></div></div></div>`+
   STEPS.map(([t,ids],n)=>`<section class="hm-sec"><h2><span class="hm-n">${n+1}</span>${t}<small>${PNAME?(chB(n)>=80?"✅ ":"")+chB(n)+" %":"🔒"}</small></h2><div class="hm-grid">${ids.map(tile).join("")}${chTile(n)}</div></section>`).join("")+`</div><aside id="side" class="side">${sideHtml(RKC)}</aside></div>`;loadSide()}
 function menu(id){cur=menu;if(id)cat=unit(id);head();crumb([["🏠 Parcours · 路径","home"],[cat.name]]);const k=(S.known[cat.id]||[]).length;
   $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut);margin:4px 0">${k}/${cat.items.length} mots connus · 已掌握 ${k}/${cat.items.length}</p><p style="color:var(--mut);margin:4px 0">Meilleur quiz : ${S.best[cat.id]||0} % · 最佳测验 ${S.best[cat.id]||0} %</p>${bar(mastery(cat))}
@@ -234,7 +265,7 @@ function revStart(){const d=dueItems().slice(0,15);if(!d.length){toast("✅ Rien
 function testStart(k){cat=null;cur=null;const qs=[];words().forEach(c=>shuffle(c.items).slice(0,k||1).forEach(it=>{const a=shuffle(typesFor());qs.push(mkQ(it,c.items,a[0],c),mkQ(it,c.items,a[1],c))}));
   Q={qs:[...shuffle(qs),mkPhrase("z"),mkPhrase("z"),mkPhrase("o"),mkPhrase("o")],i:0,s:0,mode:"test",nw:0};qShow()}
 const lab=(q,x)=>q.t==="a"||q.t==="c"?`${x[4]} ${x[2]}<small>${x[3]}</small>`:q.t==="b"||q.t==="d"?`${x[4]} ${x[0]}<small>/${x[1]}/</small>`:x;
-function qShow(){if(Q.i>=Q.qs.length)return qEnd();Q.lock=0;clearTimeout(Q.tm);const q=Q.qs[Q.i],t=q.t,it=q.it;let p="",o="";
+function qShow(){if(Q.i>=Q.qs.length)return qEnd();if(!document.body.classList.contains("inquiz")){document.body.classList.add("inquiz");try{history.pushState({q:1},"")}catch(e){}}head();Q.lock=0;clearTimeout(Q.tm);const q=Q.qs[Q.i],t=q.t,it=q.it;let p="",o="";
   const spk=(Q.srv&&!q.say)?"":`<button class="speak" onclick="say(Q.qs[Q.i].say)">🔊 Écouter · 听</button>`;
   if(t==="a")p=`<div class="emo">${it[4]}</div><div class="fw">${it[0]}</div><div class="ipa">/${it[1]}/</div>${spk}<p>Que signifie ce mot ? · 这个词是什么意思？</p>`;
   else if(t==="b")p=`<div class="emo">${it[4]}</div><div class="zh">${it[2]}</div><div class="ipa">${it[3]}</div><p>Comment dit-on en français ? · 用法语怎么说？</p>`;
@@ -268,15 +299,15 @@ function qDone(ok,skip,k){const q=Q.qs[Q.i];if(Q.lock)return;Q.lock=1;clearTimeo
   const bs=document.querySelectorAll(".opts button");bs.forEach(b=>b.disabled=true);
   if(bs.length&&q.right>=0){if(k>=0&&bs[k])bs[k].classList.add(ok?"ok":"bad");bs[q.right].classList.add("ok")}
   const good=ok&&!skip;q.good=good;q.skip=!!skip;
-  if(skip)beep(0);else{beep(ok);if(ok){Q.s++;Q.c=(Q.c||0)+1;addXp(10)}else Q.c=0}
+  if(skip)beep(0);else{beep(ok);if(ok){Q.s++;Q.c=(Q.c||0)+1;addXp(10);dqAdd("a",1)}else Q.c=0}
   if(q.it){srs(q.it[0],good);if(!good&&Q.mode==="rev"&&!q.rq){const n2=mkQ(q.it,q.c.items,typesFor()[Math.random()*5|0],q.c);n2.rq=1;Q.qs.push(n2)}
-    if(evid(q.it,q.c.id,q.t,good)){Q.nw++;addXp(3);toast("✅ Mot confirmé · 已掌握 : "+q.it[0]);setTimeout(checkDone,700)}}
+    if(evid(q.it,q.c.id,q.t,good)){Q.nw++;addXp(3);dqAdd("w",1);toast("✅ Mot confirmé · 已掌握 : "+q.it[0]);setTimeout(checkDone,700)}}
   else if(good){S.phr=(S.phr||0)+1;setTimeout(checkDone,700)}
   if(!skip){fxEl(bs[k]||document.querySelector(".q"),ok,Q.c>=3?"🔥 x"+Q.c:"+10 ⭐");if(ok&&Q.c===3)toast("🔥 Série de 3 ! · 连对3题！");if(ok&&Q.c===5){fanfare();toast("🔥🔥 5 d'affilée ! · 连对5题！")}}
   save();const box=document.querySelector(".q");box.querySelectorAll(":scope>.nav").forEach(e=>e.remove());box.insertAdjacentHTML("beforeend",fb(q,good,skip));
   say(q.say);Q.tm=setTimeout(qNext,good?1500:60000)}
 function qNext(){clearTimeout(Q.tm);Q.i++;qShow()}
-function qEnd(){if(Q.srv)return srvEnd();const pct=Math.round(Q.s/Q.qs.length*100);
+function qEnd(){document.body.classList.remove("inquiz");head();if(Q.srv)return srvEnd();const pct=Math.round(Q.s/Q.qs.length*100);
   if(Q.mode==="mix")S.best[cat.id]=Math.max(S.best[cat.id]||0,pct);
   if(Q.mode==="test")return testEnd();
   if(pct>=80)celebrate("🏆 "+pct+" % ! · 太棒了！");save();checkDone();head();
@@ -394,7 +425,7 @@ const FRMS=["Aucun · 无","Or · 金","Argent · 银","Néon · 霓虹","Arc-en
 const TITLES=[["Débutant · 初学者",0],["Curieux · 好奇宝宝",1],["Explorateur · 探索者",3],["Bavard · 小话痨",6],["Voyageur · 旅行家",10],["Francophone · 法语达人",15],["Maître du français · 法语大师",17]];
 const chDone=()=>STEPS.filter((s,i)=>chB(i)>=80).length;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v|0));
-function avHtml(u,sz){const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
+function avHtml(u,sz){const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;if(u.av&&Object.keys(u.av).length)return `<span class="av f${f} svgav" style="width:${z}px;height:${z}px">${avSVG(u.av,z)}</span>`;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
 const titleOf=u=>{const k=clamp(u.ttl,0,6);return k>0?TITLES[k][0]:""};
 let MEEMO="";
 function profClick(){PNAME?meOpen():profOpen()}
@@ -406,7 +437,7 @@ async function meOpen(){MEEMO=S.emo||"🙂";document.getElementById("nk").value=
   fill();document.getElementById("me").classList.add("on");try{await loadClasses();fill()}catch(e){}}
 async function selfSetClass(c){try{const r=await fetch(API+"?setcls=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:c})});return r.ok}catch(e){return false}}
 let MECOL=0,MEFRM=0;
-function mePrev(){document.getElementById("mprev").innerHTML=avHtml({emo:MEEMO,col:MECOL,frm:MEFRM},84)}
+function mePrev(){document.getElementById("mprev").innerHTML=avHtml({emo:MEEMO,col:MECOL,frm:MEFRM,av:S.av},84)}
 function mePick(b){MEEMO=b.textContent;document.querySelectorAll("#egrid .eb").forEach(x=>x.classList.toggle("on",x===b));mePrev()}
 function meCol(i){MECOL=i;document.querySelectorAll("#cgrid .cb").forEach((x,k)=>x.classList.toggle("on",k===i));mePrev()}
 function meFrm(i){MEFRM=i;document.querySelectorAll("#fgrid .fb2").forEach((x,k)=>x.classList.toggle("on",k===i));mePrev()}
@@ -483,6 +514,123 @@ async function recGo(){const n=document.getElementById("rn").value.trim(),code=d
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 async function admRecovery(id){try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"recovery",id})});if(!r.ok)throw 0;const j=await r.json();
   prompt(locText("Code de récupération (valable 3 jours, une seule utilisation). Donne-le à l'élève. · 找回代码（3天内有效，仅限一次）。请把它交给学生。"),j.code)}catch(e){toast("Impossible de créer le code · 无法生成代码")}}
+/* ---------- avatar personnalisable (SVG) ---------- */
+const AV_OPT={skin:["#fde0c8","#f5c9a0","#e0a577","#c68642","#8d5524","#5c3a1e","#ffd93d","#fff0e0","#f2d19a","#9bd36b","#7fb8ff","#ff9ec7","#b7b7c2"],hair:["#2b1d14","#5a3825","#a0642f","#d9a441","#e8d9a8","#b83a2e","#8e8e96","#3a5fcd","#c2479b","#00b5b0","#7b4fd1","#ff7a00","#f4f4f4","#15152b","#ff9ec7","#2bb673"],
+ bg:["#ffe3e0","#ffefc2","#d8f3dc","#d6e8ff","#e6dcff","#e9e9e9","#e63946","#f4c20d","#2bb673","#1d2b53","#ff9ec7","#222222"],clo:["#e63946","#f4a300","#2bb673","#457b9d","#7b4fd1","#2b2b33","#f4c20d","#ffffff","#8b0000","#1d3557","#e76f51","#00a896"]};
+const AV_N={style:19,eyes:12,brows:3,nose:3,mouth:10,glasses:8,beard:6,hat:15,face:10,top:6,acc:8,pat:6,fr:6};
+const AV_DEF={skin:1,hair:0,style:1,eyes:1,brows:0,nose:0,mouth:0,glasses:0,beard:0,hat:0,face:0,top:0,acc:0,pat:0,fr:0,bg:1,clo:0};
+const AV_LAB={style:"Coupe",hair:"Cheveux",skin:"Peau",eyes:"Yeux",brows:"Sourcils",nose:"Nez",mouth:"Bouche",glasses:"Lunettes",beard:"Barbe",clo:"Couleur du haut",hat:"Chapeau",face:"Visage",top:"Habit",acc:"Accessoire",pat:"Motif de fond",fr:"Cadre",bg:"Fond"};
+const AV_NAMES={acc:["Aucun","Boucles d’oreilles","Casque audio","Écouteurs","Écharpe","Nœud papillon","Collier de perles","Piercings"],pat:["Uni","Pois","Rayures","Étoiles","Vagues","Bulles"],fr:["Aucun","Or","Rouge chinois","Dégradé","Néon","Double"],style:["Chauve","Courte","Longue","Chignon","Bouclée","Crête","Carré","Frange","Afro","Queue de cheval","Couettes","Rasée","Pics","Raie sur le côté","Au bol","Gominée","Tresse","Mi-long ondulé","Dégarni"],eyes:["Points","Ronds","Contents","Endormis","Amande","Fines (mono-paupière)","Kawaii","Étoiles","Cœurs","Spirales","Larmes","Écarquillés"],hat:["Aucun","Chapeau conique (斗笠)","Oreilles de panda","Oreilles de chat","Couronne","Bandeau rouge","Casquette","Cornes","Auréole","Fleur de cerisier","Baguettes à cheveux","Chapeau de mandarin","Bonnet","Oreilles de lapin","Couronne de fleurs"],face:["Aucun","Joues rosées","Taches de rousseur","Masque chirurgical","Moustaches de chat","Peinture d'opéra","Pansement","Étoile sur la joue","Point rouge","Cicatrice"],top:["T-shirt","Col mandarin (唐装)","Col croisé (hanfu)","Qipao","Costume-cravate","Capuche"],brows:["Droits","Arqués","Épais"],nose:["Petit","Rond","Pointu","Aucun"],mouth:["Sourire","Grand sourire","Neutre","En coin","Chat","Langue tirée","Surpris","Bisou","Dents","Triste"],glasses:["Aucune","Rondes","Carrées","Soleil","Cœurs","Étoiles","Monocle","Masque de nuit"],beard:["Aucune","Barbe de 3 jours","Bouc","Barbe pleine","Moustache de sage","Longue barbe de sage"]};
+function avSVG(a,px){a=Object.assign({},AV_DEF,a||{});const cc=k=>/^#[0-9a-f]{6}$/i.test(a[k+"C"]||"")?a[k+"C"]:AV_OPT[k][a[k]],sk=cc("skin"),hc=cc("hair"),bgc=cc("bg"),cloc=cc("clo"),dk="#2b1d14",sh="rgba(0,0,0,.14)";let back="",front="";
+  const H=`fill="${hc}"`,cap=`<path d="M22 52C14 -2 86 -2 78 52C74 38 64 30 50 30C36 30 26 38 22 52Z" ${H}/>`,fringe=`<path d="M23 52C16 0 84 0 77 52C73 38 63 31 50 31C37 31 27 38 23 52Z" ${H}/>`;
+  switch(a.style){
+    case 1:front=fringe;break;
+    case 2:back=`<path d="M19 52C14 8 86 8 81 52L84 94L16 94Z" ${H}/>`;front=cap;break;
+    case 3:back=`<circle cx="50" cy="8" r="11" ${H}/>`;front=cap;break;
+    case 4:back=`<circle cx="24" cy="44" r="9" ${H}/><circle cx="76" cy="44" r="9" ${H}/>`;front=[24,36,50,64,76].map((x,i)=>`<circle cx="${x}" cy="${i%2?22:27}" r="13" ${H}/>`).join("")+`<circle cx="22" cy="40" r="8" ${H}/><circle cx="78" cy="40" r="8" ${H}/><path d="M24 44C28 36 38 34 50 34C62 34 72 36 76 44L76 30L24 30Z" ${H}/>`;break;
+    case 5:front=`<path d="M25 44C24 34 28 30 31 30L31 40Z M75 44C76 34 72 30 69 30L69 40Z" ${H} opacity=".5"/><path d="M42 30L45 2L55 2L58 30Z" ${H}/>`;break;
+    case 6:back=`<path d="M19 54C14 8 86 8 81 54L81 70C70 76 30 76 19 70Z" ${H}/>`;front=cap;break;
+    case 7:front=`<path d="M22 52C14 -2 86 -2 78 52C70 44 60 36 40 38C32 40 26 44 22 52Z" ${H}/>`;break;
+    case 8:back=`<circle cx="50" cy="30" r="36" ${H}/>`;front=cap;break;
+    case 9:back=`<path d="M68 22C96 16 100 58 86 76C90 54 82 42 66 38Z" ${H}/>`;front=cap+`<circle cx="76" cy="30" r="3.5" fill="#e63946"/>`;break;
+    case 10:back=`<circle cx="12" cy="46" r="11" ${H}/><circle cx="88" cy="46" r="11" ${H}/>`;front=cap+`<rect x="19" y="36" width="8" height="5" rx="2" fill="#e63946"/><rect x="73" y="36" width="8" height="5" rx="2" fill="#e63946"/>`;break;
+    case 11:front=`<path d="M26 46C24 16 76 16 74 46C70 30 60 26 50 26C40 26 30 30 26 46Z" ${H} opacity=".55"/>`;break;
+    case 12:front=`<path d="M23 44L20 12L35 26L41 2L50 24L59 2L65 26L80 12L77 44C71 32 61 28 50 28C39 28 29 32 23 44Z" ${H}/>`;break;
+    case 13:front=`<path d="M22 52C14 -2 86 -2 78 52C75 40 68 32 58 28C50 40 34 42 22 52Z" ${H}/><path d="M58 28C60 18 62 10 66 6" fill="none" stroke="${sh}" stroke-width="2"/>`;break;
+    case 14:front=`<path d="M21 54C14 -2 86 -2 79 54L77 41Q50 33 23 41Z" ${H}/>`;break;
+    case 15:front=`<path d="M24 50C18 2 82 2 76 50C72 34 62 26 50 26C38 26 28 34 24 50Z" ${H}/><path d="M34 22Q50 10 66 22M30 30Q50 16 70 30" fill="none" stroke="#fff" stroke-width="1.6" opacity=".35"/>`;break;
+    case 16:back=`<g ${H}><circle cx="76" cy="76" r="5.5"/><circle cx="78" cy="85" r="5.5"/><circle cx="76" cy="94" r="5.5"/></g>`;front=cap;break;
+    case 17:back=`<path d="M19 52C14 8 86 8 81 52L88 82C82 78 80 88 74 82C70 88 64 80 60 84L40 84C36 80 30 88 26 82C20 88 18 78 12 82Z" ${H}/>`;front=cap;break;
+    case 18:front=`<path d="M25 52C21 38 26 30 33 32C30 40 31 48 30 56Z M75 52C79 38 74 30 67 32C70 40 69 48 70 56Z" ${H}/><path d="M44 23Q50 17 56 23" fill="none" stroke="${hc}" stroke-width="2.4" stroke-linecap="round"/>`;break}
+  const eye=[`<circle cx="38" cy="49" r="2.8" fill="${dk}"/><circle cx="62" cy="49" r="2.8" fill="${dk}"/>`,
+    `<ellipse cx="38" cy="49" rx="4.6" ry="3.6" fill="#fff"/><ellipse cx="62" cy="49" rx="4.6" ry="3.6" fill="#fff"/><circle cx="38" cy="49" r="2.3" fill="${dk}"/><circle cx="62" cy="49" r="2.3" fill="${dk}"/>`,
+    `<path d="M33 50Q38 43 43 50M57 50Q62 43 67 50" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,
+    `<path d="M33 49H43M57 49H67" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,`<g fill="#fff" stroke="${dk}" stroke-width="1.6"><ellipse cx="38" cy="49" rx="6.4" ry="2.8" transform="rotate(-9 38 49)"/><ellipse cx="62" cy="49" rx="6.4" ry="2.8" transform="rotate(9 62 49)"/></g><circle cx="38.5" cy="49" r="1.9" fill="${dk}"/><circle cx="61.5" cy="49" r="1.9" fill="${dk}"/>`,`<path d="M31 51Q38 46 45 50M69 51Q62 46 55 50" fill="none" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/>`,`<ellipse cx="38" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><ellipse cx="62" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><circle cx="36.6" cy="46.6" r="1.7" fill="#fff"/><circle cx="60.6" cy="46.6" r="1.7" fill="#fff"/><circle cx="39.6" cy="51.4" r=".9" fill="#fff"/><circle cx="63.6" cy="51.4" r=".9" fill="#fff"/>`,`<path d="M38 41L40.2 46.6L46 47L41.5 50.8L43 56.5L38 53.4L33 56.5L34.5 50.8L30 47L35.8 46.6Z M62 41L64.2 46.6L70 47L65.5 50.8L67 56.5L62 53.4L57 56.5L58.5 50.8L54 47L59.8 46.6Z" fill="#f4a300" stroke="${dk}" stroke-width="1"/>`,`<path d="M38 56C28 49 31 42 36 43C37 43.3 38 45 38 45C38 45 38 43.3 40 43C45 42 48 49 38 56Z M62 56C52 49 55 42 60 43C61 43.3 62 45 62 45C62 45 62 43.3 64 43C69 42 72 49 62 56Z" fill="#e63946"/>`,`<g fill="none" stroke="${dk}" stroke-width="1.5"><circle cx="38" cy="49" r="6"/><circle cx="38" cy="49" r="3.4"/><circle cx="62" cy="49" r="6"/><circle cx="62" cy="49" r="3.4"/></g>`,`<ellipse cx="38" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><ellipse cx="62" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><circle cx="36.6" cy="46.6" r="1.7" fill="#fff"/><circle cx="60.6" cy="46.6" r="1.7" fill="#fff"/><path d="M36 56Q35 62 38 63Q41 62 40 56ZM60 56Q59 62 62 63Q65 62 64 56Z" fill="#6ec6ff"/>`,`<circle cx="38" cy="49" r="6.4" fill="#fff" stroke="${dk}" stroke-width="1.6"/><circle cx="62" cy="49" r="6.4" fill="#fff" stroke="${dk}" stroke-width="1.6"/><circle cx="38" cy="49" r="1.6" fill="${dk}"/><circle cx="62" cy="49" r="1.6" fill="${dk}"/>`][a.eyes];
+  const brow=[`<path d="M32 40H44M56 40H68" stroke="${hc}" stroke-width="2.6" stroke-linecap="round"/>`,
+    `<path d="M32 41Q38 36 44 40M56 40Q62 36 68 41" fill="none" stroke="${hc}" stroke-width="2.6" stroke-linecap="round"/>`,
+    `<path d="M31 42L44 38M69 42L56 38" stroke="${hc}" stroke-width="4" stroke-linecap="round"/>`][a.brows];
+  const nose=[`<path d="M48 56Q50 60 53 57" fill="none" stroke="${sh}" stroke-width="2.4" stroke-linecap="round"/>`,`<circle cx="50" cy="57" r="3.6" fill="${sh}"/>`,`<path d="M50 49L46 59H53" fill="none" stroke="${sh}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`,""][a.nose];
+  const mouth=[`<path d="M41 66Q50 74 59 66" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,
+    `<path d="M39 65Q50 66 61 65Q58 76 50 76Q42 76 39 65Z" fill="${dk}"/><path d="M42 66H58" stroke="#fff" stroke-width="2.4"/>`,
+    `<path d="M42 68H58" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,
+    `<path d="M42 68Q52 70 60 64" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,`<path d="M43 67Q46.5 72 50 67Q53.5 72 57 67" fill="none" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/>`,`<path d="M41 66Q50 74 59 66" fill="none" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/><path d="M46 69.6Q50 80 54 69.6Z" fill="#ff6b81" stroke="${dk}" stroke-width="1.2"/>`,`<ellipse cx="50" cy="69" rx="4" ry="5" fill="${dk}"/>`,`<path d="M50 74C41 67 44 62 48 63C49.5 63.3 50 65 50 65C50 65 50.5 63.3 52 63C56 62 59 67 50 74Z" fill="#e63946"/>`,`<path d="M40 65H60Q58 76 50 76Q42 76 40 65Z" fill="#fff" stroke="${dk}" stroke-width="2"/><path d="M40 70H60M50 65V76" stroke="${dk}" stroke-width="1.2"/>`,`<path d="M42 70Q50 64 58 70" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`][a.mouth];
+  const gl=["",`<g fill="rgba(255,255,255,.25)" stroke="${dk}" stroke-width="2"><circle cx="38" cy="49" r="8.5"/><circle cx="62" cy="49" r="8.5"/><path d="M46.5 49H53.5M29.5 48L25 45M70.5 48L75 45" fill="none"/></g>`,
+    `<g fill="rgba(255,255,255,.25)" stroke="${dk}" stroke-width="2"><rect x="29" y="41" width="18" height="15" rx="3"/><rect x="53" y="41" width="18" height="15" rx="3"/><path d="M47 48H53M29 46L25 44M71 46L75 44" fill="none"/></g>`,
+    `<g fill="${dk}"><rect x="28" y="41" width="20" height="13" rx="5"/><rect x="52" y="41" width="20" height="13" rx="5"/><rect x="47" y="44" width="6" height="2.4"/></g>`,`<g fill="rgba(255,150,170,.55)" stroke="#e63946" stroke-width="2"><path d="M38 57C28 49 31 42 36 43C37 43.3 38 45 38 45C38 45 38 43.3 40 43C45 42 48 49 38 56Z"/><path d="M62 56C52 49 55 42 60 43C61 43.3 62 45 62 45C62 45 62 43.3 64 43C69 42 72 49 62 56Z"/><path d="M46 49H54" fill="none"/></g>`,`<g fill="#ffd23f" stroke="${dk}" stroke-width="1.6"><path d="M38 40L40.8 46.6L47.6 47.2L42.4 51.6L44 58.4L38 54.8L32 58.4L33.6 51.6L28.4 47.2L35.2 46.6Z"/><path d="M62 40L64.8 46.6L71.6 47.2L66.4 51.6L68 58.4L62 54.8L56 58.4L57.6 51.6L52.4 47.2L59.2 46.6Z"/></g>`,`<circle cx="62" cy="49" r="9" fill="rgba(255,255,255,.25)" stroke="#c9a227" stroke-width="2.4"/><path d="M69 56Q76 66 74 84" fill="none" stroke="#c9a227" stroke-width="1.6"/>`,`<rect x="26" y="41" width="48" height="15" rx="7" fill="#6b5b95"/><path d="M34 49Q38 52 42 49M58 49Q62 52 66 49" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`][a.glasses];
+  const beard=["",`<path d="M26 56C28 80 72 80 74 56C70 70 30 70 26 56Z" fill="${hc}" opacity=".35"/>`,
+    `<path d="M43 71Q50 66 57 71Q56 82 50 82Q44 82 43 71Z" fill="${hc}"/>`,
+    `<path d="M25 54C24 84 76 84 75 54C72 62 66 62 60 63Q50 60 40 63C34 62 28 62 25 54Z" fill="${hc}"/>`,`<path d="M50 63Q40 62 34 70Q32 76 33 84M50 63Q60 62 66 70Q68 76 67 84" fill="none" stroke="${hc}" stroke-width="2.4" stroke-linecap="round"/>`,`<path d="M30 60C30 96 70 96 70 60C64 76 36 76 30 60Z" fill="#f2f2f2" stroke="#cfcfcf" stroke-width="1"/><path d="M42 63Q50 61 58 63" fill="none" stroke="#cfcfcf" stroke-width="2"/>`][a.beard];
+  const hat=["",`<path d="M6 38L50 -4L94 38Q50 29 6 38Z" fill="#e8c36a" stroke="#b8923a" stroke-width="1.5"/><path d="M26 34L22 62M74 34L78 62" stroke="#8a5a2b" stroke-width="1.6"/>`,
+    `<circle cx="25" cy="20" r="10" fill="#222"/><circle cx="75" cy="20" r="10" fill="#222"/><circle cx="25" cy="21" r="4.5" fill="#ff9ec7"/><circle cx="75" cy="21" r="4.5" fill="#ff9ec7"/>`,
+    `<path d="M22 32L24 3L44 20Z M78 32L76 3L56 20Z" fill="${hc}" stroke="${sh}" stroke-width="1"/><path d="M27 24L28 11L37 20Z M73 24L72 11L63 20Z" fill="#ff9ec7"/>`,
+    `<path d="M26 24L29 4L40 14L50 -1L60 14L71 4L74 24Z" fill="#f4c20d" stroke="#b8860b" stroke-width="1.5"/><circle cx="50" cy="12" r="2.6" fill="#e63946"/><circle cx="33" cy="15" r="2" fill="#2bb673"/><circle cx="67" cy="15" r="2" fill="#457b9d"/>`,
+    `<path d="M24 35Q50 22 76 35L76 43Q50 31 24 43Z" fill="#e63946"/><circle cx="50" cy="35" r="4.2" fill="#fff"/><circle cx="50" cy="35" r="2.3" fill="#e63946"/><path d="M76 38L90 46L82 48L92 58" fill="none" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>`,
+    `<path d="M25 30C25 6 75 6 75 30Z" fill="#3a5fcd"/><path d="M23 30Q50 24 77 30L97 32Q80 40 60 35Z" fill="#2a47a8"/>`,
+    `<path d="M28 28Q16 14 24 0Q36 8 40 24Z M72 28Q84 14 76 0Q64 8 60 24Z" fill="#e63946"/>`,
+    `<ellipse cx="50" cy="4" rx="20" ry="5" fill="none" stroke="#ffd23f" stroke-width="3.2"/>`,
+    `<g transform="translate(30 24)"><g fill="#ffb7c5"><circle cx="0" cy="-6" r="5"/><circle cx="5.7" cy="-1.8" r="5"/><circle cx="3.5" cy="4.9" r="5"/><circle cx="-3.5" cy="4.9" r="5"/><circle cx="-5.7" cy="-1.8" r="5"/></g><circle r="2.6" fill="#ffd23f"/></g>`,
+    `<path d="M32 26L6 -4M42 22L16 -6" stroke="#b5651d" stroke-width="2.6" stroke-linecap="round"/><circle cx="6" cy="-4" r="2.6" fill="#e63946"/><circle cx="16" cy="-6" r="2.6" fill="#e63946"/>`,
+    `<path d="M27 28C27 8 73 8 73 28Z" fill="#1d1d1d"/><rect x="-2" y="14" width="32" height="6" rx="3" fill="#1d1d1d"/><rect x="70" y="14" width="32" height="6" rx="3" fill="#1d1d1d"/><rect x="27" y="26" width="46" height="4" fill="#f4c20d"/>`,
+    `<path d="M23 34C23 4 77 4 77 34Z" fill="#2bb673"/><rect x="21" y="30" width="58" height="9" rx="4" fill="#1f8f58"/><circle cx="50" cy="3" r="6" fill="#fff"/>`,
+    `<path d="M33 22C26 -14 40 -12 43 20Z M67 22C74 -14 60 -12 57 20Z" fill="#fff" stroke="#d6d6d6" stroke-width="1.2"/><path d="M36 18C32 -4 38 -4 40 18Z M64 18C68 -4 62 -4 60 18Z" fill="#ffb7c5"/>`,
+    [[26,30],[32,21],[40,16],[50,14],[60,16],[68,21],[74,30]].map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${["#ff8fab","#ffd23f","#9be564"][i%3]}"/>`).join("")][a.hat];
+  const faceX=["",`<circle cx="31" cy="60" r="5.5" fill="#ff6b81" opacity=".35"/><circle cx="69" cy="60" r="5.5" fill="#ff6b81" opacity=".35"/>`,
+    [[42,56],[45,59],[39,59],[58,56],[55,59],[61,59],[50,55]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r=".9" fill="#a0642f"/>`).join(""),
+    `<path d="M26 56Q50 51 74 56L72 76Q50 88 28 76Z" fill="#e8f4fa" stroke="#9fc5d6" stroke-width="1.4"/><path d="M30 62Q50 58 70 62M31 69Q50 65 69 69" stroke="#b9d6e3" stroke-width="1.2" fill="none"/><path d="M26 58L22 52M74 58L78 52" stroke="#9fc5d6" stroke-width="1.4"/>`,
+    `<path d="M32 60L16 55M32 63L15 63M32 66L16 71M68 60L84 55M68 63L85 63M68 66L84 71" stroke="${dk}" stroke-width="1.4" stroke-linecap="round"/>`,
+    `<ellipse cx="38" cy="49" rx="9" ry="6.5" fill="#e63946" opacity=".6"/><ellipse cx="62" cy="49" rx="9" ry="6.5" fill="#e63946" opacity=".6"/><path d="M50 28L45 41H55Z" fill="#e63946"/><path d="M32 66Q50 60 68 66" fill="none" stroke="#e63946" stroke-width="3" opacity=".6"/>`,
+    `<g transform="rotate(-25 63 59)"><rect x="56" y="56" width="14" height="6.4" rx="3.2" fill="#f2c9a0" stroke="#c99a7a" stroke-width="1"/><rect x="60" y="56" width="6" height="6.4" fill="#e6b98f"/></g>`,
+    `<path d="M67 55L68.6 59L73 59.4L69.6 62.2L70.8 66.4L67 64L63.2 66.4L64.4 62.2L61 59.4L65.4 59Z" fill="#ffd23f" stroke="#c9a227" stroke-width=".8"/>`,
+    `<circle cx="50" cy="31" r="2.8" fill="#e63946"/>`,
+    `<path d="M33 38L42 59" stroke="#b34a4a" stroke-width="2" stroke-linecap="round"/><path d="M35 44L39 42M37 50L41 48M39 55L43 53" stroke="#b34a4a" stroke-width="1.2"/>`][a.face];
+  const topX=["",`<path d="M40 78L41 72Q50 77 59 72L60 78Q50 84 40 78Z" fill="rgba(0,0,0,.28)"/><circle cx="50" cy="88" r="2.2" fill="#f4c20d"/><circle cx="50" cy="95" r="2.2" fill="#f4c20d"/>`,
+    `<path d="M39 78L50 100L61 78L57 78L50 92L43 78Z" fill="#fff"/><path d="M50 92L68 100" stroke="#fff" stroke-width="2.4"/><path d="M8 97H92V100H8Z" fill="#f4c20d"/>`,
+    `<path d="M40 78L41 72Q50 77 59 72L60 78Q50 84 40 78Z" fill="rgba(0,0,0,.28)"/><path d="M50 80Q62 82 70 94" fill="none" stroke="#f4c20d" stroke-width="2.2"/><circle cx="54" cy="83" r="1.8" fill="#f4c20d"/><circle cx="61" cy="87" r="1.8" fill="#f4c20d"/><circle cx="67" cy="92" r="1.8" fill="#f4c20d"/>`,
+    `<path d="M40 78L50 92L60 78Z" fill="#fff"/><path d="M48 80H52L54 96L50 100L46 96Z" fill="#c1121f"/><path d="M34 80L45 100M66 80L55 100" stroke="#1b1b1b" stroke-width="4"/>`,
+    `<path d="M30 78Q50 98 70 78Q77 85 72 93Q50 105 28 93Q23 85 30 78Z" fill="rgba(0,0,0,.22)"/><path d="M46 90V100M54 90V100" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>`][a.top];
+  const patX=["",
+    [0,1,2,3,4].flatMap(r=>[0,1,2,3,4,5].map(c=>`<circle cx="${8+c*17+(r%2)*8}" cy="${8+r*22}" r="2.4" fill="#fff" opacity=".35"/>`)).join(""),
+    [0,1,2,3,4,5,6,7].map(i=>`<rect x="${i*16}" y="0" width="8" height="100" fill="#fff" opacity=".22"/>`).join(""),
+    [[14,16],[84,22],[22,52],[80,60],[50,10],[12,84],[88,86]].map(p=>`<path d="M${p[0]} ${p[1]-4}L${p[0]+1.2} ${p[1]-1.2}L${p[0]+4} ${p[1]}L${p[0]+1.2} ${p[1]+1.2}L${p[0]} ${p[1]+4}L${p[0]-1.2} ${p[1]+1.2}L${p[0]-4} ${p[1]}L${p[0]-1.2} ${p[1]-1.2}Z" fill="#fff" opacity=".7"/>`).join(""),
+    [0,1,2,3].map(i=>`<path d="M0 ${18+i*24}Q12 ${10+i*24} 25 ${18+i*24}T50 ${18+i*24}T75 ${18+i*24}T100 ${18+i*24}" fill="none" stroke="#fff" stroke-width="3" opacity=".3"/>`).join(""),
+    [[16,20,9],[84,30,12],[20,78,12],[86,82,8],[70,10,6]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" fill="#fff" opacity=".28"/>`).join("")][a.pat];
+  const accX=["",
+    `<circle cx="25" cy="61" r="3.2" fill="#f4c20d" stroke="#b8860b" stroke-width=".8"/><circle cx="75" cy="61" r="3.2" fill="#f4c20d" stroke="#b8860b" stroke-width=".8"/>`,
+    `<path d="M22 54C19 2 81 2 78 54" fill="none" stroke="#2b2b33" stroke-width="5" stroke-linecap="round"/><rect x="15" y="44" width="10" height="20" rx="5" fill="#e63946"/><rect x="75" y="44" width="10" height="20" rx="5" fill="#e63946"/>`,
+    `<circle cx="27" cy="56" r="3" fill="#fff" stroke="#bbb" stroke-width=".8"/><circle cx="73" cy="56" r="3" fill="#fff" stroke="#bbb" stroke-width=".8"/><path d="M27 59Q26 80 38 92M73 59Q74 80 62 92" fill="none" stroke="#fff" stroke-width="1.4"/>`,
+    `<path d="M28 80Q50 94 72 80L74 92Q50 106 26 92Z" fill="#e63946"/><path d="M60 88L70 104L58 102Z" fill="#c1121f"/><path d="M34 84Q50 92 66 84" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/>`,
+    `<path d="M50 83L40 78L40 90ZM50 83L60 78L60 90Z" fill="#c1121f"/><circle cx="50" cy="83" r="3" fill="#8b0000"/>`,
+    [30,34,38,42,46,50,54,58,62,66,70].map((x,i)=>`<circle cx="${x}" cy="${79+Math.sin(i/10*Math.PI)*8}" r="2.6" fill="#fff" stroke="#ddd" stroke-width=".6"/>`).join(""),
+    `<circle cx="54.5" cy="59" r="1.9" fill="none" stroke="#f4c20d" stroke-width="1"/><circle cx="66" cy="40" r="1.4" fill="#cfd8dc" stroke="#78909c" stroke-width=".5"/><circle cx="25" cy="58" r="1.4" fill="#f4c20d"/><circle cx="75" cy="58" r="1.4" fill="#f4c20d"/>`][a.acc];
+  const frX=["",
+    `<circle cx="50" cy="50" r="48" fill="none" stroke="#f4c20d" stroke-width="4"/>`,
+    `<circle cx="50" cy="50" r="48" fill="none" stroke="#e63946" stroke-width="4"/><circle cx="50" cy="50" r="44.5" fill="none" stroke="#f4c20d" stroke-width="1.2"/>`,
+    `<defs><linearGradient id="avg${px}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7b4fd1"/><stop offset=".5" stop-color="#ff5ea8"/><stop offset="1" stop-color="#ffb703"/></linearGradient></defs><circle cx="50" cy="50" r="48" fill="none" stroke="url(#avg${px})" stroke-width="4.5"/>`,
+    `<circle cx="50" cy="50" r="48" fill="none" stroke="#00e5ff" stroke-width="2.4"/><circle cx="50" cy="50" r="46" fill="none" stroke="#00e5ff" stroke-width="5" opacity=".25"/>`,
+    `<circle cx="50" cy="50" r="48.2" fill="none" stroke="#fff" stroke-width="3"/><circle cx="50" cy="50" r="45.5" fill="none" stroke="#0055a4" stroke-width="2"/>`][a.fr];
+  return `<svg class="avsvg" viewBox="0 0 100 100" width="${px}" height="${px}" role="img" aria-label="Ton avatar"><defs><clipPath id="avc${px}"><circle cx="50" cy="50" r="50"/></clipPath></defs><g clip-path="url(#avc${px})"><rect width="100" height="100" fill="${bgc}"/>${patX}${back}
+  <rect x="42" y="68" width="16" height="22" fill="${sk}"/><rect x="42" y="68" width="16" height="22" fill="${sh}"/><path d="M8 100C10 82 28 78 50 78C72 78 90 82 92 100Z" fill="${cloc}"/><path d="M40 78Q50 90 60 78" fill="${sk}"/>${topX}
+  <circle cx="25" cy="52" r="5" fill="${sk}"/><circle cx="75" cy="52" r="5" fill="${sk}"/><ellipse cx="50" cy="48" rx="25" ry="29" fill="${sk}"/>${beard}${nose}${mouth}${eye}${brow}${faceX}${gl}${front}${hat}${accX}</g>${frX}</svg>`}
+const avGet=()=>Object.assign({},AV_DEF,S.av||{});
+function avOpen(){avDraw();document.getElementById("avp").classList.add("on")}
+function avClose(){document.getElementById("avp").classList.remove("on");mePrev();head();if(cur)cur()}
+function avSet(k,v){const a=avGet(),n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];a[k]=(v+n)%n;delete a[k+"C"];AVH.push(JSON.stringify(S.av||{}));S.av=a;save();avDraw()}
+function avCol(k,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[k+"C"]=v;S.av=a;save();avPrev()}
+function avNone(){S.av=null;save();document.getElementById("avp").classList.remove("on");mePrev();head()}
+function avUndo(){const p=AVH.pop();if(!p)return toast("Rien à annuler");S.av=JSON.parse(p);save();avDraw()}
+let AVH=[],AVT="style";
+function avRand(){const a={};AVH.push(JSON.stringify(S.av||{}));Object.keys(AV_DEF).forEach(k=>{const n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];a[k]=Math.random()*n|0});S.av=a;save();avDraw()}
+const AV_TABS=[["style","💇","Coupe · 发型"],["hair","🎨","Cheveux · 发色"],["hat","🎩","Chapeau · 帽子"],["skin","🧑","Peau · 肤色"],["eyes","👁️","Yeux · 眼睛"],["brows","🤨","Sourcils · 眉毛"],["nose","👃","Nez · 鼻子"],["mouth","👄","Bouche · 嘴巴"],["face","🎭","Visage · 脸部"],["glasses","👓","Lunettes · 眼镜"],["beard","🧔","Barbe · 胡子"],["top","👕","Habit · 衣服"],["clo","🎽","Couleur · 衣服颜色"],["acc","💎","Accessoire · 配饰"],["bg","🖼️","Fond · 背景"],["pat","✨","Motif · 图案"],["fr","⭕","Cadre · 边框"]];
+function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avSVG(avGet(),132)}
+function avDraw(){const a=avGet(),k=AVT;avPrev();
+  document.getElementById("avtabs").innerHTML=AV_TABS.map(t=>`<div role="button" class="avt${k===t[0]?" on":""}" onclick="AVT='${t[0]}';avDraw()"><span>${t[1]}</span>${t[2]}</div>`).join("");
+  let h="";
+  if(AV_OPT[k]){const cur=/^#[0-9a-f]{6}$/i.test(a[k+"C"]||"")?a[k+"C"]:AV_OPT[k][a[k]];
+    h=`<div class="avsw2">${AV_OPT[k].map((c,i)=>`<button type="button" aria-label="${AV_LAB[k]} ${i+1}" aria-pressed="${!a[k+"C"]&&a[k]===i}" style="background:${c}" onclick="avSet('${k}',${i})"></button>`).join("")}</div>
+    <label class="avcu"><span>🎨 Couleur personnalisée</span><input type="color" value="${cur}" oninput="avCol('${k}',this.value)"></label>`}
+  else h=`<div class="avgrid">${AV_NAMES[k].map((n,i)=>`<div role="button" class="avc${a[k]===i?" on":""}" onclick="avSet('${k}',${i})">${avSVG(Object.assign({},a,{[k]:i}),64)}<small>${n}</small></div>`).join("")}</div>`;
+  document.getElementById("avrows").innerHTML=h}
+
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
 const medal=i=>["🥇","🥈","🥉"][i]||String(i+1);
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -508,14 +656,14 @@ async function srvSend(a){if(Q.lock)return;Q.lock=1;clearTimeout(Q.tm);const q=Q
   const k=typeof a==="number"?a:-1;
   if(bs.length&&r.right!=null){if(k>=0&&bs[k])bs[k].classList.add(r.ok?"ok":"bad");if(bs[r.right])bs[r.right].classList.add("ok")}
   q.good=!!r.ok;q.skip=a===null;
-  if(q.skip)beep(0);else{beep(r.ok);if(r.ok){Q.s++;Q.c=(Q.c||0)+1}else Q.c=0}
+  if(q.skip)beep(0);else{beep(r.ok);if(r.ok){Q.s++;Q.c=(Q.c||0)+1;dqAdd("a",1)}else Q.c=0}
   if(r.fb){if(Array.isArray(r.fb)){q.it=r.fb;q.say=r.fb[0]}else{q.it=null;q.full=r.fb.full;q.ipa=r.fb.ipa;q.zh=r.fb.zh;q.say=r.fb.full}}
   if(!q.skip)fxEl(bs[k]||document.querySelector(".q"),!!r.ok,Q.c>=3?"🔥 x"+Q.c:"✔");
   const box=document.querySelector(".q");box.querySelectorAll(":scope>.nav").forEach(e=>e.remove());box.insertAdjacentHTML("beforeend",fb(q,q.good,q.skip));
   say(q.say);if(r.next)Q.qs[Q.i+1]=mapPub(r.next);if(r.done)Q.sum=r;Q.tm=setTimeout(qNext,q.good?1500:60000)}
 function qSkip(){if(Q.srv)srvSend(null);else qDone(false,true,-1)}
-async function srvEnd(){const r=Q.sum||{};const pb=myPos();await loadQV();await fetchRank();const pa=myPos();const pct=r.pct||0,i=Q.chap,pass=!!r.pass;addXp(Math.round(pct/10));if(pct>=80||(pb&&pa&&pa.pos<pb.pos))celebrate(pb&&pa&&pa.pos<pb.pos?"📈 n°"+pb.pos+" → n°"+pa.pos+" ! · 排名上升！":"🏁 "+pct+" % ! · 太棒了！");
-  $.innerHTML=`<div class="q"><div class="emo">${pct>=80?"🏆":pct>=50?"👏":"💪"}</div><h2>${r.good} / ${r.n} — ${pct} %</h2><p><b>${STEPS[i][0]}</b></p>
+async function srvEnd(){const r=Q.sum||{};const pb=myPos();await loadQV();await fetchRank();const pa=myPos();const pct=r.pct||0,i=Q.chap,pass=!!r.pass;dqAdd("q",1);addXp(Math.round(pct/10));if(pct>=80||(pb&&pa&&pa.pos<pb.pos))celebrate(pb&&pa&&pa.pos<pb.pos?"📈 n°"+pb.pos+" → n°"+pa.pos+" ! · 排名上升！":"🏁 "+pct+" % ! · 太棒了！");
+  $.innerHTML=`<div class="q"><div class="emo">${pct>=80?"🏆":pct>=50?"👏":"💪"}</div><div class="stars">${stars(pct)}</div><h2>${r.good} / ${r.n} — ${pct} %</h2><p><b>${STEPS[i][0]}</b></p>
   <p>${pass?(pct>=80?"✅ Chapitre validé (≥ 80 %) · 章节已通过（≥80%）":"✅ Chapitre déjà validé grâce à ton meilleur score · 凭借你的最佳成绩，本章已通过"):"Il faut 80 % pour valider le chapitre. · 需要80%才能通过本章。"}</p>
   ${pa?`<p style="font-size:1.05rem;font-weight:700">📈 ${pb&&pa.pos<pb.pos?"Tu montes : n°"+pb.pos+" → n°"+pa.pos+" ! · 排名上升：第"+pb.pos+"名 → 第"+pa.pos+"名！":"Classement du mois : n°"+pa.pos+" sur "+pa.n+" · 本月排名：第"+pa.pos+"名（共"+pa.n+"人）"}</p>`:""}<p style="color:var(--mut)">Meilleur score · 最佳成绩 : <b>${r.best} %</b><br>Le classement compte ton meilleur score de chaque chapitre. · 排行榜按每章最佳成绩计分。</p>
   <div class="nav">${(QV&&QV.left&&QV.left[stepKey(i)]>0)?`<button onclick="chapQuizStart(${i})">🔁 Rejouer · 再来</button>`:""}<button class="alt" onclick="home()">🏠 Parcours · 路径</button><button class="alt" onclick="rankPage()">🏆 Classement · 排行榜</button></div></div>`}
