@@ -10,7 +10,16 @@ if ($app && !is_dir("$base/bak")) { @mkdir("$base/bak", 0700, true); }
 $k = $_GET["k"] ?? "";
 if (isset($_GET["rank"])) { rank_main($k, $base, $app); exit; }
 if (isset($_GET["admin"])) { admin_main($k, $base, $app); exit; }
-if (isset($_GET["classes"])) { echo json_encode(["app" => $app, "classes" => classes_load($base)], JSON_UNESCAPED_UNICODE); exit; }
+if (isset($_GET["classes"])) {
+  $o = ["app" => $app, "classes" => classes_load($base)];
+  if (preg_match("/^[a-z0-9]{8,40}$/", $k)) {
+    $uf = "$base/users/" . hash("sha256", $k) . ".json";
+    $u = is_file($uf) ? json_decode(@file_get_contents($uf), true) : null;
+    if (is_array($u) && array_key_exists("cls", $u)) { $o["mine"] = (string)$u["cls"]; }
+  }
+  echo json_encode($o, JSON_UNESCAPED_UNICODE); exit;
+}
+if (isset($_GET["setcls"])) { self_setcls($k, $base, $app); exit; }
 if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; exit; }
 $h = hash("sha256", $k);
 $f = "$base/$h.json";
@@ -186,4 +195,19 @@ function admin_main($k, $base, $app) {
     $out["users"] = $users; $out["classes"] = classes_load($base);
   }
   echo json_encode($out, JSON_UNESCAPED_UNICODE);
+}
+
+// ---- Un élève change lui-même sa classe (ou passe en « individuel »).
+function self_setcls($k, $base, $app) {
+  if (!$app || !preg_match("/^[a-z0-9]{8,40}$/", $k) || $_SERVER["REQUEST_METHOD"] !== "POST") { http_response_code(400); echo "{\"error\":\"bad request\"}"; return; }
+  $h = hash("sha256", $k);
+  if (!is_file("$base/$h.json")) { http_response_code(400); echo "{\"error\":\"no profile\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 501), true);
+  $cid = preg_replace("/[^a-z0-9]/", "", (string)(is_array($b) ? ($b["cls"] ?? "") : ""));
+  if ($cid !== "" && !class_exists_in($base, $cid)) { http_response_code(400); echo "{\"error\":\"bad class\"}"; return; }
+  $ud = "$base/users"; if (!is_dir($ud)) { @mkdir($ud, 0700, true); }
+  $uf = "$ud/$h.json"; $u = is_file($uf) ? json_decode(@file_get_contents($uf), true) : null;
+  if (!is_array($u)) { $u = ["name" => "", "ts" => time()]; }
+  $u["cls"] = $cid; file_put_contents($uf, json_encode($u, JSON_UNESCAPED_UNICODE), LOCK_EX);
+  echo json_encode(["ok" => true, "cls" => $cid]);
 }

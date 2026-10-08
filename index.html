@@ -42,7 +42,7 @@ select{font:inherit;padding:4px;border-radius:8px}
 .shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @media(max-width:700px){.hm-stats{grid-template-columns:1fr 1fr}.hm-stats .hm-me{grid-column:1/-1}.hm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:30;padding:14px}.modal.on{display:flex}
-.modal .box{background:#fff;border-radius:18px;padding:20px;max-width:430px;width:100%;box-shadow:0 10px 40px #0005}.modal input{width:100%;font-size:1.05rem;padding:10px;border-radius:10px;border:2px solid #0003;margin:6px 0}
+.modal .box{max-height:92vh;overflow-y:auto;background:#fff;border-radius:18px;padding:20px;max-width:430px;width:100%;box-shadow:0 10px 40px #0005}.modal input{width:100%;font-size:1.05rem;padding:10px;border-radius:10px;border:2px solid #0003;margin:6px 0}
 .hm-sync{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:#fff;border:1px solid #e3e9f5;border-radius:14px;padding:10px 14px;font-size:.92rem}
 .lb{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e3e9f5;border-radius:12px;padding:8px 12px;margin-bottom:6px}.lb.me{border-color:var(--blue);background:#eef4ff}
 .lb-n{width:34px;text-align:center;font-size:1.3rem;font-weight:800}.lb-nm{flex:1;min-width:0;font-weight:700}.lb-sub{font-size:.78rem;color:var(--mut);font-weight:500}.lb-xp{font-weight:800}.lb-xp small{color:var(--mut);font-weight:600}
@@ -77,6 +77,7 @@ select{font:inherit;padding:4px;border-radius:8px}
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
 <button class="langb" onclick="setLang('fr')">🇫🇷 Français</button><button class="langb" onclick="setLang('zh')">🇨🇳 中文</button><button class="langb" onclick="setLang('both')">🇫🇷 + 🇨🇳 Français + 中文</button></div></div>
 <div class="modal" id="me"><div class="box"><h3>🙂 Mon profil · 我的资料</h3><div id="mlogin" class="evd"></div>
+<div class="evd" style="margin-top:6px">Ma classe · 我的班级</div><select id="mcls" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div class="evd">Tu peux en changer à tout moment. · 你可以随时更换班级。</div>
 <div style="text-align:center;font-size:3rem" id="mprev">🙂</div>
 <input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div id="mmsg" class="evd"></div>
 <div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
@@ -85,10 +86,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081322"></script>
-<script src="data-fr2.js?v=202610081322"></script>
-<script src="data-fr3.js?v=202610081322"></script>
-<script src="audio-fr/map.js?v=202610081322"></script>
+<script src="data-fr.js?v=202610081326"></script>
+<script src="data-fr2.js?v=202610081326"></script>
+<script src="data-fr3.js?v=202610081326"></script>
+<script src="audio-fr/map.js?v=202610081326"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -324,20 +325,25 @@ let CLS=[{id:"classe2026",name:"Classe 2026"}];
 const dispName=()=>S.nick||PNAME;
 function renderPcls(){const e=document.getElementById("pcls");if(!e)return;const sel=document.querySelector("input[name=pcl]:checked"),cur=sel?sel.value:undefined;
   e.innerHTML=`<div class="evd" style="margin-top:8px">Pour un nouveau compte, je suis · 新账号请选择：</div>`+CLS.map((c,i)=>`<label class="pcl"><input type="radio" name="pcl" value="${escH(c.id)}" ${(cur!==undefined?cur===c.id:i===0)?"checked":""}> ${escH(c.name)}</label>`).join("")+`<label class="pcl"><input type="radio" name="pcl" value="" ${cur===""?"checked":""}> Élève individuel · 个人学员</label>`}
-async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ,{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length){CLS=j.classes;const m=CLS.find(c=>c.id===S.cls);S.cper=m&&m.from&&m.to?{from:m.from,to:m.to}:null;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}}catch(e){}renderPcls();head();if(cur===home||cur===plan)cur()}
+async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ+(PNAME?"&k="+CODE:""),{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length){CLS=j.classes;if(PNAME&&typeof j.mine==="string")S.cls=j.mine;const m=CLS.find(c=>c.id===S.cls);S.cper=m&&m.from&&m.to?{from:m.from,to:m.to}:null;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}}catch(e){}renderPcls();head();if(cur===home||cur===plan)cur()}
 /* ---- profil : pseudo + emoji personnage ---- */
 const EMOS=["🐼","🐯","🦊","🐱","🐶","🐰","🐻","🐨","🦁","🐸","🐵","🦄","🐲","🐧","🦉","🦋","🐢","🐙","🐬","🦖","🤖","👽","🧙","🥷","🧚","🦸","🧜","🎅","👩‍🎓","🧑‍🏫","🧑‍🍳","🧑‍🎨","😎","🤓","🥳","😺","👻","🎃","🌸","🍀","⭐","🔥","🍕","🥐","⚽","🎸","🚀","🌈"];
 let MEEMO="";
 function profClick(){PNAME?meOpen():profOpen()}
-function meOpen(){MEEMO=S.emo||"🙂";document.getElementById("nk").value=dispName();document.getElementById("mmsg").textContent="";
-  document.getElementById("mlogin").textContent="Compte · 账号 : "+PNAME+(S.cls?" — "+((CLS.find(c=>c.id===S.cls)||{name:S.cls}).name):" — Élève individuel · 个人学员");
+async function meOpen(){MEEMO=S.emo||"🙂";document.getElementById("nk").value=dispName();document.getElementById("mmsg").textContent="";
+  document.getElementById("mlogin").textContent="Compte · 账号 : "+PNAME;
+  document.getElementById("mprev").textContent=MEEMO;
   document.getElementById("egrid").innerHTML=EMOS.map(e=>`<button type="button" class="eb${e===MEEMO?" on":""}" onclick="mePick(this)">${e}</button>`).join("");
-  document.getElementById("me").classList.add("on")}
+  const fill=()=>{document.getElementById("mcls").innerHTML=CLS.map(c=>`<option value="${escH(c.id)}" ${S.cls===c.id?"selected":""}>${escH(c.name)}</option>`).join("")+`<option value="" ${!S.cls?"selected":""}>Élève individuel · 个人学员</option>`};
+  fill();document.getElementById("me").classList.add("on");try{await loadClasses();fill()}catch(e){}}
+async function selfSetClass(c){try{const r=await fetch(API+"?setcls=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:c})});return r.ok}catch(e){return false}}
 function mePick(b){MEEMO=b.textContent;document.querySelectorAll("#egrid .eb").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mprev").textContent=MEEMO}
 function meClose(){document.getElementById("me").classList.remove("on")}
-function meSave(){const n=document.getElementById("nk").value.trim().replace(/\s+/g," "),m=document.getElementById("mmsg");
+async function meSave(){const n=document.getElementById("nk").value.trim().replace(/\s+/g," "),m=document.getElementById("mmsg");
   if(!/^[\p{L}\p{N} _.\-]{2,20}$/u.test(n)){m.textContent="Pseudo : 2 à 20 caractères (lettres, chiffres, espace, _ . -). · 昵称：2到20个字符（字母、数字、空格、_ . -）。";return}
-  S.nick=n;S.emo=MEEMO||"🙂";save();head();meClose();toast("✅ Profil enregistré · 资料已保存");if(cur)cur()}
+  const nc=document.getElementById("mcls").value;
+  if(nc!==(S.cls||"")){if(!await selfSetClass(nc)){m.textContent="Impossible de changer de classe pour le moment. · 暂时无法更换班级。";return}S.cls=nc;S.cper=null}
+  S.nick=n;S.emo=MEEMO||"🙂";save();head();meClose();toast("✅ Profil enregistré · 资料已保存");loadClasses();if(cur)cur()}
 /* ---- administration (droits vérifiés par le serveur) ---- */
 let ADM=null,AV={tab:"eleves",cls:"*",chap:0};
 async function admStatus(){if(!PNAME){ADM=null;head();return}try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{cache:"no-store"});if(r.ok)ADM=await r.json()}catch(e){}head()}
