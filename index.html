@@ -121,6 +121,10 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .hm-card:not(.quest){background:transparent;border:2px solid #cfd9ee}.hm-act:not(.main){background:transparent;border:2px solid #cfd9ee}.hm-act.ok{background:transparent}
 .tile,.cat{background:transparent!important;border:2px solid #cfd9ee;border-top:6px solid var(--blue);box-shadow:none}.tile:hover,.cat:hover{background:#2f5fa80d!important}.row{background:transparent;border:2px solid #dbe4f5}.hm-sec .hm-t{background:transparent!important}
 .svgav{box-shadow:0 5px 9px #0004;transform:none}.svgav::after{display:none}.svgav:hover{transform:scale(1.08)}
+#gift{position:fixed;inset:0;z-index:60;background:#0008;display:grid;place-items:center;padding:16px}.gbox{background:linear-gradient(#fffdf5,#f6e8c3);border:4px solid var(--rc);border-radius:22px;padding:18px;text-align:center;max-width:340px;width:100%;box-shadow:0 0 0 3px #fff,0 0 28px var(--rc),0 10px 30px #0006;animation:gpop .5s cubic-bezier(.2,1.4,.4,1)}@keyframes gpop{from{transform:scale(.4) rotate(-6deg);opacity:0}}
+.gt{font-weight:800;color:#7a5a12}.gav{width:150px;height:150px;margin:12px auto;border-radius:50%;position:relative;overflow:hidden;box-shadow:0 0 0 4px var(--rc),0 0 22px var(--rc)}.gr{display:inline-block;margin-top:2px;padding:3px 14px;border-radius:99px;background:var(--rc);color:#fff;font-weight:800;text-shadow:0 1px 2px #0005}.gn{margin-top:8px;font-weight:700;color:#2b210a}.gc{font-size:.8rem;color:#7a5a12;margin-top:4px}.ga{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}.ga button{padding:10px 14px;border:0;border-radius:12px;background:var(--rc);color:#fff;font-weight:700;cursor:pointer;min-height:44px}.ga .alt{background:#8d99ae}
+.shiny::after,.avc.rar.r-s::after,.avc.rar.r-e::after,.avc.rar.r-r::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#fffa 48%,#fff0 60%);background-size:260% 100%;animation:shine 2.6s linear infinite;pointer-events:none;border-radius:inherit}@keyframes shine{from{background-position:130% 0}to{background-position:-60% 0}}
+.avc.rar{position:relative;overflow:hidden;border-color:var(--rc);box-shadow:0 0 0 1px var(--rc) inset}.avc.rar.r-s{box-shadow:0 0 8px var(--rc),0 0 0 1px var(--rc) inset}.avc.rar.r-e{background:linear-gradient(135deg,#fff4d6,#ffe2a0);box-shadow:0 0 12px var(--rc),0 0 0 2px var(--rc) inset;animation:epic 2s ease-in-out infinite}@keyframes epic{50%{box-shadow:0 0 20px var(--rc),0 0 0 2px #fff inset}}.avc.rar small{color:var(--rc);font-weight:800}.avc.lk svg{filter:grayscale(1) brightness(.55);opacity:.7}.avc.lk{background:#e9edf5}.lkb{position:absolute;top:4px;right:6px;font-size:1rem}.gcoll{grid-column:1/-1;background:#fff8e6;border:2px solid #c9a24a;border-radius:10px;padding:6px 10px;font-size:.8rem;margin-bottom:8px;color:#7a5a12;font-weight:600}
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
@@ -130,7 +134,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <div class="modal" id="me"><div class="box"><h3>🙂 Mon profil · 我的资料</h3><div id="mlogin" class="evd"></div>
 <div class="evd" style="margin-top:6px">Ma classe · 我的班级</div><select id="mcls" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div class="evd">Tu peux en changer à tout moment. · 你可以随时更换班级。</div>
 <div style="text-align:center" id="mprev">🙂</div>
-<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="nav" style="margin:6px 0"><button onclick="avOpen()">🧑 Créer mon visage (cheveux, lunettes, yeux…) · 设计我的头像</button></div><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div class="evd">Couleur du médaillon · 头像底色</div><div id="cgrid" class="cgrid"></div><div class="evd">Cadre · 头像边框</div><div id="fgrid" class="fgrid"></div><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
+<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="nav" style="margin:6px 0"><button onclick="avOpen()">🧑 Créer mon visage (cheveux, lunettes, yeux…) · 设计我的头像</button></div><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Couleur du médaillon · 头像底色</div><div id="cgrid" class="cgrid"></div><div class="evd">Cadre · 头像边框</div><div id="fgrid" class="fgrid"></div><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
 <div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
@@ -387,6 +391,7 @@ function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);
   if((B.ts||0)>(A.ts||0)){M.nick=B.nick||M.nick;M.emo=B.emo||M.emo;M.test=Object.assign({},M.test||{},B.test||{});M.testDate=B.testDate||M.testDate;if(B.pace){M.pace=B.pace;M.unit=B.unit}}
   M.ev=M.ev||{};Object.entries(B.ev||{}).forEach(([k,a])=>{M.ev[k]=[...new Set([...(M.ev[k]||[]),...a])]});
   M.rev=M.rev||{};Object.entries(B.rev||{}).forEach(([k,e])=>{if(!M.rev[k]||e.d>M.rev[k].d)M.rev[k]=e});
+  M.unl=[...new Set([...(A.unl||[]),...(B.unl||[])])];M.lgd=(A.lgd||"")>(B.lgd||"")?A.lgd:B.lgd;
   M.xp=Math.max(A.xp||0,B.xp||0);M.phr=Math.max(A.phr||0,B.phr||0);
   if((B.last||"")>(A.last||"")){M.last=B.last;M.streak=B.streak}else if(B.last===A.last)M.streak=Math.max(A.streak||0,B.streak||0);
   M.done=Object.assign({},B.done||{},M.done||{});
@@ -449,7 +454,6 @@ function profClick(){PNAME?meOpen():profOpen()}
 async function meOpen(){MEEMO=S.emo||"🙂";document.getElementById("nk").value=dispName();document.getElementById("mmsg").textContent="";
   document.getElementById("mlogin").textContent="Compte · 账号 : "+PNAME;
   MECOL=S.col||0;MEFRM=S.frm||0;document.getElementById("mt").value=S.motto||"";mePrev();const dn=chDone();document.getElementById("cgrid").innerHTML=COLS.map((c,i)=>`<button type="button" class="cb${i===MECOL?" on":""}" style="background:${c}" onclick="meCol(${i})" aria-label="couleur"></button>`).join("");document.getElementById("fgrid").innerHTML=FRMS.map((f,i)=>`<button type="button" class="fb2${i===MEFRM?" on":""}" onclick="meFrm(${i})">${f}</button>`).join("");document.getElementById("tsel").innerHTML=TITLES.map((t,i)=>`<option value="${i}" ${dn<t[1]?"disabled":""} ${(S.ttl||0)===i?"selected":""}>${dn<t[1]?"🔒 ":""}${t[0]}${dn<t[1]?" ("+t[1]+" ch.)":""}</option>`).join("");
-  document.getElementById("egrid").innerHTML=EMOS.map(e=>`<button type="button" class="eb${e===MEEMO?" on":""}" onclick="mePick(this)">${e}</button>`).join("");
   const fill=()=>{document.getElementById("mcls").innerHTML=CLS.map(c=>`<option value="${escH(c.id)}" ${S.cls===c.id?"selected":""}>${escH(c.name)}</option>`).join("")+`<option value="" ${!S.cls?"selected":""}>Élève individuel · 个人学员</option>`};
   fill();document.getElementById("me").classList.add("on");try{await loadClasses();fill()}catch(e){}}
 async function selfSetClass(c){try{const r=await fetch(API+"?setcls=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:c})});return r.ok}catch(e){return false}}
@@ -638,15 +642,34 @@ function avSVG(a,px){a=Object.assign({},AV_DEF,a||{});const cc=k=>/^#[0-9a-f]{6}
   <g filter="url(#avf${px})">${back}<rect x="42" y="68" width="16" height="22" fill="url(#avs${px})"/><rect x="42" y="68" width="16" height="22" fill="${sh}"/><path d="M8 100C10 82 28 78 50 78C72 78 90 82 92 100Z" fill="${cloc}"/><path d="M40 78Q50 90 60 78" fill="url(#avs${px})"/>${topX}
   <circle cx="25" cy="52" r="5" fill="url(#avs${px})"/><circle cx="75" cy="52" r="5" fill="url(#avs${px})"/><ellipse cx="50" cy="79" rx="13" ry="6" fill="#000" opacity=".22"/><ellipse cx="50" cy="48" rx="25" ry="29" fill="url(#avs${px})"/>
   <circle cx="30" cy="60" r="8" fill="url(#avk${px})"/><circle cx="70" cy="60" r="8" fill="url(#avk${px})"/>${beard}${nose}${mouth}${lip}${eye}${catch_}${brow}${faceX}${gl}${front}<path d="M33 22Q42 12 56 14" fill="none" stroke="${hl}" stroke-width="3" stroke-linecap="round" opacity=".45"/>${hat}${accX}</g></g>${frX}</svg>`}
+
+/* ---- cadeaux quotidiens : accessoires à collectionner ---- */
+const RAR={c:["Commun · 普通","#2bb673"],r:["Rare · 稀有","#2f7fe0"],s:["Super rare · 超稀有","#8e44e0"],e:["Épique · 史诗","#ff9f1a"]};
+const LOCK={hat:{1:"r",2:"c",3:"c",4:"e",5:"r",6:"c",7:"s",8:"s",9:"e",10:"s",11:"r",12:"c",13:"r",14:"s"},glasses:{1:"c",2:"c",3:"r",4:"s",5:"s",6:"r",7:"s"},acc:{1:"c",2:"r",3:"r",4:"c",5:"c",6:"s",7:"e"},face:{1:"c",2:"c",3:"c",4:"r",5:"r",6:"e",7:"c",8:"s",9:"r"},beard:{1:"c",2:"c",3:"r",4:"r",5:"s"},top:{1:"r",2:"s",3:"r",4:"c",5:"e"},fr:{1:"r",2:"s",3:"e",4:"s",5:"r"},pat:{1:"c",2:"c",3:"r",4:"s",5:"r"}};
+const LOCKN=Object.values(LOCK).reduce((n,o)=>n+Object.keys(o).length,0);
+const owned=(k,i)=>!(LOCK[k]&&LOCK[k][i])||(S.unl||[]).includes(k+":"+i);
+const rarOf=(k,i)=>LOCK[k]&&LOCK[k][i];
+function giftDraw(){const un=[];Object.entries(LOCK).forEach(([k,o])=>Object.entries(o).forEach(([i,r])=>{if(!owned(k,+i))un.push([k,+i,r])}));if(!un.length)return null;
+  const W={c:60,r:25,s:11,e:4},av=[...new Set(un.map(u=>u[2]))],tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
+  const pool=un.filter(u=>u[2]===rr);return pool[Math.random()*pool.length|0]}
+function giftCheck(){if(document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
+  S.unl=S.unl||[];const a=S.av||{};Object.keys(LOCK).forEach(k=>{if(a[k]&&LOCK[k][a[k]]&&!S.unl.includes(k+":"+a[k]))S.unl.push(k+":"+a[k])});
+  S.lgd=t;const g=giftDraw();if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
+  S.unl.push(g[0]+":"+g[1]);save();giftShow(g)}
+function giftShow(g){const[k,i,r]=g,R=RAR[r],a=Object.assign({},AV_DEF,S.av||{},{[k]:i}),d=document.createElement("div");d.id="gift";
+  d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">🎁 Cadeau du jour · 每日礼物</div><div class="gav shiny">${avSVG(a,150)}</div><div class="gr">${R[0]}</div><div class="gn">${AV_LAB[k]||k} : ${(AV_NAMES[k]||[])[i]||""}</div><div class="gc">Collection : ${(S.unl||[]).length}/${LOCKN} · 收藏</div><div class="ga"><button onclick="giftEquip('${k}',${i})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
+  document.body.appendChild(d);loc(d);fanfare();burst(innerWidth/2,innerHeight/2,r==="e"?120:r==="s"?80:50);if(navigator.vibrate)try{navigator.vibrate(r==="e"?[60,40,60,40,120]:[60])}catch(e){}}
+function giftClose(){const d=document.getElementById("gift");if(d)d.remove()}
+function giftEquip(k,i){const a=avGet();a[k]=i;S.av=a;save();giftClose();head();if(cur)cur();toast("✨ Équipé ! · 已穿上")}
 const avGet=()=>Object.assign({},AV_DEF,S.av||{});
 function avOpen(){avDraw();document.getElementById("avp").classList.add("on")}
 function avClose(){document.getElementById("avp").classList.remove("on");mePrev();head();if(cur)cur()}
-function avSet(k,v){const a=avGet(),n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];a[k]=(v+n)%n;delete a[k+"C"];AVH.push(JSON.stringify(S.av||{}));S.av=a;save();avDraw()}
+function avSet(k,v){const a=avGet(),n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];if(!owned(k,(v+n)%n))return;a[k]=(v+n)%n;delete a[k+"C"];AVH.push(JSON.stringify(S.av||{}));S.av=a;save();avDraw()}
 function avCol(k,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[k+"C"]=v;S.av=a;save();avPrev()}
 function avNone(){S.av=null;save();document.getElementById("avp").classList.remove("on");mePrev();head()}
 function avUndo(){const p=AVH.pop();if(!p)return toast("Rien à annuler");S.av=JSON.parse(p);save();avDraw()}
 let AVH=[],AVT="style";
-function avRand(){const a={};AVH.push(JSON.stringify(S.av||{}));Object.keys(AV_DEF).forEach(k=>{const n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];a[k]=Math.random()*n|0});S.av=a;save();avDraw()}
+function avRand(){const a={};AVH.push(JSON.stringify(S.av||{}));Object.keys(AV_DEF).forEach(k=>{const n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];let v,t=0;do{v=Math.random()*n|0}while(!owned(k,v)&&++t<40);a[k]=owned(k,v)?v:0});S.av=a;save();avDraw()}
 const AV_TABS=[["style","💇","Coupe · 发型"],["hair","🎨","Cheveux · 发色"],["hat","🎩","Chapeau · 帽子"],["skin","🧑","Peau · 肤色"],["eyes","👁️","Yeux · 眼睛"],["brows","🤨","Sourcils · 眉毛"],["nose","👃","Nez · 鼻子"],["mouth","👄","Bouche · 嘴巴"],["face","🎭","Visage · 脸部"],["glasses","👓","Lunettes · 眼镜"],["beard","🧔","Barbe · 胡子"],["top","👕","Habit · 衣服"],["clo","🎽","Couleur · 衣服颜色"],["acc","💎","Accessoire · 配饰"],["bg","🖼️","Fond · 背景"],["pat","✨","Motif · 图案"],["fr","⭕","Cadre · 边框"]];
 function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avSVG(avGet(),132)}
 function avDraw(){const a=avGet(),k=AVT;avPrev();
@@ -655,7 +678,7 @@ function avDraw(){const a=avGet(),k=AVT;avPrev();
   if(AV_OPT[k]){const cur=/^#[0-9a-f]{6}$/i.test(a[k+"C"]||"")?a[k+"C"]:AV_OPT[k][a[k]];
     h=`<div class="avsw2">${AV_OPT[k].map((c,i)=>`<button type="button" aria-label="${AV_LAB[k]} ${i+1}" aria-pressed="${!a[k+"C"]&&a[k]===i}" style="background:${c}" onclick="avSet('${k}',${i})"></button>`).join("")}</div>
     <label class="avcu"><span>🎨 Couleur personnalisée</span><input type="color" value="${cur}" oninput="avCol('${k}',this.value)"></label>`}
-  else h=`<div class="avgrid">${AV_NAMES[k].map((n,i)=>`<div role="button" class="avc${a[k]===i?" on":""}" onclick="avSet('${k}',${i})">${avSVG(Object.assign({},a,{[k]:i}),64)}<small>${n}</small></div>`).join("")}</div>`;
+  else h=(LOCK[k]?`<div class="gcoll">🎁 Collection · 收藏 : ${(S.unl||[]).length}/${LOCKN} — connecte-toi chaque jour pour gagner un accessoire ! · 每天登录可获得一件配饰！</div>`:"")+`<div class="avgrid">${AV_NAMES[k].map((n,i)=>{const r=rarOf(k,i),ok=owned(k,i);return `<div role="button" class="avc${a[k]===i?" on":""}${r?" rar r-"+r:""}${ok?"":" lk"}" ${r?`style="--rc:${RAR[r][1]}"`:""} onclick="${ok?`avSet('${k}',${i})`:`toast('🔒 À gagner avec le cadeau du jour · 通过每日礼物获得')`}">${avSVG(Object.assign({},a,{[k]:i}),64)}${ok?"":"<span class=lkb>🔒</span>"}<small>${ok?n:RAR[r][0]}</small></div>`}).join("")}</div>`;
   document.getElementById("avrows").innerHTML=h}
 
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
@@ -739,5 +762,5 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
   $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">${H}<small style="color:var(--mut)">${shown.length} participant${shown.length>1?"s":""} · ${shown.length} 位参与者</small></div>${prize}${coach}${podium}<div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${chips}</div>${info}`+
     (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+how+`</div>`}
 try{speechSynthesis.getVoices()}catch(e){}
-touchStreak();home();loc(document.body);pull();admStatus();loadClasses();loadQV();if(!S.uiChosen)langOpen();
+touchStreak();home();loc(document.body);setTimeout(giftCheck,3500);pull();admStatus();loadClasses();loadQV();if(!S.uiChosen)langOpen();
 </script></body></html>
