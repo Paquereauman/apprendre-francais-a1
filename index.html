@@ -560,7 +560,7 @@ function dbOpts(a){const st=dbStyle(a),o={randomizeIds:true,seed:"fr"};DBP[st].f
 function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+(a.obj|0)+"h"+(a.hat|0)+"w"+(a.wng|0)+"u"+(a.aur|0)+px;if(DBC[key])return DBC[key];
   let s;try{s=window.DB.createAvatar(window.DB.styles[dbStyle(a)],Object.assign({size:px},o)).toString()}catch(e){s=""}
   if(s&&a.obj>0&&OBJ[a.obj-1])s=s.replace(/<\/svg>\s*$/,fxObj(OBJ[a.obj-1],dbSkin(a))+"</svg>");
-  if(s&&a.hat>0&&HATS[a.hat-1])s=s.replace(/<\/svg>\s*$/,fxT(HATS[a.hat-1],140,92,118)+"</svg>");
+  if(s&&a.hat>0&&HATS[a.hat-1])s=s.replace(/<\/svg>\s*$/,fxT(HATS[a.hat-1],140,70,104)+"</svg>");
   s=fxApply(s,a);
   if(Object.keys(DBC).length>600)Object.keys(DBC).slice(0,200).forEach(k=>delete DBC[k]);return DBC[key]=s}
 /* cadeaux quotidiens : accessoires à collectionner (options facultatives du style choisi) */
@@ -641,8 +641,8 @@ const OBJ=[["☕","Mug · 马克杯","c","eat"],["🥐","Pain au chocolat · 巧
 const dbSkin=a=>{const st=dbStyle(a),i=DBP[st].findIndex(p=>p[0]==="skinColor"),v=a[DBK(i)];return /^#[0-9a-f]{6}$/i.test(v||"")?v:"#ffdbb4"};
 function fxHand(x,y,sk,r){return `<circle cx="${x}" cy="${y}" r="${r||17}" fill="${sk}" stroke="rgba(0,0,0,.28)" stroke-width="3"/>`}
 function fxObj(o,sk){const[e,,,m]=o;
-  if(m==="eat")return `<g>${fxA("opacity","1;1;1;1",3.2)}<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -62;0 -62;0 0" keyTimes="0;.15;.45;.6;1" dur="3.2s" repeatCount="indefinite"/>${fxT(e,140,262,84,`<animateTransform attributeName="transform" type="scale" additive="sum" values="1;1;1;.78;1" keyTimes="0;.4;.5;.6;1" dur="3.2s" repeatCount="indefinite"/>`)}${fxHand(98,262,sk)}${fxHand(182,262,sk)}</g></g>`;
-  if(m==="hold")return `<g><animateTransform attributeName="transform" type="rotate" values="-4 222 240;5 222 240;-4 222 240" dur="2.6s" repeatCount="indefinite"/>${fxT(e,226,206,100)}${fxHand(212,244,sk,18)}</g>`;
+  if(m==="eat")return `<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -62;0 -62;0 -62;0 -62;0 0" keyTimes="0;.1;.3;.45;.6;.75;1" dur="4.6s" repeatCount="indefinite"/>${fxT(e,140,262,84,`<animate attributeName="font-size" values="84;84;84;66;48;28;84" keyTimes="0;.1;.3;.45;.6;.75;1" dur="4.6s" repeatCount="indefinite"/>`)}${fxHand(98,262,sk)}${fxHand(182,262,sk)}</g>`;
+  if(m==="hold")return `<g><animateTransform attributeName="transform" type="rotate" values="-4 222 240;5 222 240;-4 222 240" dur="2.6s" repeatCount="indefinite"/>${e==="🔱"?`<rect x="221" y="196" width="10" height="112" rx="5" fill="#c9a24a" stroke="#7a5a12" stroke-width="2"/>`:""}${e==="🔥"?`<rect x="221" y="200" width="10" height="100" rx="5" fill="#8a5a2b" stroke="#4a2f14" stroke-width="2"/>`:""}${fxT(e,226,206,100)}${fxHand(226,252,sk,18)}</g>`;
   if(m==="pet")return `<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0" dur="1.8s" repeatCount="indefinite"/>${fxT(e,232,250,96)}</g>`;
   return `<g>${fxT(e,140,268,86)}${fxHand(96,262,sk)}${fxHand(184,262,sk)}</g>`}
 const SKINS=["#fdebdc","#ffdbb4","#f6cfa3","#f1c27d","#e0ac69","#d08b5b","#ae5d29","#8d5524","#614335","#3b2418"];
