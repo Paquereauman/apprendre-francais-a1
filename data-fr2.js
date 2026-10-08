@@ -670,21 +670,27 @@ Je vais en Bretagne|ʒə vɛ ɑ̃ bʁə.taɲ|我去布列塔尼|wǒ qù Bùlièd
 C'est au bord de la mer|sɛt o bɔʁ də la mɛʁ|在海边|zài hǎibiān|🌊
 On prend la voiture|ɔ̃ pʁɑ̃ la vwa.tyʁ|我们开车去|wǒmen kāichē qù|🚗`);
 
+ext("manger",`
+J'ai faim|ʒe fɛ̃|我饿了|wǒ è le|😋
+J'ai soif|ʒe swaf|我渴了|wǒ kě le|🥵
+Je mange|ʒə mɑ̃ʒ|我吃|wǒ chī|🍽️
+Je bois de l'eau|ʒə bwa də lo|我喝水|wǒ hē shuǐ|💧
+Bon appétit !|bɔ̃ na.pe.ti|祝你好胃口！|zhù nǐ hǎo wèikǒu|😋`);
+
 /* ---- Parcours (ordre du cours FLE débutant) ---- */
 STEPS=[["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
-["Salutations & se présenter · 问候与自我介绍",["salut","presente"]],
-["Les nombres de 0 à 10 · 数字0到10",["nombres"]],
-["L'âge & les nombres jusqu'à 30 · 年龄与30以内的数字",["n11","age"]],
+["C'est moi : salutations & se présenter · 这是我：问候与自我介绍",["salut","presente","nombres"]],
+["L'âge, les nombres jusqu'à 30 & poser des questions · 年龄、30以内的数字与提问",["n11","age","questions"]],
+["Ma famille · 我的家人",["famille","possessifs","animaux"]],
 ["Les jours, les mois & la date · 星期、月份与日期",["jours","mois"]],
 ["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n40","n100","heure","nombres2"]],
-["Poser des questions · 提问",["questions"]],
 ["Le temps qu'il fait · 天气",["meteo","temps"]],
-["S'habiller · 穿衣打扮",["vetements","couleurs"]],
-["Décrire une personne · 描述人物",["physique","cheveux","famille","possessifs","animaux"]],
-["La chambre & la maison · 卧室与家",["chambre","maison"]],
-["Nourriture · 食物",["manger","fruits","viandes","cuisine","resto"]],
+["Comment on s'habille · 怎么穿衣",["vetements","couleurs"]],
+["Décrire une personne · 描述一个人",["physique","cheveux"]],
+["Ma maison · 我的家（房子）",["chambre","maison"]],
+["J'ai faim ! Au restaurant · 我饿了！在餐厅",["manger","fruits","viandes","cuisine","resto"]],
 ["Commerces & courses · 商店与购物",["commerces","marche","courses"]],
-["Santé · 健康",["corps","docteur","medic"]],
+["Chez le médecin · 看医生",["corps","docteur","medic"]],
 ["Sports & loisirs · 运动与爱好",["sports","loisirs"]],
 ["En ville · 在城里",["ville","directions","lieux","taxi"]],
 ["Vacances & voyage · 度假与旅行",["vacances","retour","aeroport"]],

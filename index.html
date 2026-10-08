@@ -41,9 +41,21 @@ select{font:inherit;padding:4px;border-radius:8px}
 .flt{position:fixed;z-index:9;color:var(--gold);animation:fl 1s forwards;pointer-events:none}@keyframes fl{to{transform:translateY(-50px);opacity:0}}
 .shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @media(max-width:700px){.hm-stats{grid-template-columns:1fr 1fr}.hm-stats .hm-me{grid-column:1/-1}.hm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:30;padding:14px}.modal.on{display:flex}
+.modal .box{background:#fff;border-radius:18px;padding:20px;max-width:430px;width:100%;box-shadow:0 10px 40px #0005}.modal input{width:100%;font-size:1.05rem;padding:10px;border-radius:10px;border:2px solid #0003;margin:6px 0}
+.hm-sync{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:#fff;border:1px solid #e3e9f5;border-radius:14px;padding:10px 14px;font-size:.92rem}
+.lb{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e3e9f5;border-radius:12px;padding:8px 12px;margin-bottom:6px}.lb.me{border-color:var(--blue);background:#eef4ff}
+.lb-n{width:34px;text-align:center;font-size:1.3rem;font-weight:800}.lb-nm{flex:1;min-width:0;font-weight:700}.lb-sub{font-size:.78rem;color:var(--mut);font-weight:500}.lb-xp{font-weight:800}.lb-xp small{color:var(--mut);font-weight:600}
+.lb-leave{color:var(--mut);font-size:.85rem;text-decoration:underline;cursor:pointer}.langb{display:block;width:100%;margin:8px 0;padding:14px;font-size:1.1rem;border:2px solid var(--blue);background:#fff;border-radius:12px;cursor:pointer}.langb:hover{background:#eef4ff}
 </style></head><body>
-<header><h1 onclick="home()">🥖 Bonjour ! 学法语 A1</h1><span id="xp"></span><span id="streak"></span><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="prfb" onclick="profOpen()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
+<div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
+<button class="langb" onclick="setLang('fr')">🇫🇷 Français</button><button class="langb" onclick="setLang('zh')">🇨🇳 中文</button><button class="langb" onclick="setLang('both')">🇫🇷 + 🇨🇳 Français + 中文</button></div></div>
+<div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
+<input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
+<div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
+<div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <script src="data-fr.js"></script>
 <script src="data-fr2.js"></script>
 <script src="audio-fr/map.js"></script>
@@ -53,8 +65,8 @@ const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:
 const unit=id=>id.startsWith("m:")?MODS[id.slice(2)]:CATS.find(c=>c.id===id);
 const flatIds=()=>STEPS.flatMap(s=>s[1]);const ALL=()=>flatIds().map(unit);const words=()=>ALL().filter(u=>!u.mod);
 const K="frA1";let S;try{S=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}
-S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day"},S||{});
-const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"},S||{});
+const save=()=>{S.ts=Date.now();try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}schedPush()};
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const strip=x=>x.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const norm=x=>strip(x).replace(/[’']/g,"'").replace(/[^a-z0-9' ]/g,"").replace(/\s+/g," ").trim();
@@ -65,7 +77,7 @@ const AU=new Audio();let TOK=0;
 function say(t){if(!t)return;const tok=++TOK;try{speechSynthesis.cancel()}catch(e){}
   const f=window.AMAP&&AMAP[t];if(f){AU.src="audio-fr/"+f;AU.playbackRate=[.7,.85,1][S.sp];AU.onerror=()=>{if(tok===TOK)tts(t)};const p=AU.play();if(p)p.catch(()=>{if(tok===TOK)tts(t)});return}tts(t)}
 function tts(t){try{const u=new SpeechSynthesisUtterance(t);u.lang="fr-FR";u.rate=[.6,.8,.95][S.sp];const vs=speechSynthesis.getVoices().filter(v=>v.lang.startsWith("fr")),v=vs.find(v=>/Natural|Online/i.test(v.name))||vs[0];if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}}
-function cycSpd(){S.sp=(S.sp+1)%3;save();head()}
+function cycSpd(){S.sp=(S.sp+1)%3;save();head();loc(document.getElementById("spd"))}
 function beep(ok){try{const c=new AudioContext(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=ok?660:200;g.gain.value=.07;o.start();o.stop(c.currentTime+.15)}catch(e){}}
 function fanfare(){try{const c=new AudioContext();[523,659,784,1046].forEach((f,i)=>{const o=c.createOscillator(),g=c.createGain();o.type="triangle";o.connect(g);g.connect(c.destination);o.frequency.value=f;const t=c.currentTime+i*.11;g.gain.setValueAtTime(.12,t);g.gain.exponentialRampToValueAtTime(.001,t+.25);o.start(t);o.stop(t+.26)})}catch(e){}}
 function toast(m){const e=document.createElement("div");e.className="toast";e.textContent=m;document.body.appendChild(e);setTimeout(()=>e.remove(),2400)}
@@ -75,45 +87,52 @@ function celebrate(m){fanfare();burst(innerWidth/2,innerHeight/2,60);toast(m)}
 /* ---- XP, niveaux, série ---- */
 const lvOf=x=>Math.floor(Math.sqrt(x/40))+1;
 function touchStreak(){const t=tdy();if(S.last===t)return;S.streak=(S.last===addD(-1))?(S.streak||0)+1:1;S.last=t}
-function addXp(n){const a=lvOf(S.xp);S.xp+=n;touchStreak();save();head();const b=lvOf(S.xp);if(b>a){fanfare();burst(innerWidth/2,innerHeight/3,50);toast("⬆️ Niveau "+b+" atteint ! 升级了！")}}
+function addXp(n){const a=lvOf(S.xp);S.xp+=n;touchStreak();save();head();const b=lvOf(S.xp);if(b>a){fanfare();burst(innerWidth/2,innerHeight/3,50);toast("⬆️ Niveau "+b+" atteint ! · 升级到 "+b+" 级！")}}
 /* ---- maîtrise, stats, ETA ---- */
 const mastery=c=>{if(c.mod)return Math.min(100,(S.phr||0)/c.n*100);const v=[(S.known[c.id]||[]).length/c.items.length*100];if(S.best[c.id])v.push(S.best[c.id]);if(S.test[c.id]!=null)v.push(S.test[c.id]);return v.reduce((a,b)=>a+b)/v.length};
 const estF=c=>c.mod?mastery(c)/100:Math.max((S.known[c.id]||[]).length/c.items.length,S.test[c.id]!=null?S.test[c.id]/100:0);
 function stats(){const rows=ALL().map(c=>({c,m:mastery(c),rem:c.items.length*(1-estF(c))}));const tot=rows.reduce((n,r)=>n+r.c.items.length,0),rem=rows.reduce((n,r)=>n+r.rem,0);return{all:rows.reduce((n,r)=>n+r.m,0)/rows.length,tot,rem,done:rows.filter(r=>r.m>=85).length,n:rows.length,rows}}
-const goalDay=()=>Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));
-function eta(st){const wpd=S.unit==="week"?S.pace/7:S.pace;if(st.rem<st.tot*.08)return null;const d=Math.ceil(st.rem*1.25/wpd);return{d,dur:d>=14?"~"+Math.ceil(d/7)+" semaines":"~"+d+" jour"+(d>1?"s":""),date:new Date(Date.now()+d*864e5).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}}
-function checkDone(){const n=[];ALL().forEach(c=>{if(!S.done[c.id]&&mastery(c)>=85){S.done[c.id]=1;n.push(c.name)}});if(n.length){save();celebrate("🎓 Chapitre validé : "+n.join(", ")+" !")}}
+const goalDay=()=>{const st=stats(),c=courseInfo();return Math.min(60,Math.max(1,Math.ceil(st.rem*1.25/c.left)))};
+/* ---- le cours A1 se déroule du 15 janvier au 7 mars : le chronomètre ne compte que sur cette période ---- */
+function courseWindow(){const n=new Date(),y=n.getFullYear();let s=new Date(y,0,15),e=new Date(y,2,7,23,59,59);if(n>e){s=new Date(y+1,0,15);e=new Date(y+1,2,7,23,59,59)}return{s,e}}
+const dayDiff=(a,b)=>Math.ceil((b-a)/864e5);
+function courseInfo(){const{s,e}=courseWindow(),n=new Date(),before=n<s,from=before?s:n;return{s,e,before,left:Math.max(1,dayDiff(from,e)),toStart:before?dayDiff(n,s):0}}
+function eta(st){if(st.rem<st.tot*.08)return null;const c=courseInfo();
+  return{dur:c.before?"Début dans "+c.toStart+" jour"+(c.toStart>1?"s":"")+" · "+c.toStart+"天后开始":"Il reste "+c.left+" jour"+(c.left>1?"s":"")+" · 还剩"+c.left+"天",
+   date:c.e.toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR",{day:"numeric",month:"long",year:"numeric"})}}
+function checkDone(){const n=[];ALL().forEach(c=>{if(!S.done[c.id]&&mastery(c)>=85){S.done[c.id]=1;n.push(c.name)}});if(n.length){save();celebrate((UI()==="zh"?"🎓 章节完成：":"🎓 Chapitre validé : ")+n.map(nmCur).join(", "))}}
 /* ---- répétition espacée ---- */
 const INTV=[0,1,2,4,8,16,32];
-function srs(h,ok){const k=nk(h),e=S.rev[k];if(ok){const b=e?Math.min(e.b+1,6):1;S.rev[k]={b,d:addD(INTV[b])};if(b===4&&(!e||e.b<4))setTimeout(()=>toast("🧠 Mot ancré : "+h),900)}else S.rev[k]={b:0,d:tdy()}}
+function srs(h,ok){const k=nk(h),e=S.rev[k];if(ok){const b=e?Math.min(e.b+1,6):1;S.rev[k]={b,d:addD(INTV[b])};if(b===4&&(!e||e.b<4))setTimeout(()=>toast("🧠 Mot ancré · 已牢记 : "+h),900)}else S.rev[k]={b:0,d:tdy()}}
 function dueItems(){const t=tdy(),seen={},out=[];words().forEach(c=>c.items.forEach(it=>{const k=nk(it[0]),e=S.rev[k];if(e&&e.d<=t&&!seen[k]){seen[k]=1;out.push({it,c,d:e.d})}}));return out.sort((a,b)=>a.d<b.d?-1:1)}
 function setKnown(cid,h,on){const a=S.known[cid]=S.known[cid]||[],i=a.indexOf(h);if(on&&i<0){a.push(h);S.day=S.day&&S.day.d===tdy()?S.day:{d:tdy(),n:0};S.day.n++;if(!S.rev[nk(h)])S.rev[nk(h)]={b:0,d:addD(1)}}else if(!on&&i>=0)a.splice(i,1);save()}
 /* ---- navigation / accueil ---- */
 let cat,Q,cur;
-function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent","lent","normal"][S.sp];document.querySelector("#hp i").style.width=stats().all+"%"}
+function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
+  document.getElementById("prfb").textContent=PNAME?"👤 "+PNAME.slice(0,10):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.querySelector("#hp i").style.width=stats().all+"%"}
 function crumb(p){const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
 const nextUnit=()=>ALL().find(u=>mastery(u)<60);
 function openAny(id){const u=unit(id);if(u.mod)phrases();else menu(id)}
 function home(){cur=home;cat=null;head();crumb([]);const st=stats(),E=eta(st),L=lvOf(S.xp),lo=40*(L-1)**2,hi=40*L*L,dn=S.day&&S.day.d===tdy()?S.day.n:0,gd=goalDay(),due=dueItems().length,nx=nextUnit();
-  const acts=(nx?`<div class="hm-act main" onclick="openAny('${nx.id}')"><span style="font-size:1.4rem">▶</span><div>Continuer · 继续<small>${nx.icon} ${nx.name}</small></div></div>`:`<div class="hm-act ok">🎉 Parcours A1 terminé !</div>`)+
-   (due?`<div class="hm-act" onclick="revStart()"><span style="font-size:1.4rem">🔁</span><div>Révision du jour · 今日复习<small>${due} mot${due>1?"s":""} à revoir</small></div></div>`:(Object.keys(S.rev).length?`<div class="hm-act ok"><span style="font-size:1.4rem">✅</span><div>Révisions à jour<small>Rien à revoir aujourd'hui</small></div></div>`:""));
-  $.innerHTML=`<div class="hm"><div class="hm-stats"><div class="hm-card hm-me"><div class="hm-lab">Niveau · 等级</div><div class="hm-val">Niveau ${L} <small>· ⭐ ${S.xp} XP</small></div>${bar((S.xp-lo)/(hi-lo)*100)}</div>
-  <div class="hm-card"><div class="hm-lab">Aujourd'hui · 今天</div><div class="hm-val">${dn}<small> / ${gd} mots</small></div>${bar(dn/gd*100)}<div class="hm-sub">🔥 ${S.streak||0} jour${S.streak>1?"s":""} de suite</div></div>
-  <div class="hm-card" onclick="plan()" style="cursor:pointer"><div class="hm-lab">Parcours A1</div><div class="hm-val">${Math.round(st.all)} %<small> · ${Math.round(st.tot-st.rem)}/${st.tot}</small></div>${bar(st.all)}<div class="hm-sub">${E?`⏳ ${E.dur} · ${E.date}`:`${st.done}/${st.n} chapitres`}</div></div></div>
-  <div class="hm-acts">${acts}<div class="hm-act" onclick="plan()"><span style="font-size:1.4rem">📊</span><div>Mon plan &amp; test · 计划与测试<small>durée estimée, test de niveau</small></div></div></div>`+
+  const acts=(nx?`<div class="hm-act main" onclick="openAny('${nx.id}')"><span style="font-size:1.4rem">▶</span><div>Continuer · 继续<small>${nx.icon} ${nx.name}</small></div></div>`:`<div class="hm-act ok">🎉 Parcours A1 terminé ! · A1课程完成！</div>`)+
+   (due?`<div class="hm-act" onclick="revStart()"><span style="font-size:1.4rem">🔁</span><div>Révision du jour · 今日复习<small>${due} mot${due>1?"s":""} à revoir · ${due}个词待复习</small></div></div>`:(Object.keys(S.rev).length?`<div class="hm-act ok"><span style="font-size:1.4rem">✅</span><div>Révisions à jour · 复习已完成<small>Rien à revoir aujourd'hui · 今天没有需要复习的</small></div></div>`:""));
+  $.innerHTML=`<div class="hm">${syncBanner()}<div class="hm-stats"><div class="hm-card hm-me"><div class="hm-lab">Niveau · 等级</div><div class="hm-val">Niveau ${L} · ${L}级 <small>⭐ ${S.xp} XP</small></div>${bar((S.xp-lo)/(hi-lo)*100)}</div>
+  <div class="hm-card"><div class="hm-lab">Aujourd'hui · 今天</div><div class="hm-val">${dn}<small> / ${gd} mots · 个词</small></div>${bar(dn/gd*100)}<div class="hm-sub">🔥 ${S.streak||0} jour${S.streak>1?"s":""} de suite · 连续${S.streak||0}天</div></div>
+  <div class="hm-card" onclick="plan()" style="cursor:pointer"><div class="hm-lab">Parcours A1 · A1路径</div><div class="hm-val">${Math.round(st.all)} %<small> · ${Math.round(st.tot-st.rem)}/${st.tot}</small></div>${bar(st.all)}<div class="hm-sub">${E?`⏳ ${E.dur}<br>📅 ${E.date}`:`${st.done}/${st.n} chapitres · 章节`}</div></div></div>
+  <div class="hm-acts">${acts}<div class="hm-act" onclick="plan()"><span style="font-size:1.4rem">📊</span><div>Mon plan &amp; test · 计划与测试<small>durée estimée, test de niveau · 预计时间、水平测试</small></div></div></div>`+
   STEPS.map(([t,ids],n)=>`<section class="hm-sec"><h2><span class="hm-n">${n+1}</span>${t}<small>${ids.filter(i=>mastery(unit(i))>=85).length}/${ids.length}</small></h2><div class="hm-grid">${ids.map(tile).join("")}</div></section>`).join("")+`</div>`}
-function menu(id){cur=menu;if(id)cat=unit(id);head();crumb([["🏠 Parcours","home"],[cat.name]]);const k=(S.known[cat.id]||[]).length;
-  $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut)">${k}/${cat.items.length} mots connus · meilleur quiz : ${S.best[cat.id]||0}%</p>${bar(mastery(cat))}
-  <div class="tiles"><div class="tile" onclick="list()"><span>📖</span><b>Liste · 词表</b><small>emoji, prononciation, 中文</small></div><div class="tile" onclick="cards()"><span>🃏</span><b>Cartes · 卡片</b><small>retourne et écoute</small></div>
-  <div class="tile" onclick="quiz('mix')"><span>❓</span><b>Quiz · 测验</b><small>10 questions</small></div><div class="tile" onclick="quiz('listen')"><span>🎧</span><b>Écoute · 听力</b><small>reconnais le son</small></div>${POSTER[cat.id]?`<div class="tile" onclick="poster()"><span>🖼️</span><b>Affiche · 图片</b><small>l'image du cours</small></div>`:""}</div>`}
-function poster(){cur=poster;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.name,"menu"],["Affiche"]]);$.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><img src="img-fr/${POSTER[cat.id]}.jpg" alt="" style="width:100%;border-radius:12px;box-shadow:0 2px 8px #0003"><div class="nav"><button class="alt" onclick="menu()">◀ Retour</button></div>`}
-function list(){cur=list;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.name,"menu"],["Liste"]]);const kn=S.known[cat.id]||[];
-  $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut)">Touche l'emoji ou le mot pour écouter 🔊 · coche ✅ les mots que tu connais.</p>`+cat.items.map((it,i)=>`<div class="row"><div class="rv" onclick="say(cat.items[${i}][0])">${it[4]}</div><div class="rt" onclick="say(cat.items[${i}][0])"><b>${it[0]}</b> <span class="ipa">/${it[1]}/</span><small>${it[2]} · ${it[3]}</small></div><button class="speak" style="padding:6px 10px" onclick="say(cat.items[${i}][0])" aria-label="Écouter">🔊</button><input type="checkbox" ${kn.includes(it[0])?"checked":""} onchange="setKnown(cat.id,cat.items[${i}][0],this.checked);head()"></div>`).join("")}
-function cards(){cur=cards;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.name,"menu"],["Cartes"]]);let i=0,flip=false,order=shuffle(cat.items);
+function menu(id){cur=menu;if(id)cat=unit(id);head();crumb([["🏠 Parcours · 路径","home"],[cat.name]]);const k=(S.known[cat.id]||[]).length;
+  $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut);margin:4px 0">${k}/${cat.items.length} mots connus · 已掌握 ${k}/${cat.items.length}</p><p style="color:var(--mut);margin:4px 0">Meilleur quiz : ${S.best[cat.id]||0} % · 最佳测验 ${S.best[cat.id]||0} %</p>${bar(mastery(cat))}
+  <div class="tiles"><div class="tile" onclick="list()"><span>📖</span><b>Liste · 词表</b><small>emoji, prononciation et traduction · 表情、发音和翻译</small></div><div class="tile" onclick="cards()"><span>🃏</span><b>Cartes · 卡片</b><small>retourne et écoute · 翻转并收听</small></div>
+  <div class="tile" onclick="quiz('mix')"><span>❓</span><b>Quiz · 测验</b><small>10 questions · 10道题</small></div><div class="tile" onclick="quiz('listen')"><span>🎧</span><b>Écoute · 听力</b><small>reconnais le son · 听声音辨词</small></div>${POSTER[cat.id]?`<div class="tile" onclick="poster()"><span>🖼️</span><b>Affiche · 图片</b><small>l'image du cours · 课程图片</small></div>`:""}</div>`}
+function poster(){cur=poster;crumb([["🏠 Parcours · 路径","home"],[cat.icon+" "+cat.name,"menu"],["Affiche · 图片"]]);$.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><img src="img-fr/${POSTER[cat.id]}.jpg" alt="" style="width:100%;border-radius:12px;box-shadow:0 2px 8px #0003"><div class="nav"><button class="alt" onclick="menu()">◀ Retour · 返回</button></div>`}
+function list(){cur=list;crumb([["🏠 Parcours · 路径","home"],[cat.icon+" "+cat.name,"menu"],["Liste · 词表"]]);const kn=S.known[cat.id]||[];
+  $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut)">Touche l'emoji ou le mot pour écouter 🔊 ; coche ✅ les mots que tu connais. · 点击表情或单词收听；勾选你已认识的词。</p>`+cat.items.map((it,i)=>`<div class="row"><div class="rv" onclick="say(cat.items[${i}][0])">${it[4]}</div><div class="rt" onclick="say(cat.items[${i}][0])"><b>${it[0]}</b> <span class="ipa">/${it[1]}/</span><small>${it[2]} · ${it[3]}</small></div><button class="speak" style="padding:6px 10px" onclick="say(cat.items[${i}][0])" aria-label="Écouter">🔊</button><input type="checkbox" ${kn.includes(it[0])?"checked":""} onchange="setKnown(cat.id,cat.items[${i}][0],this.checked);head()"></div>`).join("")}
+function cards(){cur=cards;crumb([["🏠 Parcours · 路径","home"],[cat.icon+" "+cat.name,"menu"],["Cartes · 卡片"]]);let i=0,flip=false,order=shuffle(cat.items);
   window.cdraw=()=>{const it=order[i],kn=(S.known[cat.id]||[]).includes(it[0]);$.innerHTML=`<div class="top"><span class="pill">${i+1} / ${order.length}</span></div><div class="q" style="min-height:240px;cursor:pointer" onclick="cflip()">${flip?`<div class="zh">${it[2]}</div><div class="ipa">${it[3]}</div><div class="emo">${it[4]}</div>`:`<div class="emo">${it[4]}</div><div class="fw">${it[0]}</div><div class="ipa">/${it[1]}/</div>`}<p style="color:var(--mut)">touche pour retourner · 点击翻转</p></div>
-  <div class="nav"><button class="speak" onclick="say('${esc(it[0])}')">🔊</button><button class="alt" onclick="cgo(-1)">◀</button><button class="alt" onclick="cgo(1)">▶</button><button onclick="setKnown(cat.id,'${esc(it[0])}',${!kn});head();cdraw()">${kn?"✅ Connu":"☐ Je connais"}</button></div>`;if(!flip)say(it[0])};
+  <div class="nav"><button class="speak" onclick="say('${esc(it[0])}')">🔊</button><button class="alt" onclick="cgo(-1)">◀</button><button class="alt" onclick="cgo(1)">▶</button><button onclick="setKnown(cat.id,'${esc(it[0])}',${!kn});head();cdraw()">${kn?"✅ Connu · 已认识":"☐ Je connais · 我认识"}</button></div>`;if(!flip)say(it[0])};
   window.cflip=()=>{flip=!flip;cdraw()};window.cgo=d=>{i=(i+d+order.length)%order.length;flip=false;cdraw()};cdraw()}
 
 /* ---- questions ---- */
@@ -127,8 +146,8 @@ function mkPhrase(t){const e=PH[Math.random()*PH.length|0],w=e[0].split("/");
   return{t:"z",w,ans,full:w.join(" "),ipa:e[1],zh:e[2],sentence:w.map((x,i)=>i===idx?"＿＿":x).join(" "),opts,right:opts.indexOf(ans),say:w.join(" ")}}
 function quiz(mode){cur=()=>quiz(mode);const k=S.known[cat.id]||[],pool=shuffle(cat.items).sort((a,b)=>k.includes(a[0])-k.includes(b[0])),ts=typesFor(mode);
   Q={qs:shuffle(pool.slice(0,10)).map(it=>mkQ(it,cat.items,ts[Math.random()*ts.length|0],cat)),i:0,s:0,mode,nw:0};qShow()}
-function phrases(){cur=phrases;cat=MODS.phr;crumb([["🏠 Parcours","home"],["Phrases"]]);Q={qs:Array.from({length:10},(_,i)=>mkPhrase(i%2?"o":"z")),i:0,s:0,mode:"phr",nw:0};qShow()}
-function revStart(){const d=dueItems().slice(0,15);if(!d.length){toast("✅ Rien à réviser");return}cat=null;cur=null;Q={qs:d.map(({it,c})=>mkQ(it,c.items,typesFor()[Math.random()*5|0],c)),i:0,s:0,mode:"rev",nw:0};qShow()}
+function phrases(){cur=phrases;cat=MODS.phr;crumb([["🏠 Parcours · 路径","home"],["Phrases · 句子"]]);Q={qs:Array.from({length:10},(_,i)=>mkPhrase(i%2?"o":"z")),i:0,s:0,mode:"phr",nw:0};qShow()}
+function revStart(){const d=dueItems().slice(0,15);if(!d.length){toast("✅ Rien à réviser · 没有需要复习的");return}cat=null;cur=null;Q={qs:d.map(({it,c})=>mkQ(it,c.items,typesFor()[Math.random()*5|0],c)),i:0,s:0,mode:"rev",nw:0};qShow()}
 function testStart(k){cat=null;cur=null;const qs=[];words().forEach(c=>shuffle(c.items).slice(0,k||1).forEach(it=>{const a=shuffle(typesFor());qs.push(mkQ(it,c.items,a[0],c),mkQ(it,c.items,a[1],c))}));
   Q={qs:[...shuffle(qs),mkPhrase("z"),mkPhrase("z"),mkPhrase("o"),mkPhrase("o")],i:0,s:0,mode:"test",nw:0};qShow()}
 const lab=(q,x)=>q.t==="a"||q.t==="c"?`${x[4]} ${x[2]}<small>${x[3]}</small>`:q.t==="b"||q.t==="d"?`${x[4]} ${x[0]}<small>/${x[1]}/</small>`:x;
@@ -170,33 +189,119 @@ function qDone(ok,skip,k){const q=Q.qs[Q.i];if(Q.lock)return;Q.lock=1;clearTimeo
   if(q.it){srs(q.it[0],good);if(!good&&Q.mode==="rev"&&!q.rq){const n2=mkQ(q.it,q.c.items,typesFor()[Math.random()*5|0],q.c);n2.rq=1;Q.qs.push(n2)}
     if(evid(q.it,q.c.id,q.t,good)){Q.nw++;addXp(3);toast("✅ Mot confirmé · 已掌握 : "+q.it[0]);setTimeout(checkDone,700)}}
   else if(good){S.phr=(S.phr||0)+1;setTimeout(checkDone,700)}
-  if(!skip){fxEl(bs[k]||document.querySelector(".q"),ok,Q.c>=3?"🔥 x"+Q.c:"+10 ⭐");if(ok&&Q.c===3)toast("🔥 Série de 3 !");if(ok&&Q.c===5){fanfare();toast("🔥🔥 5 d'affilée !")}}
+  if(!skip){fxEl(bs[k]||document.querySelector(".q"),ok,Q.c>=3?"🔥 x"+Q.c:"+10 ⭐");if(ok&&Q.c===3)toast("🔥 Série de 3 ! · 连对3题！");if(ok&&Q.c===5){fanfare();toast("🔥🔥 5 d'affilée ! · 连对5题！")}}
   save();const box=document.querySelector(".q");box.querySelectorAll(":scope>.nav").forEach(e=>e.remove());box.insertAdjacentHTML("beforeend",fb(q,good,skip));
   say(q.say);Q.tm=setTimeout(qNext,good?1500:60000)}
 function qNext(){clearTimeout(Q.tm);Q.i++;qShow()}
 function qEnd(){const pct=Math.round(Q.s/Q.qs.length*100);
   if(Q.mode==="mix")S.best[cat.id]=Math.max(S.best[cat.id]||0,pct);
   if(Q.mode==="test")return testEnd();
-  if(pct>=80)celebrate("🏆 "+pct+" % !");save();checkDone();head();
+  if(pct>=80)celebrate("🏆 "+pct+" % ! · 太棒了！");save();checkDone();head();
   const again=Q.mode==="rev"?"revStart()":Q.mode==="phr"?"phrases()":`quiz('${Q.mode}')`;
-  $.innerHTML=`<div class="q"><div class="emo">${pct>=80?"🏆":pct>=50?"👏":"💪"}</div><h2>${Q.s} / ${Q.qs.length}</h2><p>${Q.nw?Q.nw+" mot(s) confirmé(s) ✅ · ":""}${pct>=80?"Excellent ! 太棒了！":pct>=50?"Bien joué ! 不错！":"Continue ! 加油！"}</p><div class="nav"><button onclick="${again}">🔁 Rejouer · 再来</button><button class="alt" onclick="${cat&&Q.mode!=='rev'&&Q.mode!=='phr'?'menu()':'home()'}">Menu</button></div></div>`}
+  $.innerHTML=`<div class="q"><div class="emo">${pct>=80?"🏆":pct>=50?"👏":"💪"}</div><h2>${Q.s} / ${Q.qs.length}</h2><p>${Q.nw?"<div>✅ "+Q.nw+" mot(s) confirmé(s) · "+Q.nw+"个词已掌握</div>":""}${pct>=80?"Excellent ! · 太棒了！":pct>=50?"Bien joué ! · 不错！":"Continue ! · 加油！"}</p><div class="nav"><button onclick="${again}">🔁 Rejouer · 再来</button><button class="alt" onclick="${cat&&Q.mode!=='rev'&&Q.mode!=='phr'?'menu()':'home()'}">Menu · 菜单</button></div></div>`}
 function testEnd(){const per={};Q.qs.forEach(q=>{if(!q.it)return;const c=per[q.c.id]=per[q.c.id]||{},w=c[nk(q.it[0])]=c[nk(q.it[0])]||{ok:0,n:0};w.n++;if(q.good)w.ok++});
   let conf=0,tot=0;Object.entries(per).forEach(([id,ws])=>{const a=Object.values(ws),n=a.length,cf=a.filter(w=>w.ok===w.n).length;conf+=cf;tot+=n;S.test[id]=100*cf/(n+2)});
-  S.testDate=new Date().toLocaleDateString("fr-FR");save();checkDone();head();
-  $.innerHTML=`<div class="q" style="text-align:left"><div class="emo" style="text-align:center">📊</div><h2 style="text-align:center">Résultat du test · 测试结果</h2><p>📚 <b>Vocabulaire</b> : ${conf} mots confirmés sur ${tot} testés (2 types de questions par mot).</p><p>🧩 Score total : ${Q.s} / ${Q.qs.length}</p><small style="color:var(--mut)">Ton estimation de durée est mise à jour. · 预计学习时间已更新。</small><div class="nav"><button onclick="plan()">📊 Mon plan</button><button class="alt" onclick="home()">🏠 Accueil</button></div></div>`}
+  S.testDate=new Date().toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR");save();checkDone();head();
+  $.innerHTML=`<div class="q" style="text-align:left"><div class="emo" style="text-align:center">📊</div><h2 style="text-align:center">Résultat du test · 测试结果</h2><p>📚 <b>Vocabulaire</b> : ${conf} mots confirmés sur ${tot} testés · 词汇：${tot}个测试词中已确认${conf}个</p><p>🧩 Score total · 总分 : ${Q.s} / ${Q.qs.length}</p><small style="color:var(--mut)">Ton estimation de durée est mise à jour. · 预计学习时间已更新。</small><div class="nav"><button onclick="plan()">📊 Mon plan · 我的计划</button><button class="alt" onclick="home()">🏠 Accueil · 首页</button></div></div>`}
 
 /* ---- plan ---- */
 const PACE={day:[1,2,3,4,5,6,8,10,12,15,20,25,30],week:[5,7,10,14,20,25,30,40,50,70,100]};
 function setPace(v){S.pace=+v;save();plan()}function setUnit(u){S.unit=u;S.pace=u==="week"?30:5;save();plan()}
-const lvl=m=>m<30?["À démarrer","#e63946"]:m<60?["En cours","#f4a300"]:m<85?["Presque","#457b9d"]:["Acquis","#2bb673"];
-function plan(){cur=plan;cat=null;head();crumb([["🏠 Parcours","home"],["Mon plan"]]);const st=stats(),E=eta(st),u=S.unit,v=S.pace;
-  $.innerHTML=`<h2>📊 Mon plan vers l'A1 · 我的A1计划</h2><div class="q" style="text-align:left"><div style="display:flex;justify-content:space-between"><b>Ce que tu maîtrises</b><b>${Math.round(st.tot-st.rem)} / ${st.tot}</b></div><div class="bar" style="height:12px"><i style="width:${(st.tot-st.rem)/st.tot*100}%"></i></div>
-  <p>🎯 Je veux apprendre <select onchange="setPace(this.value)">${PACE[u].map(x=>`<option ${x===v?"selected":""} value="${x}">${x} mots</option>`).join("")}</select> <select onchange="setUnit(this.value)"><option value="day" ${u==="day"?"selected":""}>par jour</option><option value="week" ${u==="week"?"selected":""}>par semaine</option></select></p>
-  ${E?`<p style="font-size:1.15rem">⏳ A1 maîtrisé dans <b>${E.dur}</b><br>📅 vers le <b>${E.date}</b></p><small style="color:var(--mut)">Calcul : mots restants ÷ mots par jour, +25 % de révision.</small>`:`<p>🎉 <b>Niveau A1 atteint !</b></p>`}</div>
-  <div class="tiles"><div class="tile" onclick="testStart(1)"><span>⚡</span><b>Test rapide · 快速测试</b><small>1 mot par thème, testé 2 fois${S.testDate?" · dernier : "+S.testDate:""}</small></div><div class="tile" onclick="testStart(2)"><span>📝</span><b>Test complet · 完整测试</b><small>2 mots par thème</small></div></div>
-  <div class="nav" style="justify-content:flex-start"><button class="alt" onclick="resetAll()">🔄 Tout réinitialiser</button></div><h3>Ton parcours · 学习路径</h3>`+
-  st.rows.map(({c,m,rem})=>{const[l,col]=lvl(m);return`<div class="rowp" onclick="openAny('${c.id}')"><div class="rv" style="font-size:1.6rem">${c.icon}</div><div class="rt"><b style="font-size:.95rem">${c.name}</b><div class="bar" style="height:5px"><i style="width:${m}%;background:${col}"></i></div></div><div style="text-align:right;font-size:.75rem"><b style="color:${col}">${l}</b><br>${Math.round(m)} % · ${rem>=.5?"~"+Math.ceil(rem)+" restants":"✔"}</div></div>`}).join("")}
-function resetAll(){if(!confirm("Tout réinitialiser ? (les XP sont conservés)"))return;S.known={};S.best={};S.test={};S.done={};S.rev={};S.ev={};S.phr=0;S.testDate="";save();home()}
+const lvl=m=>m<30?["À démarrer · 待开始","#e63946"]:m<60?["En cours · 学习中","#f4a300"]:m<85?["Presque · 快掌握","#457b9d"]:["Acquis · 已掌握","#2bb673"];
+function plan(){cur=plan;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Mon plan · 我的计划"]]);const st=stats(),E=eta(st),u=S.unit,v=S.pace;
+  $.innerHTML=`<h2>📊 Mon plan vers l'A1 · 我的A1计划</h2><div class="q" style="text-align:left"><div style="display:flex;justify-content:space-between"><b>Ce que tu maîtrises · 你已掌握</b><b>${Math.round(st.tot-st.rem)} / ${st.tot}</b></div><div class="bar" style="height:12px"><i style="width:${(st.tot-st.rem)/st.tot*100}%"></i></div>
+  <p>📅 Cours A1 : du 15 janvier au 7 mars · A1课程：1月15日至3月7日</p><p>🎯 Objectif : <b>${goalDay()}</b> mots par jour · 目标：每天 <b>${goalDay()}</b> 个词</p>
+  ${E?`<p style="font-size:1.15rem">⏳ ${E.dur}<br>📅 Fin du cours · 课程结束 : <b>${E.date}</b></p><small style="color:var(--mut)">Objectif : mots restants + 25 % de révision, répartis sur les jours restants. · 目标：剩余词数加25%复习，平均分配到剩余天数。</small>`:`<p>🎉 <b>Niveau A1 atteint ! · 达到A1水平！</b></p>`}</div>
+  <div class="tiles"><div class="tile" onclick="testStart(1)"><span>⚡</span><b>Test rapide · 快速测试</b><small>1 mot par thème · 每个主题1个词${S.testDate?" — "+S.testDate:""}</small></div><div class="tile" onclick="testStart(2)"><span>📝</span><b>Test complet · 完整测试</b><small>2 mots par thème · 每个主题2个词</small></div></div>
+  <div class="nav" style="justify-content:flex-start"><button class="alt" onclick="resetAll()">🔄 Tout réinitialiser · 全部重置</button></div><h3>Ton parcours · 学习路径</h3>`+
+  st.rows.map(({c,m,rem})=>{const[l,col]=lvl(m);return`<div class="rowp" onclick="openAny('${c.id}')"><div class="rv" style="font-size:1.6rem">${c.icon}</div><div class="rt"><b style="font-size:.95rem">${c.name}</b><div class="bar" style="height:5px"><i style="width:${m}%;background:${col}"></i></div></div><div style="text-align:right;font-size:.75rem"><b style="color:${col}">${l}</b><br>${Math.round(m)} % · ${rem>=.5?"~"+Math.ceil(rem)+" restants · 剩余":"✔"}</div></div>`}).join("")}
+function resetAll(){if(!confirm(locText("Tout réinitialiser ? (les XP sont conservés) · 全部重置？（经验值保留）")))return;S.known={};S.best={};S.test={};S.done={};S.rev={};S.ev={};S.phr=0;S.testDate="";S.epoch=(S.epoch||0)+1;save();home()}
+/* ================= langue du menu : français / 中文 / les deux ================= */
+const CJK=/[㐀-鿿]/;
+const UI=()=>S.ui||"both";
+function locText(s){if(UI()==="both")return s;const i=s.lastIndexOf(" · ");if(i<1)return s;const a=s.slice(0,i),b=s.slice(i+3);if(!CJK.test(b)||CJK.test(a)||!/[A-Za-zÀ-ÿ]/.test(a))return s;return UI()==="fr"?a:b}
+const nmCur=s=>{const i=s.lastIndexOf(" · ");if(i<1)return s;return UI()==="zh"?s.slice(i+3):s.slice(0,i)};
+const ORIG=new WeakMap();
+function locNode(n){if(!ORIG.has(n))ORIG.set(n,n.nodeValue);const v=locText(ORIG.get(n));if(n.nodeValue!==v)n.nodeValue=v}
+function loc(root){if(!root||typeof document.createTreeWalker!=="function")return;if(root.nodeType===3){locNode(root);return}
+  const w=document.createTreeWalker(root,4),a=[];let n;while((n=w.nextNode()))a.push(n);a.forEach(locNode)}
+try{new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(loc))).observe(document.body,{childList:true,subtree:true})}catch(e){}
+const LANGS=["both","fr","zh"],LANGLAB={both:"FR + 中文",fr:"Français",zh:"中文"};
+function setLang(l){S.ui=l;S.uiChosen=1;save();loc(document.body);head();langClose();if(cur)cur();else home()}
+function cycLang(){setLang(LANGS[(LANGS.indexOf(UI())+1)%3])}
+function langOpen(){document.getElementById("lang").classList.add("on")}
+function langClose(){document.getElementById("lang").classList.remove("on")}
+
+/* ================= compte, sauvegarde, classement ================= */
+const API=(location.hostname.endsWith("github.io")?"https://chinois.45-192-198-98.sslip.io/api.php":"api.php");
+const APPQ="&app=fr";
+const rndCode=()=>[...crypto.getRandomValues(new Uint8Array(12))].map(b=>"abcdefghjkmnpqrstuvwxyz23456789"[b%31]).join("");
+let CODE="",PNAME="";
+try{CODE=localStorage.getItem("frA1code")||"";PNAME=localStorage.getItem("frA1name")||""}catch(e){}
+if(!CODE){try{CODE=rndCode();localStorage.setItem("frA1code",CODE)}catch(e){CODE="anon"+Date.now().toString(36)}}
+let pushT=null;
+const setCloud=x=>{const e=document.getElementById("cld");if(e)e.textContent=x};
+function schedPush(){if(!PNAME)return;clearTimeout(pushT);pushT=setTimeout(push,800);setCloud("☁️…")}
+async function push(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️")}catch(e){setCloud("☁️ ⚠️")}}
+const clone=x=>JSON.parse(JSON.stringify(x));
+function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);if(eA>eB)return clone(A);
+  const M=clone(A);M.known=M.known||{};M.best=M.best||{};
+  Object.entries(B.known||{}).forEach(([id,arr])=>{const k=M.known[id]=M.known[id]||[];arr.forEach(h=>{if(!k.includes(h))k.push(h)})});
+  Object.entries(B.best||{}).forEach(([id,v])=>M.best[id]=Math.max(M.best[id]||0,v));
+  if((B.ts||0)>(A.ts||0)){M.test=Object.assign({},M.test||{},B.test||{});M.testDate=B.testDate||M.testDate;if(B.pace){M.pace=B.pace;M.unit=B.unit}}
+  M.ev=M.ev||{};Object.entries(B.ev||{}).forEach(([k,a])=>{M.ev[k]=[...new Set([...(M.ev[k]||[]),...a])]});
+  M.rev=M.rev||{};Object.entries(B.rev||{}).forEach(([k,e])=>{if(!M.rev[k]||e.d>M.rev[k].d)M.rev[k]=e});
+  M.xp=Math.max(A.xp||0,B.xp||0);M.phr=Math.max(A.phr||0,B.phr||0);
+  if((B.last||"")>(A.last||"")){M.last=B.last;M.streak=B.streak}else if(B.last===A.last)M.streak=Math.max(A.streak||0,B.streak||0);
+  M.done=Object.assign({},B.done||{},M.done||{});
+  if(B.day&&(!M.day||B.day.d>M.day.d||(B.day.d===M.day.d&&B.day.n>M.day.n)))M.day=B.day;
+  M.ts=Math.max(A.ts||0,B.ts||0);return M}
+const keepLocal=M=>{M.ui=S.ui;M.uiChosen=S.uiChosen;M.sp=S.sp;M.dismissSync=S.dismissSync;return M};
+async function pull(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
+  if(!t||t==="null"){setCloud("☁️ ✓");push();return}
+  const R=JSON.parse(t),M=keepLocal(mergeS(S,R)),chS=JSON.stringify(M)!==JSON.stringify(S),chR=JSON.stringify(M)!==JSON.stringify(R);
+  if(chS){S=M;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}head();if(cur)cur()}
+  if(chR)push();else setCloud("☁️ ✓")}catch(e){setCloud("☁️ ⚠️")}}
+async function deriveKey(name,pw){const en=new TextEncoder(),km=await crypto.subtle.importKey("raw",en.encode(pw),"PBKDF2",false,["deriveBits"]);
+  const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:en.encode("frA1:"+name.trim().toLowerCase()),iterations:200000},km,160);
+  return [...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,"0")).join("")}
+function profOpen(){const p=document.getElementById("prof");document.getElementById("pmsg").textContent="";document.getElementById("pn").value=PNAME;document.getElementById("pp").value="";
+  document.getElementById("pout").style.display=PNAME?"block":"none";p.classList.add("on")}
+function profClose(){document.getElementById("prof").classList.remove("on")}
+function profLater(){S.dismissSync=1;save();profClose();if(cur)cur()}
+async function profGo(mode){const n=document.getElementById("pn").value.trim(),pw=document.getElementById("pp").value,m=document.getElementById("pmsg");
+  if(n.length<2||pw.length<6){m.textContent="Nom : 2 caractères minimum. Mot de passe : 6 minimum. · 用户名至少2个字符，密码至少6位。";return}
+  if(!window.crypto||!crypto.subtle){m.textContent="Connexion impossible ici : ouvre le site en https. · 请使用 https 打开本站。";return}
+  m.textContent="Connexion… · 连接中……";
+  try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
+    if(t==="null"&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
+    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
+    S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n)}
+  catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
+function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
+  const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";CODE=rndCode();
+  try{localStorage.removeItem("frA1name");localStorage.setItem("frA1code",CODE);localStorage.removeItem(K)}catch(e){}
+  S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"},keep);save();profClose();head();home()}
+function syncBanner(){if(PNAME||S.dismissSync)return "";return`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Sauvegarde ta progression · 保存你的进度</b><div class="hm-sub" style="margin:0">Crée un compte pour la retrouver sur tous tes appareils et entrer dans le classement. · 创建账号即可在所有设备上同步进度并参加排行榜。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Se connecter / créer un compte · 登录 / 创建账号</button><button class="alt" onclick="profLater()">Plus tard · 稍后</button></div></div>`}
+/* ---- classement (réservé aux comptes, inscription volontaire) ---- */
+const medal=i=>["🥇","🥈","🥉"][i]||String(i+1);
+const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+async function rankPost(body){try{const r=await fetch(API+"?rank=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});return r.ok}catch(e){return false}}
+async function rankJoin(){if(await rankPost({name:PNAME})){toast("🏆 Tu es dans le classement · 你已加入排行榜");rankPage()}else toast("Impossible pour le moment · 暂时无法加入")}
+async function rankLeave(){if(!confirm(locText("Quitter le classement ? Ton nom n'y sera plus visible. · 退出排行榜？你的名字将不再显示。")))return;if(await rankPost({leave:1})){toast("Tu as quitté le classement · 你已退出排行榜");rankPage()}}
+async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Classement · 排行榜"]]);
+  $.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Chargement… · 加载中……</div></div>`;
+  if(PNAME){try{await push()}catch(e){}}
+  let R=null;try{const r=await fetch(API+"?rank=1&k="+CODE+APPQ,{cache:"no-store"});if(r.ok)R=await r.json()}catch(e){}
+  if(!R){$.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。</div></div>`;return}
+  if(R.app!=="fr"){$.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Le classement du français n'est pas encore activé sur le serveur. Ta progression, elle, est bien sauvegardée avec ton compte. · 法语排行榜尚未在服务器上启用。你的学习进度仍会随账号保存。</div></div>`;return}
+  const join=!PNAME?`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Connecte-toi pour participer · 登录后参加</b><div class="hm-sub" style="margin:0">Le classement est réservé aux comptes. · 排行榜仅限已注册账号。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Se connecter / créer un compte · 登录 / 创建账号</button></div></div>`
+    :!R.me?`<div class="hm-sync"><div style="flex:1 1 240px"><b>Rejoindre le classement ? · 加入排行榜？</b><div class="hm-sub" style="margin:0">Seront visibles par les autres inscrits : ton nom « ${escH(PNAME)} », ton XP, tes mots acquis et ta série. Tu peux quitter à tout moment. · 其他注册用户将看到你的名字、经验值、已掌握词数和连续天数。可随时退出。</div></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Rejoindre · 加入</button></div></div>`:"";
+  const rows=R.list.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${medal(i)}</div><div class="lb-nm">${escH(u.name)}${u.me?" <small>(toi)</small>":""}<div class="lb-sub">📚 ${u.words} mots · 个词 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">⭐ ${u.xp}<small> XP</small></div></div>`).join("");
+  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🏆 Classement · 排行榜</h2><small style="color:var(--mut)">${R.total} participant${R.total>1?"s":""} · ${R.total} 位参与者</small></div>${join}`+
+    (R.list.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne dans le classement pour l'instant. Sois le premier ! · 排行榜还没有人，来当第一名吧！</div>`)+
+    (PNAME&&R.me?`<div style="text-align:center"><span class="lb-leave" role="button" onclick="rankLeave()">Quitter le classement · 退出排行榜</span></div>`:"")+`</div>`}
+
 try{speechSynthesis.getVoices()}catch(e){}
-touchStreak();home();
+touchStreak();home();loc(document.body);pull();if(!S.uiChosen)langOpen();
 </script></body></html>
