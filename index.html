@@ -82,7 +82,7 @@ button:active,.tile:active,.hm-t:active,.hm-act:active,.cat:active{transform:sca
 .coach{background:linear-gradient(90deg,#fff3c4,#ffe3e3);border-radius:14px;padding:12px 14px;font-weight:700;box-shadow:0 2px 0 #0001}
 #bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:12;background:#fff;border-top:1px solid #e3e9f5;padding:4px 4px calc(4px + env(safe-area-inset-bottom));box-shadow:0 -2px 10px #0001}
 #bnav button{flex:1;background:none;border:0;padding:4px 2px;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;border-radius:12px}#bnav i{font-style:normal;font-size:1.45rem;line-height:1}#bnav small{font-size:.66rem;font-weight:600}#bnav button.on{color:var(--blue);background:#eef4ff}
-@media(max-width:700px){#bnav{display:flex}body{padding-bottom:calc(66px + env(safe-area-inset-bottom))}header #spd,header #cld,header #prfb,header #rkb{display:none}header h1{flex:1 1 auto;font-size:1rem}
+#bnav{display:flex}body{padding-bottom:calc(78px + env(safe-area-inset-bottom))}@media(min-width:701px){#bnav{left:50%;right:auto;transform:translateX(-50%);width:min(560px,94vw);bottom:10px;border-radius:18px;border:2px solid #c9a24a}}@media(max-width:700px){header #spd,header #cld,header #prfb,header #rkb{display:none}header h1{flex:1 1 auto;font-size:1rem}
  .opts button{min-height:54px;font-size:1.05rem}.nav button,.alt,.speak{min-height:44px}.top{position:sticky;top:46px;background:var(--bg);z-index:4;padding:4px 0}.hm-t{min-height:60px}.q{border-radius:18px}}
 .av{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;line-height:1;flex:none;box-sizing:border-box}
 .av.f1{box-shadow:0 0 0 3px #f4a300}.av.f2{box-shadow:0 0 0 3px #aab4c4}.av.f3{box-shadow:0 0 0 3px #00e5ff,0 0 10px #00e5ff}.av.f4{box-shadow:0 0 0 3px #e63946,0 0 0 6px #f4a300,0 0 0 9px #2bb673}
@@ -105,6 +105,11 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .avcu{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 4px;padding:8px 12px;background:#f4f6fb;border-radius:12px;font-weight:600;font-size:.9rem}.avcu input{width:56px;height:36px;border:0;padding:0;background:none;cursor:pointer}
 .svgav svg{border-radius:50%;width:100%;height:100%;display:block}.svgav{overflow:visible}
 .avsvg{display:block}
+#bnav{background:linear-gradient(#3a2a5c,#241a3d);border-top:3px solid #c9a24a;box-shadow:0 -4px 14px #0004}#bnav button{color:#cfc3ea}#bnav button.on{color:#ffd86b;background:#ffffff1f;box-shadow:inset 0 0 0 1px #c9a24a}#bnav button:active i{transform:scale(1.25)}#bnav i{transition:transform .15s}
+.quest{background:linear-gradient(#fff8e6,#f6e8c3);border:2px solid #c9a24a;box-shadow:0 3px 0 #b08a35}.quest .hm-lab{color:#7a5a12;font-size:.8rem}
+.qrow{display:flex;align-items:center;gap:9px;margin-top:9px;padding:7px 9px;background:#fffdf5;border-radius:12px;border-left:6px solid var(--qc)}.qi{font-size:1.6rem;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:var(--qc);flex:none;filter:saturate(1.1)}
+.qm{flex:1;min-width:0}.qt{display:flex;justify-content:space-between;gap:6px;font-size:.82rem;font-weight:600;color:#3a2f12}.qv{color:var(--qc);font-weight:800}
+.qb{height:9px;background:#e9dcb5;border-radius:6px;margin-top:4px;overflow:hidden;box-shadow:inset 0 1px 2px #0003}.qb i{display:block;height:100%;background:linear-gradient(90deg,var(--qc),#ffffff66);border-radius:6px;transition:width .5s}.qx{font-size:.7rem;font-weight:800;color:#7a5a12;background:#ffe9a6;border-radius:99px;padding:2px 7px;flex:none}
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
@@ -182,10 +187,10 @@ function stats(){const rows=STEPS.map((s,i)=>{const b=chB(i);return{i,key:s[2],t
 /* objectif du jour (entraînement aux mots) : rythme personnel */
 
 /* ---- quêtes du jour : petites missions avec récompense (+20 XP) ---- */
-const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","🎯"],["w",5,"Valider 5 mots · 掌握5个词","🧠"],["q",1,"Passer un quiz de chapitre · 参加1次章节测验","🏁"]];
+const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","⚔️","#e63946"],["w",5,"Valider 5 mots · 掌握5个词","🧙","#7b4fd1"],["q",1,"Passer un quiz de chapitre · 参加1次章节测验","🐉","#f4a300"]];
 function dq(){if(!S.dq||S.dq.d!==tdy())S.dq={d:tdy(),a:0,w:0,q:0,done:{}};return S.dq}
 function dqAdd(k,n){const d=dq();d[k]=(d[k]||0)+(n||1);QUESTS.forEach(([key,goal,lab,ic])=>{if(key===k&&d[k]>=goal&&!d.done[key]){d.done[key]=1;setTimeout(()=>{celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20)},400)}});save()}
-function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">🎯 Quêtes du jour · 今日任务 ${all?"— ✅ 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow"><span>${d.done[k]?"✅":ic} ${lab}</span><span class="qv">${v}/${g}</span></div>${bar(v/g*100)}`}).join("")}</div>`}
+function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">📜 Quêtes du jour · 今日任务 ${all?"— 🏆 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic,co])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow" style="--qc:${co}"><span class="qi">${d.done[k]?"✅":ic}</span><div class="qm"><div class="qt"><span>${lab}</span><span class="qv">${v}/${g}</span></div><div class="qb"><i style="width:${v/g*100}%"></i></div></div><span class="qx">+20 XP</span></div>`}).join("")}</div>`}
 const stars=p=>p>=90?"⭐⭐⭐":p>=80?"⭐⭐☆":p>=50?"⭐☆☆":"☆☆☆";
 const goalDay=()=>Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));
 /* ---- Chronomètre de classe : date de fin du parcours ; PAUSE pendant les vacances (jours non comptés) ; seulement pour les élèves d'une classe ---- */
