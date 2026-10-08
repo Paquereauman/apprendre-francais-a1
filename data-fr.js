@@ -13,10 +13,10 @@ const CATS=[
 ["étudiant","e.ty.djɑ̃","学生（大学）","xuésheng","🎓"],["professeur","pʁɔ.fɛ.sœʁ","老师","lǎoshī","👩‍🏫"],["ami","a.mi","朋友","péngyou","🧑‍🤝‍🧑"]]},
 {id:"nombres",name:"Nombres · 数字",icon:"🔢",color:"#2a9d8f",items:[
 ["un","œ̃","一","yī","1️⃣"],["deux","dø","二","èr","2️⃣"],["trois","tʁwa","三","sān","3️⃣"],["quatre","katʁ","四","sì","4️⃣"],["cinq","sɛ̃k","五","wǔ","5️⃣"],["six","sis","六","liù","6️⃣"],
-["sept","sɛt","七","qī","7️⃣"],["huit","ɥit","八","bā","8️⃣"],["neuf","nœf","九","jiǔ","9️⃣"],["dix","dis","十","shí","🔟"],["vingt","vɛ̃","二十","èrshí","2️⃣0️⃣"],["cent","sɑ̃","一百","yībǎi","💯"],["zéro","ze.ʁo","零","líng","0️⃣"]]},
+["sept","sɛt","七","qī","7️⃣"],["huit","ɥit","八","bā","8️⃣"],["neuf","nœf","九","jiǔ","9️⃣"],["dix","dis","十","shí","🔟"],["vingt","vɛ̃","二十","èrshí","20"],["cent","sɑ̃","一百","yībǎi","💯"],["zéro","ze.ʁo","零","líng","0️⃣"]]},
 {id:"etre",name:"Verbes essentiels · 最常用动词",icon:"⭐",color:"#d62828",items:[
 ["être","ɛtʁ","是","shì","🧍"],["avoir","a.vwaʁ","有","yǒu","🤲"],["aller","a.le","去","qù","🚶"],["faire","fɛʁ","做 / 干","zuò","🛠️"],["pouvoir","pu.vwaʁ","能 / 可以","néng","💪"],["vouloir","vu.lwaʁ","想要","xiǎng yào","🙏"],
-["devoir","də.vwaʁ","必须 / 应该","bìxū","📌"],["savoir","sa.vwaʁ","知道 / 会","zhīdao","🧠"],["venir","və.niʁ","来","lái","🏃"],["prendre","pʁɑ̃dʁ","拿 / 乘（车）","ná","🫴"],["dire","diʁ","说","shuō","💬"],
+["devoir","də.vwaʁ","必须 / 应该","bìxū","📌"],["savoir","sa.vwaʁ","知道 / 会","zhīdao","🧠"],["venir","və.niʁ","来","lái","🏃"],["prendre","pʁɑ̃dʁ","拿 / 乘（车）","ná","🤲"],["dire","diʁ","说","shuō","💬"],
 ["donner","dɔ.ne","给","gěi","🎁"],["voir","vwaʁ","看见","kànjiàn","👀"],["mettre","mɛtʁ","放 / 穿","fàng","📥"],["aimer","ɛ.me","爱 / 喜欢","ài / xǐhuan","❤️"]]},
 {id:"conj",name:"Conjugaison (présent) · 现在时变位",icon:"🔁",color:"#3a6ea5",items:[
 ["je suis","ʒə sɥi","我是","wǒ shì","🙋"],["tu es","ty ɛ","你是","nǐ shì","👉"],["il est","il ɛ","他是","tā shì","👨"],["nous sommes","nu sɔm","我们是","wǒmen shì","👫"],["vous êtes","vu zɛt","您 / 你们是","nín shì","👥"],["ils sont","il sɔ̃","他们是","tāmen shì","👬"],

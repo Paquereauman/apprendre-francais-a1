@@ -97,7 +97,7 @@ marron|ma.ʁɔ̃|棕色|zōngsè|🟤
 rose|ʁoz|粉色|fěnsè|🌸
 orange|ɔ.ʁɑ̃ʒ|橙色|chéngsè|🟠
 violet|vjɔ.lɛ|紫色|zǐsè|🟣
-gris|gʁi|灰色|huīsè|🩶
+gris|gʁi|灰色|huīsè|🌫️
 Quelle est la couleur ?|kɛl ɛ la ku.lœʁ|是什么颜色？|shì shénme yánsè|🎨
 C'est bleu|sɛ blø|是蓝色的|shì lánsè de|🔵`,"Couleurs · 颜色","🎨");
 
@@ -128,7 +128,7 @@ noirs|nwaʁ|黑色的|hēi|⚫
 bruns|bʁœ̃|棕色的（头发）|zōng|🟤
 blonds|blɔ̃|金色的|jīn|🟡
 roux|ʁu|红色的（头发）|hóng|🟠
-gris|gʁi|灰色的|huī|🩶
+gris|gʁi|灰色的|huī|🌫️
 les yeux|le zjø|眼睛|yǎnjing|👀
 marron|ma.ʁɔ̃|棕色|zōngsè|🟤
 bleus|blø|蓝色的|lán|🔵
@@ -456,29 +456,29 @@ six|sis|六|liù|6️⃣
 sept|sɛt|七|qī|7️⃣
 huit|ɥit|八|bā|8️⃣
 neuf|nœf|九|jiǔ|9️⃣
-dix|dis|十|shí|1️⃣0️⃣`,"Les nombres de 0 à 10 · 数字0到10","🔢");
+dix|dis|十|shí|10`,"Les nombres de 0 à 10 · 数字0到10","🔢");
 addCat("n11","Les nombres de 11 à 20 · 数字11到20","🔢","#2a9d8f",`
-onze|ɔ̃z|十一|shíyī|1️⃣1️⃣
-douze|duz|十二|shíèr|1️⃣2️⃣
-treize|tʁɛz|十三|shísān|1️⃣3️⃣
-quatorze|ka.tɔʁz|十四|shísì|1️⃣4️⃣
-quinze|kɛ̃z|十五|shíwǔ|1️⃣5️⃣
-seize|sɛz|十六|shíliù|1️⃣6️⃣
-dix-sept|di.sɛt|十七|shíqī|1️⃣7️⃣
-dix-huit|di.zɥit|十八|shíbā|1️⃣8️⃣
-dix-neuf|diz.nœf|十九|shíjiǔ|1️⃣9️⃣
-vingt|vɛ̃|二十|èrshí|2️⃣0️⃣`);
+onze|ɔ̃z|十一|shíyī|11
+douze|duz|十二|shíèr|12
+treize|tʁɛz|十三|shísān|13
+quatorze|ka.tɔʁz|十四|shísì|14
+quinze|kɛ̃z|十五|shíwǔ|15
+seize|sɛz|十六|shíliù|16
+dix-sept|di.sɛt|十七|shíqī|17
+dix-huit|di.zɥit|十八|shíbā|18
+dix-neuf|diz.nœf|十九|shíjiǔ|19
+vingt|vɛ̃|二十|èrshí|20`);
 addCat("age","L'âge & les nombres de 20 à 30 · 年龄与20到30","🎂","#2a9d8f",`
-vingt et un|vɛ̃.te.œ̃|二十一|èrshíyī|2️⃣1️⃣
-vingt-deux|vɛ̃t.dø|二十二|èrshíèr|2️⃣2️⃣
-vingt-trois|vɛ̃t.tʁwa|二十三|èrshísān|2️⃣3️⃣
-vingt-quatre|vɛ̃t.katʁ|二十四|èrshísì|2️⃣4️⃣
-vingt-cinq|vɛ̃t.sɛ̃k|二十五|èrshíwǔ|2️⃣5️⃣
-vingt-six|vɛ̃t.sis|二十六|èrshíliù|2️⃣6️⃣
-vingt-sept|vɛ̃t.sɛt|二十七|èrshíqī|2️⃣7️⃣
-vingt-huit|vɛ̃t.ɥit|二十八|èrshíbā|2️⃣8️⃣
-vingt-neuf|vɛ̃t.nœf|二十九|èrshíjiǔ|2️⃣9️⃣
-trente|tʁɑ̃t|三十|sānshí|3️⃣0️⃣
+vingt et un|vɛ̃.te.œ̃|二十一|èrshíyī|21
+vingt-deux|vɛ̃t.dø|二十二|èrshíèr|22
+vingt-trois|vɛ̃t.tʁwa|二十三|èrshísān|23
+vingt-quatre|vɛ̃t.katʁ|二十四|èrshísì|24
+vingt-cinq|vɛ̃t.sɛ̃k|二十五|èrshíwǔ|25
+vingt-six|vɛ̃t.sis|二十六|èrshíliù|26
+vingt-sept|vɛ̃t.sɛt|二十七|èrshíqī|27
+vingt-huit|vɛ̃t.ɥit|二十八|èrshíbā|28
+vingt-neuf|vɛ̃t.nœf|二十九|èrshíjiǔ|29
+trente|tʁɑ̃t|三十|sānshí|30
 Quel âge as-tu ?|kɛl aʒ a ty|你几岁？|nǐ jǐ suì|🎈
 Quel âge avez-vous ?|kɛl aʒ a.ve vu|您几岁？（礼貌）|nín jǐ suì|🎩
 J'ai vingt ans|ʒe vɛ̃.tɑ̃|我二十岁|wǒ èrshí suì|🎂
@@ -522,32 +522,32 @@ Quelle est la date ?|kɛl ɛ la dat|今天几号？|jīntiān jǐ hào|❓
 C'est le cinq octobre|sɛ lə sɛ̃k ɔk.tɔbʁ|今天是十月五号|jīntiān shì shíyuè wǔ hào|📆
 le premier janvier|lə pʁə.mje ʒɑ̃.vje|一月一日|yīyuè yī rì|🎆`);
 addCat("n40","Les nombres de 30 à 40 · 数字30到40","🔢","#2a9d8f",`
-trente|tʁɑ̃t|三十|sānshí|3️⃣0️⃣
-trente et un|tʁɑ̃.te.œ̃|三十一|sānshíyī|3️⃣1️⃣
-trente-deux|tʁɑ̃t.dø|三十二|sānshíèr|3️⃣2️⃣
-trente-trois|tʁɑ̃t.tʁwa|三十三|sānshísān|3️⃣3️⃣
-trente-quatre|tʁɑ̃t.katʁ|三十四|sānshísì|3️⃣4️⃣
-trente-cinq|tʁɑ̃t.sɛ̃k|三十五|sānshíwǔ|3️⃣5️⃣
-trente-six|tʁɑ̃t.sis|三十六|sānshíliù|3️⃣6️⃣
-trente-sept|tʁɑ̃t.sɛt|三十七|sānshíqī|3️⃣7️⃣
-trente-huit|tʁɑ̃t.ɥit|三十八|sānshíbā|3️⃣8️⃣
-trente-neuf|tʁɑ̃t.nœf|三十九|sānshíjiǔ|3️⃣9️⃣
-quarante|ka.ʁɑ̃t|四十|sìshí|4️⃣0️⃣
+trente|tʁɑ̃t|三十|sānshí|30
+trente et un|tʁɑ̃.te.œ̃|三十一|sānshíyī|31
+trente-deux|tʁɑ̃t.dø|三十二|sānshíèr|32
+trente-trois|tʁɑ̃t.tʁwa|三十三|sānshísān|33
+trente-quatre|tʁɑ̃t.katʁ|三十四|sānshísì|34
+trente-cinq|tʁɑ̃t.sɛ̃k|三十五|sānshíwǔ|35
+trente-six|tʁɑ̃t.sis|三十六|sānshíliù|36
+trente-sept|tʁɑ̃t.sɛt|三十七|sānshíqī|37
+trente-huit|tʁɑ̃t.ɥit|三十八|sānshíbā|38
+trente-neuf|tʁɑ̃t.nœf|三十九|sānshíjiǔ|39
+quarante|ka.ʁɑ̃t|四十|sìshí|40
 Le trente et un décembre|lə tʁɑ̃.te.œ̃ de.sɑ̃bʁ|十二月三十一日|shí'èryuè sānshíyī rì|🎇`);
 addCat("n100","Les nombres de 40 à 100 · 数字40到100","💯","#2a9d8f",`
-quarante|ka.ʁɑ̃t|四十|sìshí|4️⃣0️⃣
-cinquante|sɛ̃.kɑ̃t|五十|wǔshí|5️⃣0️⃣
-cinquante-cinq|sɛ̃.kɑ̃t.sɛ̃k|五十五|wǔshíwǔ|5️⃣5️⃣
-soixante|swa.sɑ̃t|六十|liùshí|6️⃣0️⃣
-soixante et un|swa.sɑ̃.te.œ̃|六十一|liùshíyī|6️⃣1️⃣
-soixante-dix|swa.sɑ̃t.dis|七十 (60+10)|qīshí|7️⃣0️⃣
-soixante et onze|swa.sɑ̃.te.ɔ̃z|七十一 (60+11)|qīshíyī|7️⃣1️⃣
-soixante-quinze|swa.sɑ̃t.kɛ̃z|七十五 (60+15)|qīshíwǔ|7️⃣5️⃣
-quatre-vingts|ka.tʁə.vɛ̃|八十 (4×20)|bāshí|8️⃣0️⃣
-quatre-vingt-un|ka.tʁə.vɛ̃.œ̃|八十一 (4×20+1)|bāshíyī|8️⃣1️⃣
-quatre-vingt-dix|ka.tʁə.vɛ̃.dis|九十 (4×20+10)|jiǔshí|9️⃣0️⃣
-quatre-vingt-quinze|ka.tʁə.vɛ̃.kɛ̃z|九十五 (4×20+15)|jiǔshíwǔ|9️⃣5️⃣
-cent|sɑ̃|一百|yībǎi|1️⃣0️⃣0️⃣`);
+quarante|ka.ʁɑ̃t|四十|sìshí|40
+cinquante|sɛ̃.kɑ̃t|五十|wǔshí|50
+cinquante-cinq|sɛ̃.kɑ̃t.sɛ̃k|五十五|wǔshíwǔ|55
+soixante|swa.sɑ̃t|六十|liùshí|60
+soixante et un|swa.sɑ̃.te.œ̃|六十一|liùshíyī|61
+soixante-dix|swa.sɑ̃t.dis|七十 (60+10)|qīshí|70
+soixante et onze|swa.sɑ̃.te.ɔ̃z|七十一 (60+11)|qīshíyī|71
+soixante-quinze|swa.sɑ̃t.kɛ̃z|七十五 (60+15)|qīshíwǔ|75
+quatre-vingts|ka.tʁə.vɛ̃|八十 (4×20)|bāshí|80
+quatre-vingt-un|ka.tʁə.vɛ̃.œ̃|八十一 (4×20+1)|bāshíyī|81
+quatre-vingt-dix|ka.tʁə.vɛ̃.dis|九十 (4×20+10)|jiǔshí|90
+quatre-vingt-quinze|ka.tʁə.vɛ̃.kɛ̃z|九十五 (4×20+15)|jiǔshíwǔ|95
+cent|sɑ̃|一百|yībǎi|100`);
 addCat("heure","L'heure · 时间点","🕐","#06a77d",`
 Quelle heure est-il ?|kɛl œʁ ɛ.til|现在几点？|xiànzài jǐ diǎn|🕐
 Il est une heure|i lɛ tyn œʁ|一点钟|yī diǎn zhōng|🕐
@@ -567,11 +567,11 @@ le soir|lə swaʁ|晚上|wǎnshang|🌆
 la nuit|la nɥi|夜晚|yèwǎn|🌃`);
 addCat("nombres2","Les nombres de 100 à 1 000 000 · 数字100到一百万","💰","#2a9d8f",`
 cent|sɑ̃|一百|yībǎi|💯
-deux cents|dø sɑ̃|两百|liǎngbǎi|2️⃣0️⃣0️⃣
-deux cent trois|dø sɑ̃ tʁwa|两百零三|liǎngbǎi líng sān|2️⃣0️⃣3️⃣
-trois cents|tʁwa sɑ̃|三百|sānbǎi|3️⃣0️⃣0️⃣
+deux cents|dø sɑ̃|两百|liǎngbǎi|200
+deux cent trois|dø sɑ̃ tʁwa|两百零三|liǎngbǎi líng sān|203
+trois cents|tʁwa sɑ̃|三百|sānbǎi|300
 mille|mil|一千|yīqiān|🔟
-deux mille|dø mil|两千|liǎngqiān|2️⃣0️⃣0️⃣0️⃣
+deux mille|dø mil|两千|liǎngqiān|2000
 dix mille|di mil|一万|yīwàn|💴
 un million|œ̃ mi.ljɔ̃|一百万|yībǎiwàn|💰
 Ça coûte cent euros|sa kut sɑ̃ ø.ʁo|这个一百欧元|zhège yìbǎi Ōuyuán|💶`);
@@ -617,12 +617,12 @@ il / elle fait|il fɛ|他/她做|tā zuò|🛠️
 nous faisons|nu fə.zɔ̃|我们做|wǒmen zuò|🛠️
 vous faites|vu fɛt|您做|nín zuò|🛠️
 ils / elles font|il fɔ̃|他们做|tāmen zuò|🛠️
-je prends|ʒə pʁɑ̃|我拿/乘|wǒ ná|🫴
-tu prends|ty pʁɑ̃|你拿/乘|nǐ ná|🫴
-il / elle prend|il pʁɑ̃|他/她拿/乘|tā ná|🫴
-nous prenons|nu pʁə.nɔ̃|我们拿/乘|wǒmen ná|🫴
-vous prenez|vu pʁə.ne|您拿/乘|nín ná|🫴
-ils / elles prennent|il pʁɛn|他们拿/乘|tāmen ná|🫴
+je prends|ʒə pʁɑ̃|我拿/乘|wǒ ná|🤲
+tu prends|ty pʁɑ̃|你拿/乘|nǐ ná|🤲
+il / elle prend|il pʁɑ̃|他/她拿/乘|tā ná|🤲
+nous prenons|nu pʁə.nɔ̃|我们拿/乘|wǒmen ná|🤲
+vous prenez|vu pʁə.ne|您拿/乘|nín ná|🤲
+ils / elles prennent|il pʁɛn|他们拿/乘|tāmen ná|🤲
 je veux|ʒə vø|我想要|wǒ xiǎng yào|🙏
 tu veux|ty vø|你想要|nǐ xiǎng yào|🙏
 il / elle veut|il vø|他/她想要|tā xiǎng yào|🙏

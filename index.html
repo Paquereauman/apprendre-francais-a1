@@ -48,7 +48,7 @@ select{font:inherit;padding:4px;border-radius:8px}
 .lb-n{width:34px;text-align:center;font-size:1.3rem;font-weight:800}.lb-nm{flex:1;min-width:0;font-weight:700}.lb-sub{font-size:.78rem;color:var(--mut);font-weight:500}.lb-xp{font-weight:800}.lb-xp small{color:var(--mut);font-weight:600}
 .lb-leave{color:var(--mut);font-size:.85rem;text-decoration:underline;cursor:pointer}.langb{display:block;width:100%;margin:8px 0;padding:14px;font-size:1.1rem;border:2px solid var(--blue);background:#fff;border-radius:12px;cursor:pointer}.langb:hover{background:#eef4ff}
 .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:6px}
-.lgrid .row{margin:0;padding:6px 10px;gap:8px}.lgrid .row .rv{font-size:1.45rem;width:32px}.lgrid .row .rt{font-size:.93rem;line-height:1.25;min-width:0}.lgrid .row .rt small{font-size:.8rem}
+.lgrid .row{margin:0;padding:6px 10px;gap:8px}.lgrid .row .rv{font-size:1.45rem;min-width:32px;width:auto;flex:none;white-space:nowrap;text-align:center}.rv.dg,.emo.dg{font-weight:800;color:var(--blue)}.lgrid .row .rt{font-size:.93rem;line-height:1.25;min-width:0}.lgrid .row .rt small{font-size:.8rem}
 .snd{flex:none;width:32px;height:32px;padding:0;border:0;border-radius:50%;background:#fff1d0;font-size:1rem;cursor:pointer;line-height:1}.snd:active{background:#ffd98a}
 .lgrid .row input{width:20px;height:20px;flex:none}
 .rowp{padding:8px 10px}
@@ -70,6 +70,7 @@ select{font:inherit;padding:4px;border-radius:8px}
 .adst{margin-top:6px}.adus{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}.adc{padding:2px 7px;border-radius:99px;font-size:.78rem}
 .adt{border-collapse:collapse;width:100%;font-size:.82rem;background:#fff}.adt th,.adt td{border:1px solid #e3e9f5;padding:4px 6px;text-align:center}.adt td:first-child,.adt th:first-child{text-align:left;position:sticky;left:0;background:#fff}
 @media(max-width:700px){.egrid{grid-template-columns:repeat(6,1fr)}}
+.gh{grid-column:1/-1;font-weight:700;font-size:.9rem;color:var(--blue);margin:10px 0 2px;padding-bottom:3px;border-bottom:2px solid #dbe4f5}.gh:first-child{margin-top:2px}.tip{grid-column:1/-1;background:#fff8e1;border-left:4px solid var(--gold);border-radius:8px;padding:6px 10px;font-size:.84rem;margin:2px 0 4px;line-height:1.4}
 </style></head><body>
 <header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
@@ -84,9 +85,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081317"></script>
-<script src="data-fr2.js?v=202610081317"></script>
-<script src="audio-fr/map.js?v=202610081317"></script>
+<script src="data-fr.js?v=202610081322"></script>
+<script src="data-fr2.js?v=202610081322"></script>
+<script src="data-fr3.js?v=202610081322"></script>
+<script src="audio-fr/map.js?v=202610081322"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -162,7 +164,7 @@ function menu(id){cur=menu;if(id)cat=unit(id);head();crumb([["🏠 Parcours · �
   <div class="tile" onclick="quiz('mix')"><span>❓</span><b>Quiz · 测验</b><small>10 questions · 10道题</small></div><div class="tile" onclick="quiz('listen')"><span>🎧</span><b>Écoute · 听力</b><small>reconnais le son · 听声音辨词</small></div>${POSTER[cat.id]?`<div class="tile" onclick="poster()"><span>🖼️</span><b>Affiche · 图片</b><small>l'image du cours · 课程图片</small></div>`:""}</div>`}
 function poster(){cur=poster;crumb([["🏠 Parcours · 路径","home"],[cat.icon+" "+cat.name,"menu"],["Affiche · 图片"]]);$.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><img src="img-fr/${POSTER[cat.id]}.jpg" alt="" style="width:100%;border-radius:12px;box-shadow:0 2px 8px #0003"><div class="nav"><button class="alt" onclick="menu()">◀ Retour · 返回</button></div>`}
 function list(){cur=list;crumb([["🏠 Parcours · 路径","home"],[cat.icon+" "+cat.name,"menu"],["Liste · 词表"]]);const kn=S.known[cat.id]||[];
-  $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut);margin:4px 0 8px;font-size:.88rem">Touche l'emoji ou le mot pour écouter 🔊 ; coche ✅ les mots que tu connais. · 点击表情或单词收听；勾选你已认识的词。</p><div class="lgrid">`+cat.items.map((it,i)=>`<div class="row"><div class="rv" onclick="say(cat.items[${i}][0])">${it[4]}</div><div class="rt" onclick="say(cat.items[${i}][0])"><b>${it[0]}</b> <span class="ipa">/${it[1]}/</span><small>${it[2]} · ${it[3]}</small></div><button class="snd" onclick="say(cat.items[${i}][0])" aria-label="Écouter">🔊</button><input type="checkbox" ${kn.includes(it[0])?"checked":""} onchange="setKnown(cat.id,cat.items[${i}][0],this.checked);head()"></div>`).join("")+"</div>"}
+  $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut);margin:4px 0 8px;font-size:.88rem">Touche l'emoji ou le mot pour écouter 🔊 ; coche ✅ les mots que tu connais. · 点击表情或单词收听；勾选你已认识的词。</p><div class="lgrid">`+(()=>{let g="";const T=(typeof TIPS!=="undefined"&&TIPS[cat.id])||{},tp=k=>T[k]?`<div class="tip">💡 ${T[k].join("<br>")}</div>`:"";return tp("*")+cat.items.map((it,i)=>{const hd=it[5]&&it[5]!==g?(g=it[5],`<div class="gh">${it[5]}</div>${tp(it[5])}`):"";return hd+`<div class="row"><div class="rv${/^[0-9]+$/.test(it[4])?" dg":""}" onclick="say(cat.items[${i}][0])">${it[4]}</div><div class="rt" onclick="say(cat.items[${i}][0])"><b>${it[0]}</b> <span class="ipa">/${it[1]}/</span><small>${it[2]} · ${it[3]}</small></div><button class="snd" onclick="say(cat.items[${i}][0])" aria-label="Écouter">🔊</button><input type="checkbox" ${kn.includes(it[0])?"checked":""} onchange="setKnown(cat.id,cat.items[${i}][0],this.checked);head()"></div>`}).join("")})()+"</div>"}
 function cards(){cur=cards;crumb([["🏠 Parcours · 路径","home"],[cat.icon+" "+cat.name,"menu"],["Cartes · 卡片"]]);let i=0,flip=false,order=shuffle(cat.items);
   window.cdraw=()=>{const it=order[i],kn=(S.known[cat.id]||[]).includes(it[0]);$.innerHTML=`<div class="top"><span class="pill">${i+1} / ${order.length}</span></div><div class="q" style="min-height:240px;cursor:pointer" onclick="cflip()">${flip?`<div class="zh">${it[2]}</div><div class="ipa">${it[3]}</div><div class="emo">${it[4]}</div>`:`<div class="emo">${it[4]}</div><div class="fw">${it[0]}</div><div class="ipa">/${it[1]}/</div>`}<p style="color:var(--mut)">touche pour retourner · 点击翻转</p></div>
   <div class="nav"><button class="speak" onclick="say('${esc(it[0])}')">🔊</button><button class="alt" onclick="cgo(-1)">◀</button><button class="alt" onclick="cgo(1)">▶</button><button onclick="setKnown(cat.id,'${esc(it[0])}',${!kn});head();cdraw()">${kn?"✅ Connu · 已认识":"☐ Je connais · 我认识"}</button></div>`;if(!flip)say(it[0])};
