@@ -10,6 +10,7 @@ if ($app && !is_dir("$base/bak")) { @mkdir("$base/bak", 0700, true); }
 $k = $_GET["k"] ?? "";
 if (isset($_GET["rank"])) { rank_main($k, $base, $app); exit; }
 if (isset($_GET["admin"])) { admin_main($k, $base, $app); exit; }
+if (isset($_GET["accpos"])) { accpos_main($k, $base); exit; }
 if (isset($_GET["classes"])) {
   $o = ["app" => $app, "classes" => classes_load($base)];
   if (preg_match("/^[a-z0-9]{8,40}$/", $k)) {
@@ -437,3 +438,22 @@ function name_free($base, $name, $selfId) {
 // ---- Personnalisation du profil : titre (débloqué par chapitres validés) et devise (texte court nettoyé)
 function title_ok($t, $chapters) { $need = [0, 1, 3, 6, 10, 15, 17]; return ($t >= 0 && $t <= 6 && $chapters >= $need[$t]) ? $t : 0; }
 function clean_motto($s) { return mb_substr(trim(preg_replace("/[^\p{L}\p{N} _.,!?'’\-]/u", "", (string)$s)), 0, 40); }
+
+// Réglages de position des accessoires de l'avatar : lecture publique, écriture réservée aux administrateurs.
+function accpos_main($k, $base) {
+  $f = "$base/accpos.json";
+  if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    if (!preg_match("/^[a-z0-9]{8,40}$/", $k) || !in_array(hash("sha256", $k), admin_load($base), true)) { http_response_code(403); echo "{\"error\":\"denied\"}"; return; }
+    $b = json_decode(file_get_contents("php://input", false, null, 0, 30001), true);
+    if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
+    $out = [];
+    foreach ($b as $key => $v) {
+      if (!is_string($key) || !preg_match("/^(hat|obj|wng|aur):\d{1,2}(:\d)?$/", $key) || !is_array($v) || count($out) >= 200) continue;
+      $out[$key] = ["x" => max(-200, min(200, round((float)($v["x"] ?? 0), 1))), "y" => max(-200, min(200, round((float)($v["y"] ?? 0), 1))), "s" => max(0.3, min(3, round((float)($v["s"] ?? 1), 2))), "r" => max(-180, min(180, round((float)($v["r"] ?? 0), 1)))];
+    }
+    file_put_contents($f, json_encode((object)$out), LOCK_EX);
+    echo json_encode(["ok" => true, "n" => count($out)]); return;
+  }
+  echo is_file($f) ? file_get_contents($f) : "{}";
+}
+
