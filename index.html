@@ -63,7 +63,7 @@ select{font:inherit;padding:4px;border-radius:8px}
  .hm-sync{padding:8px 10px;gap:6px 10px}.hm-sync .hm-sub{display:none}.hm-sync .nav button{padding:6px 12px;font-size:.85rem}
 }
 </style></head><body>
-<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="prfb" onclick="profOpen()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profOpen()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
 <button class="langb" onclick="setLang('fr')">🇫🇷 Français</button><button class="langb" onclick="setLang('zh')">🇨🇳 中文</button><button class="langb" onclick="setLang('both')">🇫🇷 + 🇨🇳 Français + 中文</button></div></div>
@@ -124,7 +124,7 @@ function setKnown(cid,h,on){const a=S.known[cid]=S.known[cid]||[],i=a.indexOf(h)
 /* ---- navigation / accueil ---- */
 let cat,Q,cur;
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
-  document.getElementById("prfb").textContent=PNAME?"👤 "+PNAME.slice(0,10):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.querySelector("#hp i").style.width=stats().all+"%"}
+  document.getElementById("prfb").textContent=PNAME?"👤 "+PNAME.slice(0,10):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%"}
 function crumb(p){const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
@@ -257,7 +257,7 @@ if(!CODE){try{CODE=rndCode();localStorage.setItem("frA1code",CODE)}catch(e){CODE
 let pushT=null;
 const setCloud=x=>{const e=document.getElementById("cld");if(e)e.textContent=x};
 function schedPush(){if(!PNAME)return;clearTimeout(pushT);pushT=setTimeout(push,800);setCloud("☁️…")}
-async function push(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️")}catch(e){setCloud("☁️ ⚠️")}}
+async function push(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ+"&n="+encodeURIComponent(PNAME),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️")}catch(e){setCloud("☁️ ⚠️")}}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);if(eA>eB)return clone(A);
   const M=clone(A);M.known=M.known||{};M.best=M.best||{};
@@ -291,13 +291,28 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
     if(t==="null"&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
     CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
-    S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n)}
+    S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();admStatus();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
-  const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";CODE=rndCode();
+  const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";ADM=null;CODE=rndCode();
   try{localStorage.removeItem("frA1name");localStorage.setItem("frA1code",CODE);localStorage.removeItem(K)}catch(e){}
   S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"},keep);save();profClose();head();home()}
 function syncBanner(){if(PNAME||S.dismissSync)return "";return`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Sauvegarde ta progression · 保存你的进度</b><div class="hm-sub" style="margin:0">Crée un compte pour la retrouver sur tous tes appareils et entrer dans le classement. · 创建账号即可在所有设备上同步进度并参加排行榜。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Compte · 账号</button><button class="alt" onclick="profLater()">Plus tard · 稍后</button></div></div>`}
+
+/* ---- administration (les droits sont vérifiés par le serveur) ---- */
+let ADM=null;
+async function admStatus(){if(!PNAME){ADM=null;head();return}try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{cache:"no-store"});if(r.ok)ADM=await r.json()}catch(e){}head()}
+async function admPost(body){try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});return r.ok}catch(e){return false}}
+async function admDo(action,id){if(await admPost({action,id})){toast("✅ OK");adminPage()}else toast("Refusé ou impossible · 被拒绝或无法完成")}
+async function admClaim(){const t=document.getElementById("atok").value.trim();if(!t)return;if(await admPost({action:"claim",token:t})){toast("✅ Tu es administrateur · 你已成为管理员");await admStatus();adminPage()}else toast("Code incorrect · 代码不正确")}
+async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Administration · 管理"]]);
+  $.innerHTML=`<div class="hm"><h2 style="margin:0">🛡️ Administration · 管理</h2><div class="hm-card">Chargement… · 加载中……</div></div>`;await admStatus();
+  if(!ADM){$.innerHTML=`<div class="hm"><h2 style="margin:0">🛡️ Administration · 管理</h2><div class="hm-card">Serveur injoignable ou version du serveur trop ancienne. · 无法连接服务器，或服务器版本过旧。</div></div>`;return}
+  if(!ADM.admin){$.innerHTML=`<div class="hm"><h2 style="margin:0">🛡️ Administration · 管理</h2>`+(ADM.claimable?`<div class="hm-card">Première activation : entre le code d'activation donné par le propriétaire du serveur. · 首次启用：请输入服务器所有者提供的启用代码。<input id="atok" class="t" autocomplete="off" placeholder="Code / 代码" onkeydown="if(event.key==='Enter')admClaim()"><div class="nav"><button onclick="admClaim()">Activer · 启用</button></div></div>`:`<div class="hm-card">Accès réservé aux administrateurs. · 仅限管理员访问。</div>`)+`</div>`;return}
+  const rows=(ADM.users||[]).map(u=>`<div class="lb${u.me?" me":""}"><div class="lb-nm">${escH(u.name)}${u.me?" <small>(toi)</small>":""}${u.admin?" 🛡️":""}${u.rank?" 🏆":""}<div class="lb-sub">⭐ ${u.xp} XP · 📚 ${u.words} mots · 个词 · ${u.seen?new Date(u.seen*1000).toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR"):"–"}</div></div>`+
+    `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">`+(u.admin?`<button class="alt" style="padding:5px 9px" onclick="admDo('demote','${u.id}')">Retirer admin · 取消管理员</button>`:`<button style="padding:5px 9px;border:0;border-radius:8px;background:var(--blue);color:#fff" onclick="admDo('promote','${u.id}')">Nommer admin · 设为管理员</button>`)+(u.rank?`<button class="alt" style="padding:5px 9px" onclick="admDo('kick','${u.id}')">Retirer du classement · 移出排行榜</button>`:"")+`</div></div>`).join("");
+  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🛡️ Administration · 管理</h2><small style="color:var(--mut)">${(ADM.users||[]).length} compte(s) · ${(ADM.users||[]).length} 个账号</small></div>
+  <div class="hm-card" style="font-size:.88rem;color:var(--mut)">Tu peux nommer ou retirer des administrateurs et retirer quelqu'un du classement. Les comptes apparaissent ici après leur première sauvegarde. · 你可以任命或取消管理员，并将用户移出排行榜。账号在首次保存进度后显示在此处。</div>${rows||`<div class="hm-card">Aucun compte pour l'instant. · 暂无账号。</div>`}</div>`}
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
 const medal=i=>["🥇","🥈","🥉"][i]||String(i+1);
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -318,5 +333,5 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
     (PNAME&&R.me?`<div style="text-align:center"><span class="lb-leave" role="button" onclick="rankLeave()">Quitter le classement · 退出排行榜</span></div>`:"")+`</div>`}
 
 try{speechSynthesis.getVoices()}catch(e){}
-touchStreak();home();loc(document.body);pull();if(!S.uiChosen)langOpen();
+touchStreak();home();loc(document.body);pull();admStatus();if(!S.uiChosen)langOpen();
 </script></body></html>
