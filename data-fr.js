@@ -43,7 +43,7 @@ const CATS=[
 {id:"docteur",name:"Chez le docteur · 看医生",icon:"🩺",color:"#2bb673",items:[
 ["le médecin","lə med.sɛ̃","医生","yīshēng","👨‍⚕️"],["l'hôpital","lo.pi.tal","医院","yīyuàn","🏥"],["la pharmacie","la faʁ.ma.si","药店","yàodiàn","💊"],["le médicament","lə me.di.ka.mɑ̃","药","yào","💊"],
 ["J'ai mal","ʒe mal","我疼","wǒ téng","😣"],["la tête","la tɛt","头","tóu","🤕"],["le ventre","lə vɑ̃tʁ","肚子","dùzi","🤢"],["la gorge","la gɔʁʒ","喉咙","hóulóng","😮"],["la dent","la dɑ̃","牙齿","yáchǐ","🦷"],
-["la fièvre","la fjɛvʁ","发烧","fāshāo","🤒"],["la toux","la tu","咳嗽","késou","😷"],["Je suis malade","ʒə sɥi ma.lad","我生病了","wǒ shēngbìng le","🤧"],["une ordonnance","yn ɔʁ.dɔ.nɑ̃s","处方","chǔfāng","📝"],["Au secours !","o sə.kuʁ","救命！","jiùmìng","🆘"]]},
+["la fièvre","la fjɛvʁ","发烧","fāshāo","🤒"],["la toux","la tu","咳嗽","késou","😷"],["Je suis malade","ʒə sɥi ma.lad","我生病了","wǒ shēngbìng le","🤧"],["une ordonnance","yn ɔʁ.dɔ.nɑ̃s","处方","chǔfāng","📝"],["Au secours !","o sə.kuʁ","救命！","jiùmìng","🆘"],["Où avez-vous mal ?","u a.ve vu mal","您哪里疼？","nín nǎlǐ téng","🩺"],["un rendez-vous","œ̃ ʁɑ̃.de.vu","预约","yùyuē","📅"],["le dentiste","lə dɑ̃.tist","牙医","yáyī","🦷"],["une ambulance","yn ɑ̃.by.lɑ̃s","救护车","jiùhùchē","🚑"]]},
 {id:"corps",name:"Le corps · 身体",icon:"🧍",color:"#e63946",items:[
 ["la main","la mɛ̃","手","shǒu","✋"],["le pied","lə pje","脚","jiǎo","🦶"],["le bras","lə bʁa","手臂","shǒubì","💪"],["la jambe","la ʒɑ̃b","腿","tuǐ","🦵"],["l'œil","lœj","眼睛","yǎnjing","👁️"],["la bouche","la buʃ","嘴","zuǐ","👄"],
 ["le nez","lə ne","鼻子","bízi","👃"],["l'oreille","lɔ.ʁɛj","耳朵","ěrduo","👂"],["le dos","lə do","背","bèi","🔙"],["le cœur","lə kœʁ","心脏","xīnzàng","❤️"]]},
@@ -73,13 +73,41 @@ const CATS=[
 ["le chien","lə ʃjɛ̃","狗","gǒu","🐶"],["le chat","lə ʃa","猫","māo","🐱"],["l'oiseau","lwa.zo","鸟","niǎo","🐦"],["le cheval","lə ʃə.val","马","mǎ","🐴"],["la vache","la vaʃ","牛","niú","🐄"],["le cochon","lə kɔ.ʃɔ̃","猪","zhū","🐷"],["le poisson","lə pwa.sɔ̃","鱼","yú","🐟"],["le panda","lə pɑ̃.da","熊猫","xióngmāo","🐼"]]},
 {id:"loisirs",name:"Loisirs · 爱好",icon:"⚽",color:"#06d6a0",items:[
 ["la musique","la my.zik","音乐","yīnyuè","🎵"],["le sport","lə spɔʁ","运动","yùndòng","🏃"],["le football","lə fut.bol","足球","zúqiú","⚽"],["le cinéma","lə si.ne.ma","电影院","diànyǐngyuàn","🎬"],["le livre","lə livʁ","书","shū","📚"],["voyager","vwa.ja.ʒe","旅行","lǚxíng","🌍"],["nager","na.ʒe","游泳","yóuyǒng","🏊"],["le téléphone","lə te.le.fɔn","手机 / 电话","shǒujī","📱"]]}
+,{id:"maison",name:"Pièces de la maison · 房间",icon:"🏠",color:"#8d5a97",items:[
+["la cuisine","la kɥi.zin","厨房","chúfáng","🍳"],["la chambre","la ʃɑ̃bʁ","卧室","wòshì","🛏️"],["le salon","lə sa.lɔ̃","客厅","kètīng","🛋️"],["la salle de bains","la sal də bɛ̃","浴室","yùshì","🛁"],["les toilettes","le twa.lɛt","厕所","cèsuǒ","🚽"],
+["la salle à manger","la sal a mɑ̃.ʒe","餐厅（家里）","fàntīng","🍽️"],["le jardin","lə ʒaʁ.dɛ̃","花园","huāyuán","🌳"],["le balcon","lə bal.kɔ̃","阳台","yángtái","🪴"],["la porte","la pɔʁt","门","mén","🚪"],["la fenêtre","la fə.nɛtʁ","窗户","chuānghu","🪟"],
+["la table","la tabl","桌子","zhuōzi","🪑"],["la chaise","la ʃɛz","椅子","yǐzi","💺"],["le lit","lə li","床","chuáng","🛏️"],["l'escalier","lɛs.ka.lje","楼梯","lóutī","🪜"]]}
+,{id:"commerces",name:"Les commerces · 商店",icon:"🏪",color:"#fb8500",items:[
+["la boulangerie","la bu.lɑ̃ʒ.ʁi","面包店","miànbāodiàn","🥖"],["la boucherie","la bu.ʃə.ʁi","肉店","ròudiàn","🥩"],["la pharmacie","la faʁ.ma.si","药店","yàodiàn","💊"],["le supermarché","lə sy.pɛʁ.maʁ.ʃe","超市","chāoshì","🛒"],
+["la librairie","la li.bʁɛ.ʁi","书店","shūdiàn","📚"],["la poste","la pɔst","邮局","yóujú","📮"],["la banque","la bɑ̃k","银行","yínháng","🏦"],["le café","lə ka.fe","咖啡馆","kāfēiguǎn","☕"],["le magasin de vêtements","lə ma.ga.zɛ̃ də vɛt.mɑ̃","服装店","fúzhuāngdiàn","👗"],
+["la pâtisserie","la pa.tis.ʁi","甜品店","tiánpǐndiàn","🥐"],["le fleuriste","lə flœ.ʁist","花店","huādiàn","💐"],["le marché","lə maʁ.ʃe","市场","shìchǎng","🧺"]]}
+,{id:"marche",name:"Au marché · 在市场",icon:"🧺",color:"#2bb673",items:[
+["Je voudrais un kilo de…","ʒə vu.dʁɛ œ̃ ki.lo də","我想要一公斤……","wǒ xiǎng yào yì gōngjīn","⚖️"],["un kilo","œ̃ ki.lo","一公斤","yì gōngjīn","⚖️"],["une livre","yn livʁ","一斤（500克）","yì jīn","⚖️"],["Combien ça coûte ?","kɔ̃.bjɛ̃ sa kut","这个多少钱？","zhège duōshao qián","💶"],
+["frais","fʁɛ","新鲜","xīnxiān","🌿"],["Un peu plus","œ̃ pø ply","再多一点","zài duō yìdiǎn","➕"],["Un peu moins","œ̃ pø mwɛ̃","再少一点","zài shǎo yìdiǎn","➖"],["C'est tout","sɛ tu","就这些","jiù zhèxiē","✅"],["Voilà","vwa.la","给你","gěi nǐ","🤲"],["la monnaie","la mɔ.nɛ","零钱 / 找零","língqián","🪙"],["le panier","lə pa.nje","篮子","lánzi","🧺"]]}
+,{id:"fruits",name:"Fruits & légumes · 水果和蔬菜",icon:"🍎",color:"#e63946",items:[
+["la pomme","la pɔm","苹果","píngguǒ","🍎"],["la banane","la ba.nan","香蕉","xiāngjiāo","🍌"],["l'orange","lɔ.ʁɑ̃ʒ","橙子","chéngzi","🍊"],["la fraise","la fʁɛz","草莓","cǎoméi","🍓"],["le raisin","lə ʁɛ.zɛ̃","葡萄","pútao","🍇"],["le citron","lə si.tʁɔ̃","柠檬","níngméng","🍋"],
+["la tomate","la tɔ.mat","西红柿","xīhóngshì","🍅"],["la carotte","la ka.ʁɔt","胡萝卜","húluóbo","🥕"],["la pomme de terre","la pɔm də tɛʁ","土豆","tǔdòu","🥔"],["l'oignon","lɔ.ɲɔ̃","洋葱","yángcōng","🧅"],["la salade","la sa.lad","生菜 / 沙拉","shēngcài","🥬"],["le champignon","lə ʃɑ̃.pi.ɲɔ̃","蘑菇","mógu","🍄"]]}
+,{id:"viandes",name:"Viandes & produits · 肉类和食品",icon:"🥩",color:"#c1121f",items:[
+["le poulet","lə pu.lɛ","鸡肉","jīròu","🍗"],["le bœuf","lə bœf","牛肉","niúròu","🥩"],["le porc","lə pɔʁ","猪肉","zhūròu","🥓"],["le jambon","lə ʒɑ̃.bɔ̃","火腿","huǒtuǐ","🍖"],["les pâtes","le pat","意大利面","yìdàlìmiàn","🍝"],["le beurre","lə bœʁ","黄油","huángyóu","🧈"],
+["le sucre","lə sykʁ","糖","táng","🍬"],["le sel","lə sɛl","盐","yán","🧂"],["la soupe","la sup","汤","tāng","🍲"],["la glace","la glas","冰淇淋","bīngqílín","🍦"],["le chocolat","lə ʃɔ.kɔ.la","巧克力","qiǎokèlì","🍫"],["le jus d'orange","lə ʒy dɔ.ʁɑ̃ʒ","橙汁","chéngzhī","🧃"]]}
+,{id:"sports",name:"Les sports · 运动",icon:"⚽",color:"#06d6a0",items:[
+["le football","lə fut.bol","足球","zúqiú","⚽"],["le basket","lə bas.kɛt","篮球","lánqiú","🏀"],["le tennis","lə te.nis","网球","wǎngqiú","🎾"],["la natation","la na.ta.sjɔ̃","游泳","yóuyǒng","🏊"],["la course","la kuʁs","跑步","pǎobù","🏃"],["le vélo","lə ve.lo","骑自行车","qí zìxíngchē","🚴"],
+["le ski","lə ski","滑雪","huáxuě","⛷️"],["le tennis de table","lə te.nis də tabl","乒乓球","pīngpāngqiú","🏓"],["le yoga","lə jo.ga","瑜伽","yújiā","🧘"],["jouer","ʒwe","玩 / 打（球）","wán / dǎ","🎮"],["gagner","ga.ɲe","赢","yíng","🏆"],["perdre","pɛʁdʁ","输","shū","😞"],["le match","lə matʃ","比赛","bǐsài","🏟️"]]}
+,{id:"vacances",name:"En vacances · 度假",icon:"🏖️",color:"#00b4d8",items:[
+["les vacances","le va.kɑ̃s","假期","jiàqī","🏖️"],["la plage","la plaʒ","海滩","hǎitān","🏝️"],["la mer","la mɛʁ","大海","dàhǎi","🌊"],["la montagne","la mɔ̃.taɲ","山","shān","⛰️"],["l'hôtel","lo.tɛl","酒店","jiǔdiàn","🏨"],["la valise","la va.liz","行李箱","xínglixiāng","🧳"],
+["le billet","lə bi.jɛ","票","piào","🎫"],["le passeport","lə pas.pɔʁ","护照","hùzhào","🛂"],["la photo","la fɔ.to","照片","zhàopiàn","📸"],["visiter","vi.zi.te","参观","cānguān","🗺️"],["se reposer","sə ʁə.po.ze","休息","xiūxi","😌"],["le musée","lə my.ze","博物馆","bówùguǎn","🖼️"],["le soleil","lə sɔ.lɛj","太阳","tàiyáng","☀️"],["Bon voyage !","bɔ̃ vwa.jaʒ","一路平安！","yílù píng'ān","✈️"]]}
+
 ];
-const STEPS=[["Premiers mots · 入门词汇",["salut","presente","nombres"]],
-["Les verbes les plus utiles · 最常用动词",["etre","conj","verbes","m:phr"]],
-["Ma vie · 我的生活",["famille","corps","couleurs","vetements","animaux","loisirs"]],
-["Manger & faire les courses · 吃饭与购物",["manger","resto","courses"]],
-["Voyager · 旅行",["lieux","taxi","temps","meteo"]],
-["Santé · 健康",["docteur"]]];
+const STEPS=[["Les verbes de la classe · 课堂动词",["verbes"]],
+["Les verbes les plus utiles · 最常用动词",["etre","conj","m:phr"]],
+["Premiers mots · 入门词汇",["salut","presente","nombres"]],
+["La maison & la famille · 家和家人",["maison","famille","corps"]],
+["S'habiller · 穿衣打扮",["vetements","couleurs"]],
+["Nourriture & restaurant · 食物与餐厅",["manger","fruits","viandes","resto","marche"]],
+["Commerces & courses · 商店与购物",["commerces","courses"]],
+["Santé · 健康",["docteur"]],
+["Sports, loisirs & vacances · 运动、爱好与假期",["sports","loisirs","animaux","vacances"]],
+["Voyager · 出行",["lieux","taxi","temps","meteo"]]];
 // phrases : mots séparés par "/", prononciation, 中文
 const PH=[
 ["Je/m'appelle/Marie","ʒə ma.pɛl ma.ʁi","我叫玛丽。"],["Je/suis/chinois","ʒə sɥi ʃi.nwa","我是中国人。"],["Comment/vas/tu","kɔ.mɑ̃ va ty","你好吗？"],
