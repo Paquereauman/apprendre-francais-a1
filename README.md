@@ -1,4 +1,4 @@
-# 🥖 Bonjour ! 学法语 · Apprendre le français A1 (pour sinophones)
+# 🥖 Je parle baguette · 我说法棍 — français A1 pour sinophones
 
 Parcours A1 en 17 chapitres (≈ 760 mots, 25 phrases) : vocabulaire avec emojis, prononciation (API), voix neuronale Microsoft, affiches du cours, quiz, répétition espacée.
 Menu au choix : Français, 中文 ou Français + 中文 (bouton 🌐).
@@ -22,3 +22,6 @@ Menu au choix : Français, 中文 ou Français + 中文 (bouton 🌐).
 - `index.html` : l'application ; `data-fr.js`, `data-fr2.js`, `data-fr3.js` : vocabulaire, chapitres, sous-catégories et aides ; `audio-fr/` : sons ; `img-fr/` : affiches.
 - `gen-audio-fr.py` : génère les sons (edge-tts). `export-vocab.js` : génère `server/vocab-fr.json` (**à relancer et à déployer après toute modification du vocabulaire**, le serveur s'en sert pour corriger les quiz).
 - `server/api.php` + `server/vocab-fr.json` : API (à déployer ensemble sur le serveur). Espace de noms `?app=fr` ; l'appli chinoise n'est pas affectée.
+
+## Crédits
+Visages : [DiceBear](https://www.dicebear.com) (MIT) avec les styles Lorelei (CC0, Lisa Wischofsky), Open Peeps (CC0, Pablo Stanley) et Avataaars (Pablo Stanley, usage libre).

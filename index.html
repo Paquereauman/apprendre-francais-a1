@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Bonjour · 学法语 Français A1</title>
+<title>Je parle baguette · 我说法棍</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%A5%96%3C/text%3E%3C/svg%3E">
 <style>
 :root{--bg:#f3f7ff;--card:#fff;--ink:#22304a;--mut:#74809a;--red:#e63946;--blue:#2f5fa8;--ok:#2bb673;--gold:#f4a300}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,"Segoe UI","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
@@ -127,7 +127,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .avc.rar{position:relative;overflow:hidden;border-color:var(--rc);box-shadow:0 0 0 1px var(--rc) inset}.avc.rar.r-s{box-shadow:0 0 8px var(--rc),0 0 0 1px var(--rc) inset}.avc.rar.r-e{background:linear-gradient(135deg,#fff4d6,#ffe2a0);box-shadow:0 0 12px var(--rc),0 0 0 2px var(--rc) inset;animation:epic 2s ease-in-out infinite}@keyframes epic{50%{box-shadow:0 0 20px var(--rc),0 0 0 2px #fff inset}}.avc.rar small{color:var(--rc);font-weight:800}.avc.lk svg{filter:grayscale(1) brightness(.55);opacity:.7}.avc.lk{background:#e9edf5}.lkb{position:absolute;top:4px;right:6px;font-size:1rem}.gcoll{grid-column:1/-1;background:#fff8e6;border:2px solid #c9a24a;border-radius:10px;padding:6px 10px;font-size:.8rem;margin-bottom:8px;color:#7a5a12;font-weight:600}
 .hm-t .hm-bar{height:12px;background:#cfd8ea;border-radius:7px;box-shadow:inset 0 1px 3px #0003}.hm-t .hm-bar i{background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 60%,#fff));border-radius:7px;min-width:0}.hm-t.done .hm-bar i{background:var(--ok)}.hm-t .meta span{font-size:.85rem;font-weight:800;color:#2b3a55;min-width:38px}.hm-t.done .meta span{color:var(--ok)}.hm-card .hm-bar{height:12px;background:#cfd8ea;box-shadow:inset 0 1px 3px #0003}.hm-card .hm-bar i{background:linear-gradient(90deg,#2bb673,#7be0a8)}.hm-t .meta{margin-top:6px}
 </style></head><body>
-<header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette · 我说法棍</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
 <nav id="bnav"><button data-k="home" onclick="home()"><i>🏠</i><small>Parcours · 路径</small></button><button data-k="rev" onclick="revStart()"><i>🔁</i><small>Réviser · 复习</small></button><button data-k="rank" onclick="rankPage()"><i>🏆</i><small>Classement · 排行</small></button><button data-k="me" onclick="profClick()"><i>👤</i><small>Profil · 我</small></button></nav>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
@@ -152,6 +152,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
+<script src="dicebear.js?v=1"></script>
 <script src="data-fr.js?v=202610082019"></script>
 <script src="data-fr2.js?v=202610082019"></script>
 <script src="data-fr3.js?v=202610082019"></script>
@@ -239,7 +240,7 @@ function goBack(){if(document.body.classList.contains("inquiz")){clearTimeout(Q&
   if(cat&&(cur===list||cur===cards||cur===poster))menu();else home()}
 window.addEventListener("popstate",()=>{IN_POP=true;try{if(document.body.classList.contains("inquiz")||(cur&&cur!==home))goBack()}finally{IN_POP=false}});
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
-  document.getElementById("prfb").innerHTML=PNAME?(S.av?`<span class="svgav" style="display:inline-block;vertical-align:middle;width:22px;height:22px">${avSVG(S.av,22)}</span>`:escH(S.emo||"🙂"))+" "+escH(dispName().slice(0,12)):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck));document.getElementById("backb").style.display=(document.body.classList.contains("inquiz")||(cur&&cur!==home))?"":"none"}
+  document.getElementById("prfb").innerHTML=PNAME?(S.av&&S.av.sty!==undefined?`<span class="svgav" style="display:inline-block;vertical-align:middle;width:22px;height:22px">${avSVG(S.av,22)}</span>`:escH(S.emo||"🙂"))+" "+escH(dispName().slice(0,12)):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck));document.getElementById("backb").style.display=(document.body.classList.contains("inquiz")||(cur&&cur!==home))?"":"none"}
 function crumb(p){document.body.classList.remove("inquiz");if(p.length&&!IN_POP){try{history.pushState({p:1},"")}catch(e){}}const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
@@ -448,7 +449,7 @@ const FRMS=["Aucun · 无","Or · 金","Argent · 银","Néon · 霓虹","Arc-en
 const TITLES=[["Débutant · 初学者",0],["Curieux · 好奇宝宝",1],["Explorateur · 探索者",3],["Bavard · 小话痨",6],["Voyageur · 旅行家",10],["Francophone · 法语达人",15],["Maître du français · 法语大师",17]];
 const chDone=()=>STEPS.filter((s,i)=>chB(i)>=80).length;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v|0));
-function avHtml(u,sz){const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;if(u.av&&Object.keys(u.av).length)return `<span class="av f${f} svgav" style="width:${z}px;height:${z}px">${avSVG(u.av,z)}</span>`;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
+function avHtml(u,sz){const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;if(u.av&&u.av.sty!==undefined)return `<span class="av f${f} svgav" style="width:${z}px;height:${z}px">${avSVG(u.av,z)}</span>`;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
 const titleOf=u=>{const k=clamp(u.ttl,0,6);return k>0?TITLES[k][0]:""};
 let MEEMO="";
 function profClick(){PNAME?meOpen():profOpen()}
@@ -536,150 +537,66 @@ async function recGo(){const n=document.getElementById("rn").value.trim(),code=d
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 async function admRecovery(id){try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"recovery",id})});if(!r.ok)throw 0;const j=await r.json();
   prompt(locText("Code de récupération (valable 3 jours, une seule utilisation). Donne-le à l'élève. · 找回代码（3天内有效，仅限一次）。请把它交给学生。"),j.code)}catch(e){toast("Impossible de créer le code · 无法生成代码")}}
-/* ---------- avatar personnalisable (SVG) ---------- */
-const AV_OPT={skin:["#fde0c8","#f5c9a0","#e0a577","#c68642","#8d5524","#5c3a1e","#ffd93d","#fff0e0","#f2d19a","#9bd36b","#7fb8ff","#ff9ec7","#b7b7c2"],hair:["#2b1d14","#5a3825","#a0642f","#d9a441","#e8d9a8","#b83a2e","#8e8e96","#3a5fcd","#c2479b","#00b5b0","#7b4fd1","#ff7a00","#f4f4f4","#15152b","#ff9ec7","#2bb673"],
- bg:["#ffe3e0","#ffefc2","#d8f3dc","#d6e8ff","#e6dcff","#e9e9e9","#e63946","#f4c20d","#2bb673","#1d2b53","#ff9ec7","#222222"],clo:["#e63946","#f4a300","#2bb673","#457b9d","#7b4fd1","#2b2b33","#f4c20d","#ffffff","#8b0000","#1d3557","#e76f51","#00a896"]};
-const AV_N={style:19,eyes:12,brows:3,nose:3,mouth:10,glasses:8,beard:6,hat:15,face:10,top:6,acc:8,pat:6,fr:6};
-const AV_DEF={skin:1,hair:0,style:1,eyes:1,brows:0,nose:0,mouth:0,glasses:0,beard:0,hat:0,face:0,top:0,acc:0,pat:0,fr:0,bg:1,clo:0};
-const AV_LAB={style:"Coupe",hair:"Cheveux",skin:"Peau",eyes:"Yeux",brows:"Sourcils",nose:"Nez",mouth:"Bouche",glasses:"Lunettes",beard:"Barbe",clo:"Couleur du haut",hat:"Chapeau",face:"Visage",top:"Habit",acc:"Accessoire",pat:"Motif de fond",fr:"Cadre",bg:"Fond"};
-const AV_NAMES={acc:["Aucun","Boucles d’oreilles","Casque audio","Écouteurs","Écharpe","Nœud papillon","Collier de perles","Piercings"],pat:["Uni","Pois","Rayures","Étoiles","Vagues","Bulles"],fr:["Aucun","Or","Rouge chinois","Dégradé","Néon","Double"],style:["Chauve","Courte","Longue","Chignon","Bouclée","Crête","Carré","Frange","Afro","Queue de cheval","Couettes","Rasée","Pics","Raie sur le côté","Au bol","Gominée","Tresse","Mi-long ondulé","Dégarni"],eyes:["Points","Ronds","Contents","Endormis","Amande","Fines (mono-paupière)","Kawaii","Étoiles","Cœurs","Spirales","Larmes","Écarquillés"],hat:["Aucun","Chapeau conique (斗笠)","Oreilles de panda","Oreilles de chat","Couronne","Bandeau rouge","Casquette","Cornes","Auréole","Fleur de cerisier","Baguettes à cheveux","Chapeau de mandarin","Bonnet","Oreilles de lapin","Couronne de fleurs"],face:["Aucun","Joues rosées","Taches de rousseur","Masque chirurgical","Moustaches de chat","Peinture d'opéra","Pansement","Étoile sur la joue","Point rouge","Cicatrice"],top:["T-shirt","Col mandarin (唐装)","Col croisé (hanfu)","Qipao","Costume-cravate","Capuche"],brows:["Droits","Arqués","Épais"],nose:["Petit","Rond","Pointu","Aucun"],mouth:["Sourire","Grand sourire","Neutre","En coin","Chat","Langue tirée","Surpris","Bisou","Dents","Triste"],glasses:["Aucune","Rondes","Carrées","Soleil","Cœurs","Étoiles","Monocle","Masque de nuit"],beard:["Aucune","Barbe de 3 jours","Bouc","Barbe pleine","Moustache de sage","Longue barbe de sage"]};
-const avShade=(c,f)=>{const n=parseInt(c.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const t=f<0?0:255,p=Math.abs(f);r=Math.round(r+(t-r)*p);g=Math.round(g+(t-g)*p);b=Math.round(b+(t-b)*p);return"#"+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1)};
-function avSVG(a,px){a=Object.assign({},AV_DEF,a||{});const cc=k=>/^#[0-9a-f]{6}$/i.test(a[k+"C"]||"")?a[k+"C"]:AV_OPT[k][a[k]],sk=cc("skin"),hc=cc("hair"),bgc=cc("bg"),cloc=cc("clo"),dk="#2b1d14",sh="rgba(0,0,0,.14)";let back="",front="";
-  const H=`fill="${hc}"`,cap=`<path d="M22 52C14 -2 86 -2 78 52C74 38 64 30 50 30C36 30 26 38 22 52Z" ${H}/>`,fringe=`<path d="M23 52C16 0 84 0 77 52C73 38 63 31 50 31C37 31 27 38 23 52Z" ${H}/>`;
-  switch(a.style){
-    case 1:front=fringe;break;
-    case 2:back=`<path d="M19 52C14 8 86 8 81 52L84 94L16 94Z" ${H}/>`;front=cap;break;
-    case 3:back=`<circle cx="50" cy="8" r="11" ${H}/>`;front=cap;break;
-    case 4:back=`<circle cx="24" cy="44" r="9" ${H}/><circle cx="76" cy="44" r="9" ${H}/>`;front=[24,36,50,64,76].map((x,i)=>`<circle cx="${x}" cy="${i%2?22:27}" r="13" ${H}/>`).join("")+`<circle cx="22" cy="40" r="8" ${H}/><circle cx="78" cy="40" r="8" ${H}/><path d="M24 44C28 36 38 34 50 34C62 34 72 36 76 44L76 30L24 30Z" ${H}/>`;break;
-    case 5:front=`<path d="M25 44C24 34 28 30 31 30L31 40Z M75 44C76 34 72 30 69 30L69 40Z" ${H} opacity=".5"/><path d="M42 30L45 2L55 2L58 30Z" ${H}/>`;break;
-    case 6:back=`<path d="M19 54C14 8 86 8 81 54L81 70C70 76 30 76 19 70Z" ${H}/>`;front=cap;break;
-    case 7:front=`<path d="M22 52C14 -2 86 -2 78 52C70 44 60 36 40 38C32 40 26 44 22 52Z" ${H}/>`;break;
-    case 8:back=`<circle cx="50" cy="30" r="36" ${H}/>`;front=cap;break;
-    case 9:back=`<path d="M68 22C96 16 100 58 86 76C90 54 82 42 66 38Z" ${H}/>`;front=cap+`<circle cx="76" cy="30" r="3.5" fill="#e63946"/>`;break;
-    case 10:back=`<circle cx="12" cy="46" r="11" ${H}/><circle cx="88" cy="46" r="11" ${H}/>`;front=cap+`<rect x="19" y="36" width="8" height="5" rx="2" fill="#e63946"/><rect x="73" y="36" width="8" height="5" rx="2" fill="#e63946"/>`;break;
-    case 11:front=`<path d="M26 46C24 16 76 16 74 46C70 30 60 26 50 26C40 26 30 30 26 46Z" ${H} opacity=".55"/>`;break;
-    case 12:front=`<path d="M23 44L20 12L35 26L41 2L50 24L59 2L65 26L80 12L77 44C71 32 61 28 50 28C39 28 29 32 23 44Z" ${H}/>`;break;
-    case 13:front=`<path d="M22 52C14 -2 86 -2 78 52C75 40 68 32 58 28C50 40 34 42 22 52Z" ${H}/><path d="M58 28C60 18 62 10 66 6" fill="none" stroke="${sh}" stroke-width="2"/>`;break;
-    case 14:front=`<path d="M21 54C14 -2 86 -2 79 54L77 41Q50 33 23 41Z" ${H}/>`;break;
-    case 15:front=`<path d="M24 50C18 2 82 2 76 50C72 34 62 26 50 26C38 26 28 34 24 50Z" ${H}/><path d="M34 22Q50 10 66 22M30 30Q50 16 70 30" fill="none" stroke="#fff" stroke-width="1.6" opacity=".35"/>`;break;
-    case 16:back=`<g ${H}><circle cx="76" cy="76" r="5.5"/><circle cx="78" cy="85" r="5.5"/><circle cx="76" cy="94" r="5.5"/></g>`;front=cap;break;
-    case 17:back=`<path d="M19 52C14 8 86 8 81 52L88 82C82 78 80 88 74 82C70 88 64 80 60 84L40 84C36 80 30 88 26 82C20 88 18 78 12 82Z" ${H}/>`;front=cap;break;
-    case 18:front=`<path d="M25 52C21 38 26 30 33 32C30 40 31 48 30 56Z M75 52C79 38 74 30 67 32C70 40 69 48 70 56Z" ${H}/><path d="M44 23Q50 17 56 23" fill="none" stroke="${hc}" stroke-width="2.4" stroke-linecap="round"/>`;break}
-  const eye=[`<circle cx="38" cy="49" r="2.8" fill="${dk}"/><circle cx="62" cy="49" r="2.8" fill="${dk}"/>`,
-    `<ellipse cx="38" cy="49" rx="4.6" ry="3.6" fill="#fff"/><ellipse cx="62" cy="49" rx="4.6" ry="3.6" fill="#fff"/><circle cx="38" cy="49" r="2.3" fill="${dk}"/><circle cx="62" cy="49" r="2.3" fill="${dk}"/>`,
-    `<path d="M33 50Q38 43 43 50M57 50Q62 43 67 50" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,
-    `<path d="M33 49H43M57 49H67" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,`<g fill="#fff" stroke="${dk}" stroke-width="1.6"><ellipse cx="38" cy="49" rx="6.4" ry="2.8" transform="rotate(-9 38 49)"/><ellipse cx="62" cy="49" rx="6.4" ry="2.8" transform="rotate(9 62 49)"/></g><circle cx="38.5" cy="49" r="1.9" fill="${dk}"/><circle cx="61.5" cy="49" r="1.9" fill="${dk}"/>`,`<path d="M31 51Q38 46 45 50M69 51Q62 46 55 50" fill="none" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/>`,`<ellipse cx="38" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><ellipse cx="62" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><circle cx="36.6" cy="46.6" r="1.7" fill="#fff"/><circle cx="60.6" cy="46.6" r="1.7" fill="#fff"/><circle cx="39.6" cy="51.4" r=".9" fill="#fff"/><circle cx="63.6" cy="51.4" r=".9" fill="#fff"/>`,`<path d="M38 41L40.2 46.6L46 47L41.5 50.8L43 56.5L38 53.4L33 56.5L34.5 50.8L30 47L35.8 46.6Z M62 41L64.2 46.6L70 47L65.5 50.8L67 56.5L62 53.4L57 56.5L58.5 50.8L54 47L59.8 46.6Z" fill="#f4a300" stroke="${dk}" stroke-width="1"/>`,`<path d="M38 56C28 49 31 42 36 43C37 43.3 38 45 38 45C38 45 38 43.3 40 43C45 42 48 49 38 56Z M62 56C52 49 55 42 60 43C61 43.3 62 45 62 45C62 45 62 43.3 64 43C69 42 72 49 62 56Z" fill="#e63946"/>`,`<g fill="none" stroke="${dk}" stroke-width="1.5"><circle cx="38" cy="49" r="6"/><circle cx="38" cy="49" r="3.4"/><circle cx="62" cy="49" r="6"/><circle cx="62" cy="49" r="3.4"/></g>`,`<ellipse cx="38" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><ellipse cx="62" cy="49" rx="4.4" ry="5.4" fill="${dk}"/><circle cx="36.6" cy="46.6" r="1.7" fill="#fff"/><circle cx="60.6" cy="46.6" r="1.7" fill="#fff"/><path d="M36 56Q35 62 38 63Q41 62 40 56ZM60 56Q59 62 62 63Q65 62 64 56Z" fill="#6ec6ff"/>`,`<circle cx="38" cy="49" r="6.4" fill="#fff" stroke="${dk}" stroke-width="1.6"/><circle cx="62" cy="49" r="6.4" fill="#fff" stroke="${dk}" stroke-width="1.6"/><circle cx="38" cy="49" r="1.6" fill="${dk}"/><circle cx="62" cy="49" r="1.6" fill="${dk}"/>`][a.eyes];
-  const brow=[`<path d="M32 40H44M56 40H68" stroke="${hc}" stroke-width="2.6" stroke-linecap="round"/>`,
-    `<path d="M32 41Q38 36 44 40M56 40Q62 36 68 41" fill="none" stroke="${hc}" stroke-width="2.6" stroke-linecap="round"/>`,
-    `<path d="M31 42L44 38M69 42L56 38" stroke="${hc}" stroke-width="4" stroke-linecap="round"/>`][a.brows];
-  const nose=[`<path d="M48 56Q50 60 53 57" fill="none" stroke="${sh}" stroke-width="2.4" stroke-linecap="round"/>`,`<circle cx="50" cy="57" r="3.6" fill="${sh}"/>`,`<path d="M50 49L46 59H53" fill="none" stroke="${sh}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`,""][a.nose];
-  const mouth=[`<path d="M41 66Q50 74 59 66" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,
-    `<path d="M39 65Q50 66 61 65Q58 76 50 76Q42 76 39 65Z" fill="${dk}"/><path d="M42 66H58" stroke="#fff" stroke-width="2.4"/>`,
-    `<path d="M42 68H58" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,
-    `<path d="M42 68Q52 70 60 64" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`,`<path d="M43 67Q46.5 72 50 67Q53.5 72 57 67" fill="none" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/>`,`<path d="M41 66Q50 74 59 66" fill="none" stroke="${dk}" stroke-width="2.4" stroke-linecap="round"/><path d="M46 69.6Q50 80 54 69.6Z" fill="#ff6b81" stroke="${dk}" stroke-width="1.2"/>`,`<ellipse cx="50" cy="69" rx="4" ry="5" fill="${dk}"/>`,`<path d="M50 74C41 67 44 62 48 63C49.5 63.3 50 65 50 65C50 65 50.5 63.3 52 63C56 62 59 67 50 74Z" fill="#e63946"/>`,`<path d="M40 65H60Q58 76 50 76Q42 76 40 65Z" fill="#fff" stroke="${dk}" stroke-width="2"/><path d="M40 70H60M50 65V76" stroke="${dk}" stroke-width="1.2"/>`,`<path d="M42 70Q50 64 58 70" fill="none" stroke="${dk}" stroke-width="2.6" stroke-linecap="round"/>`][a.mouth];
-  const gl=["",`<g fill="rgba(255,255,255,.25)" stroke="${dk}" stroke-width="2"><circle cx="38" cy="49" r="8.5"/><circle cx="62" cy="49" r="8.5"/><path d="M46.5 49H53.5M29.5 48L25 45M70.5 48L75 45" fill="none"/></g>`,
-    `<g fill="rgba(255,255,255,.25)" stroke="${dk}" stroke-width="2"><rect x="29" y="41" width="18" height="15" rx="3"/><rect x="53" y="41" width="18" height="15" rx="3"/><path d="M47 48H53M29 46L25 44M71 46L75 44" fill="none"/></g>`,
-    `<g fill="${dk}"><rect x="28" y="41" width="20" height="13" rx="5"/><rect x="52" y="41" width="20" height="13" rx="5"/><rect x="47" y="44" width="6" height="2.4"/></g>`,`<g fill="rgba(255,150,170,.55)" stroke="#e63946" stroke-width="2"><path d="M38 57C28 49 31 42 36 43C37 43.3 38 45 38 45C38 45 38 43.3 40 43C45 42 48 49 38 56Z"/><path d="M62 56C52 49 55 42 60 43C61 43.3 62 45 62 45C62 45 62 43.3 64 43C69 42 72 49 62 56Z"/><path d="M46 49H54" fill="none"/></g>`,`<g fill="#ffd23f" stroke="${dk}" stroke-width="1.6"><path d="M38 40L40.8 46.6L47.6 47.2L42.4 51.6L44 58.4L38 54.8L32 58.4L33.6 51.6L28.4 47.2L35.2 46.6Z"/><path d="M62 40L64.8 46.6L71.6 47.2L66.4 51.6L68 58.4L62 54.8L56 58.4L57.6 51.6L52.4 47.2L59.2 46.6Z"/></g>`,`<circle cx="62" cy="49" r="9" fill="rgba(255,255,255,.25)" stroke="#c9a227" stroke-width="2.4"/><path d="M69 56Q76 66 74 84" fill="none" stroke="#c9a227" stroke-width="1.6"/>`,`<rect x="26" y="41" width="48" height="15" rx="7" fill="#6b5b95"/><path d="M34 49Q38 52 42 49M58 49Q62 52 66 49" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>`][a.glasses];
-  const beard=["",`<path d="M26 56C28 80 72 80 74 56C70 70 30 70 26 56Z" fill="${hc}" opacity=".35"/>`,
-    `<path d="M43 71Q50 66 57 71Q56 82 50 82Q44 82 43 71Z" fill="${hc}"/>`,
-    `<path d="M25 54C24 84 76 84 75 54C72 62 66 62 60 63Q50 60 40 63C34 62 28 62 25 54Z" fill="${hc}"/>`,`<path d="M50 63Q40 62 34 70Q32 76 33 84M50 63Q60 62 66 70Q68 76 67 84" fill="none" stroke="${hc}" stroke-width="2.4" stroke-linecap="round"/>`,`<path d="M30 60C30 96 70 96 70 60C64 76 36 76 30 60Z" fill="#f2f2f2" stroke="#cfcfcf" stroke-width="1"/><path d="M42 63Q50 61 58 63" fill="none" stroke="#cfcfcf" stroke-width="2"/>`][a.beard];
-  const hat=["",`<path d="M6 38L50 -4L94 38Q50 29 6 38Z" fill="#e8c36a" stroke="#b8923a" stroke-width="1.5"/><path d="M26 34L22 62M74 34L78 62" stroke="#8a5a2b" stroke-width="1.6"/>`,
-    `<circle cx="25" cy="20" r="10" fill="#222"/><circle cx="75" cy="20" r="10" fill="#222"/><circle cx="25" cy="21" r="4.5" fill="#ff9ec7"/><circle cx="75" cy="21" r="4.5" fill="#ff9ec7"/>`,
-    `<path d="M22 32L24 3L44 20Z M78 32L76 3L56 20Z" fill="${hc}" stroke="${sh}" stroke-width="1"/><path d="M27 24L28 11L37 20Z M73 24L72 11L63 20Z" fill="#ff9ec7"/>`,
-    `<path d="M26 24L29 4L40 14L50 -1L60 14L71 4L74 24Z" fill="#f4c20d" stroke="#b8860b" stroke-width="1.5"/><circle cx="50" cy="12" r="2.6" fill="#e63946"/><circle cx="33" cy="15" r="2" fill="#2bb673"/><circle cx="67" cy="15" r="2" fill="#457b9d"/>`,
-    `<path d="M24 35Q50 22 76 35L76 43Q50 31 24 43Z" fill="#e63946"/><circle cx="50" cy="35" r="4.2" fill="#fff"/><circle cx="50" cy="35" r="2.3" fill="#e63946"/><path d="M76 38L90 46L82 48L92 58" fill="none" stroke="#e63946" stroke-width="4" stroke-linecap="round"/>`,
-    `<path d="M25 30C25 6 75 6 75 30Z" fill="#3a5fcd"/><path d="M23 30Q50 24 77 30L97 32Q80 40 60 35Z" fill="#2a47a8"/>`,
-    `<path d="M28 28Q16 14 24 0Q36 8 40 24Z M72 28Q84 14 76 0Q64 8 60 24Z" fill="#e63946"/>`,
-    `<ellipse cx="50" cy="4" rx="20" ry="5" fill="none" stroke="#ffd23f" stroke-width="3.2"/>`,
-    `<g transform="translate(30 24)"><g fill="#ffb7c5"><circle cx="0" cy="-6" r="5"/><circle cx="5.7" cy="-1.8" r="5"/><circle cx="3.5" cy="4.9" r="5"/><circle cx="-3.5" cy="4.9" r="5"/><circle cx="-5.7" cy="-1.8" r="5"/></g><circle r="2.6" fill="#ffd23f"/></g>`,
-    `<path d="M32 26L6 -4M42 22L16 -6" stroke="#b5651d" stroke-width="2.6" stroke-linecap="round"/><circle cx="6" cy="-4" r="2.6" fill="#e63946"/><circle cx="16" cy="-6" r="2.6" fill="#e63946"/>`,
-    `<path d="M27 28C27 8 73 8 73 28Z" fill="#1d1d1d"/><rect x="-2" y="14" width="32" height="6" rx="3" fill="#1d1d1d"/><rect x="70" y="14" width="32" height="6" rx="3" fill="#1d1d1d"/><rect x="27" y="26" width="46" height="4" fill="#f4c20d"/>`,
-    `<path d="M23 34C23 4 77 4 77 34Z" fill="#2bb673"/><rect x="21" y="30" width="58" height="9" rx="4" fill="#1f8f58"/><circle cx="50" cy="3" r="6" fill="#fff"/>`,
-    `<path d="M33 22C26 -14 40 -12 43 20Z M67 22C74 -14 60 -12 57 20Z" fill="#fff" stroke="#d6d6d6" stroke-width="1.2"/><path d="M36 18C32 -4 38 -4 40 18Z M64 18C68 -4 62 -4 60 18Z" fill="#ffb7c5"/>`,
-    [[26,30],[32,21],[40,16],[50,14],[60,16],[68,21],[74,30]].map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${["#ff8fab","#ffd23f","#9be564"][i%3]}"/>`).join("")][a.hat];
-  const faceX=["",`<circle cx="31" cy="60" r="5.5" fill="#ff6b81" opacity=".35"/><circle cx="69" cy="60" r="5.5" fill="#ff6b81" opacity=".35"/>`,
-    [[42,56],[45,59],[39,59],[58,56],[55,59],[61,59],[50,55]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r=".9" fill="#a0642f"/>`).join(""),
-    `<path d="M26 56Q50 51 74 56L72 76Q50 88 28 76Z" fill="#e8f4fa" stroke="#9fc5d6" stroke-width="1.4"/><path d="M30 62Q50 58 70 62M31 69Q50 65 69 69" stroke="#b9d6e3" stroke-width="1.2" fill="none"/><path d="M26 58L22 52M74 58L78 52" stroke="#9fc5d6" stroke-width="1.4"/>`,
-    `<path d="M32 60L16 55M32 63L15 63M32 66L16 71M68 60L84 55M68 63L85 63M68 66L84 71" stroke="${dk}" stroke-width="1.4" stroke-linecap="round"/>`,
-    `<ellipse cx="38" cy="49" rx="9" ry="6.5" fill="#e63946" opacity=".6"/><ellipse cx="62" cy="49" rx="9" ry="6.5" fill="#e63946" opacity=".6"/><path d="M50 28L45 41H55Z" fill="#e63946"/><path d="M32 66Q50 60 68 66" fill="none" stroke="#e63946" stroke-width="3" opacity=".6"/>`,
-    `<g transform="rotate(-25 63 59)"><rect x="56" y="56" width="14" height="6.4" rx="3.2" fill="#f2c9a0" stroke="#c99a7a" stroke-width="1"/><rect x="60" y="56" width="6" height="6.4" fill="#e6b98f"/></g>`,
-    `<path d="M67 55L68.6 59L73 59.4L69.6 62.2L70.8 66.4L67 64L63.2 66.4L64.4 62.2L61 59.4L65.4 59Z" fill="#ffd23f" stroke="#c9a227" stroke-width=".8"/>`,
-    `<circle cx="50" cy="31" r="2.8" fill="#e63946"/>`,
-    `<path d="M33 38L42 59" stroke="#b34a4a" stroke-width="2" stroke-linecap="round"/><path d="M35 44L39 42M37 50L41 48M39 55L43 53" stroke="#b34a4a" stroke-width="1.2"/>`][a.face];
-  const topX=["",`<path d="M40 78L41 72Q50 77 59 72L60 78Q50 84 40 78Z" fill="rgba(0,0,0,.28)"/><circle cx="50" cy="88" r="2.2" fill="#f4c20d"/><circle cx="50" cy="95" r="2.2" fill="#f4c20d"/>`,
-    `<path d="M39 78L50 100L61 78L57 78L50 92L43 78Z" fill="#fff"/><path d="M50 92L68 100" stroke="#fff" stroke-width="2.4"/><path d="M8 97H92V100H8Z" fill="#f4c20d"/>`,
-    `<path d="M40 78L41 72Q50 77 59 72L60 78Q50 84 40 78Z" fill="rgba(0,0,0,.28)"/><path d="M50 80Q62 82 70 94" fill="none" stroke="#f4c20d" stroke-width="2.2"/><circle cx="54" cy="83" r="1.8" fill="#f4c20d"/><circle cx="61" cy="87" r="1.8" fill="#f4c20d"/><circle cx="67" cy="92" r="1.8" fill="#f4c20d"/>`,
-    `<path d="M40 78L50 92L60 78Z" fill="#fff"/><path d="M48 80H52L54 96L50 100L46 96Z" fill="#c1121f"/><path d="M34 80L45 100M66 80L55 100" stroke="#1b1b1b" stroke-width="4"/>`,
-    `<path d="M30 78Q50 98 70 78Q77 85 72 93Q50 105 28 93Q23 85 30 78Z" fill="rgba(0,0,0,.22)"/><path d="M46 90V100M54 90V100" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>`][a.top];
-  const patX=["",
-    [0,1,2,3,4].flatMap(r=>[0,1,2,3,4,5].map(c=>`<circle cx="${8+c*17+(r%2)*8}" cy="${8+r*22}" r="2.4" fill="#fff" opacity=".35"/>`)).join(""),
-    [0,1,2,3,4,5,6,7].map(i=>`<rect x="${i*16}" y="0" width="8" height="100" fill="#fff" opacity=".22"/>`).join(""),
-    [[14,16],[84,22],[22,52],[80,60],[50,10],[12,84],[88,86]].map(p=>`<path d="M${p[0]} ${p[1]-4}L${p[0]+1.2} ${p[1]-1.2}L${p[0]+4} ${p[1]}L${p[0]+1.2} ${p[1]+1.2}L${p[0]} ${p[1]+4}L${p[0]-1.2} ${p[1]+1.2}L${p[0]-4} ${p[1]}L${p[0]-1.2} ${p[1]-1.2}Z" fill="#fff" opacity=".7"/>`).join(""),
-    [0,1,2,3].map(i=>`<path d="M0 ${18+i*24}Q12 ${10+i*24} 25 ${18+i*24}T50 ${18+i*24}T75 ${18+i*24}T100 ${18+i*24}" fill="none" stroke="#fff" stroke-width="3" opacity=".3"/>`).join(""),
-    [[16,20,9],[84,30,12],[20,78,12],[86,82,8],[70,10,6]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" fill="#fff" opacity=".28"/>`).join("")][a.pat];
-  const accX=["",
-    `<circle cx="25" cy="61" r="3.2" fill="#f4c20d" stroke="#b8860b" stroke-width=".8"/><circle cx="75" cy="61" r="3.2" fill="#f4c20d" stroke="#b8860b" stroke-width=".8"/>`,
-    `<path d="M22 54C19 2 81 2 78 54" fill="none" stroke="#2b2b33" stroke-width="5" stroke-linecap="round"/><rect x="15" y="44" width="10" height="20" rx="5" fill="#e63946"/><rect x="75" y="44" width="10" height="20" rx="5" fill="#e63946"/>`,
-    `<circle cx="27" cy="56" r="3" fill="#fff" stroke="#bbb" stroke-width=".8"/><circle cx="73" cy="56" r="3" fill="#fff" stroke="#bbb" stroke-width=".8"/><path d="M27 59Q26 80 38 92M73 59Q74 80 62 92" fill="none" stroke="#fff" stroke-width="1.4"/>`,
-    `<path d="M28 80Q50 94 72 80L74 92Q50 106 26 92Z" fill="#e63946"/><path d="M60 88L70 104L58 102Z" fill="#c1121f"/><path d="M34 84Q50 92 66 84" fill="none" stroke="#fff" stroke-width="1.2" opacity=".6"/>`,
-    `<path d="M50 83L40 78L40 90ZM50 83L60 78L60 90Z" fill="#c1121f"/><circle cx="50" cy="83" r="3" fill="#8b0000"/>`,
-    [30,34,38,42,46,50,54,58,62,66,70].map((x,i)=>`<circle cx="${x}" cy="${79+Math.sin(i/10*Math.PI)*8}" r="2.6" fill="#fff" stroke="#ddd" stroke-width=".6"/>`).join(""),
-    `<circle cx="54.5" cy="59" r="1.9" fill="none" stroke="#f4c20d" stroke-width="1"/><circle cx="66" cy="40" r="1.4" fill="#cfd8dc" stroke="#78909c" stroke-width=".5"/><circle cx="25" cy="58" r="1.4" fill="#f4c20d"/><circle cx="75" cy="58" r="1.4" fill="#f4c20d"/>`][a.acc];
-  const frX=["",
-    `<circle cx="50" cy="50" r="48" fill="none" stroke="#f4c20d" stroke-width="4"/>`,
-    `<circle cx="50" cy="50" r="48" fill="none" stroke="#e63946" stroke-width="4"/><circle cx="50" cy="50" r="44.5" fill="none" stroke="#f4c20d" stroke-width="1.2"/>`,
-    `<defs><linearGradient id="avg${px}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7b4fd1"/><stop offset=".5" stop-color="#ff5ea8"/><stop offset="1" stop-color="#ffb703"/></linearGradient></defs><circle cx="50" cy="50" r="48" fill="none" stroke="url(#avg${px})" stroke-width="4.5"/>`,
-    `<circle cx="50" cy="50" r="48" fill="none" stroke="#00e5ff" stroke-width="2.4"/><circle cx="50" cy="50" r="46" fill="none" stroke="#00e5ff" stroke-width="5" opacity=".25"/>`,
-    `<circle cx="50" cy="50" r="48.2" fill="none" stroke="#fff" stroke-width="3"/><circle cx="50" cy="50" r="45.5" fill="none" stroke="#0055a4" stroke-width="2"/>`][a.fr];
-  const catch_=(a.eyes===0||a.eyes===1||a.eyes===4)?`<circle cx="37" cy="47.8" r="1.1" fill="#fff"/><circle cx="61" cy="47.8" r="1.1" fill="#fff"/>`:"";
-  const lip=(a.mouth===1||a.mouth===5||a.mouth===7)?"":`<ellipse cx="50" cy="${a.mouth===6?66.6:69.2}" rx="4.5" ry="1" fill="#fff" opacity=".35"/>`;
-  const sk1=avShade(sk,.35),sk2=avShade(sk,-.22),hl=avShade(hc,.4);
-  return `<svg class="avsvg" viewBox="-8 -14 116 118" width="${px}" height="${px}" role="img" aria-label="Ton avatar"><defs><linearGradient id="avmg${px}" x1="0" y1="0" x2="0" y2="1"><stop offset=".86" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient><mask id="avm${px}" maskUnits="userSpaceOnUse" x="-8" y="-14" width="116" height="118"><rect x="-8" y="-14" width="116" height="118" fill="url(#avmg${px})"/></mask>
-  <radialGradient id="avs${px}" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="${sk1}"/><stop offset=".55" stop-color="${sk}"/><stop offset="1" stop-color="${sk2}"/></radialGradient>
-  <radialGradient id="avb${px}" cx=".35" cy=".25" r="1.1"><stop offset="0" stop-color="${avShade(bgc,.35)}"/><stop offset="1" stop-color="${avShade(bgc,-.18)}"/></radialGradient>
-  <radialGradient id="avk${px}"><stop offset="0" stop-color="#ff6b81" stop-opacity=".5"/><stop offset="1" stop-color="#ff6b81" stop-opacity="0"/></radialGradient>
-  <linearGradient id="avn${px}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient>
-  <filter id="avf${px}" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur in="SourceAlpha" stdDeviation="2.1" result="b"/><feSpecularLighting in="b" surfaceScale="4.5" specularConstant=".85" specularExponent="22" lighting-color="#fff" result="s"><fePointLight x="22" y="6" z="55"/></feSpecularLighting><feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/><feComposite in="SourceGraphic" in2="s2" operator="arithmetic" k1="0" k2="1" k3=".9" k4="0" result="lit"/><feDropShadow in="lit" dx="0" dy="1.6" stdDeviation="1.3" flood-color="#000" flood-opacity=".38"/></filter></defs><g><ellipse cx="50" cy="101" rx="34" ry="3.5" fill="#000" opacity=".18"/>
-  <g mask="url(#avm${px})" filter="url(#avf${px})">${back}<rect x="42" y="68" width="16" height="22" fill="url(#avs${px})"/><rect x="42" y="68" width="16" height="22" fill="${sh}"/><path d="M8 100C10 82 28 78 50 78C72 78 90 82 92 100Z" fill="${cloc}"/><path d="M40 78Q50 90 60 78" fill="url(#avs${px})"/>${topX}
-  <circle cx="25" cy="52" r="5" fill="url(#avs${px})"/><circle cx="75" cy="52" r="5" fill="url(#avs${px})"/><ellipse cx="50" cy="79" rx="13" ry="6" fill="#000" opacity=".22"/><ellipse cx="50" cy="48" rx="25" ry="29" fill="url(#avs${px})"/>
-  <circle cx="30" cy="60" r="8" fill="url(#avk${px})"/><circle cx="70" cy="60" r="8" fill="url(#avk${px})"/>${beard}${nose}${mouth}${lip}${eye}${catch_}${brow}${faceX}${gl}${front}<path d="M33 22Q42 12 56 14" fill="none" stroke="${hl}" stroke-width="3" stroke-linecap="round" opacity=".45"/>${hat}${accX}</g></g></svg>`}
-
-/* ---- cadeaux quotidiens : accessoires à collectionner ---- */
+/* ---------- avatar personnalisable (DiceBear, styles libres CC0) ---------- */
+const DBS=["lorelei","avataaars","openPeeps"],DBN=["Lorelei · 优雅","Avataaars · 经典","Open Peeps · 手绘"];
+const DBP={lorelei:[["hair"],["hairColor","c"],["head"],["eyes"],["eyebrows"],["mouth"],["nose"],["glasses","o"],["beard","o"],["earrings","o"],["freckles","o"],["hairAccessories","o"],["skinColor","c"]],
+ avataaars:[["top","o"],["hairColor","c"],["hatColor","c"],["eyes"],["eyebrows"],["mouth"],["facialHair","o"],["facialHairColor","c"],["accessories","o"],["clothing"],["clothingGraphic"],["clothesColor","c"],["skinColor","c"]],
+ openPeeps:[["head"],["headContrastColor","c"],["face"],["facialHair","o"],["accessories","o"],["mask","o"],["skinColor","c"],["clothingColor","c"]]};
+const DBL={hair:"Cheveux · 发型",hairColor:"Couleur des cheveux · 发色",head:"Tête · 脸型",eyes:"Yeux · 眼睛",eyebrows:"Sourcils · 眉毛",mouth:"Bouche · 嘴巴",nose:"Nez · 鼻子",glasses:"Lunettes · 眼镜",beard:"Barbe · 胡子",earrings:"Boucles d'oreilles · 耳环",freckles:"Taches de rousseur · 雀斑",hairAccessories:"Accessoire cheveux · 发饰",skinColor:"Peau · 肤色",top:"Coiffure / chapeau · 发型/帽子",hatColor:"Couleur du chapeau · 帽子颜色",facialHair:"Barbe · 胡子",facialHairColor:"Couleur de la barbe · 胡子颜色",accessories:"Accessoire · 配饰",clothing:"Habit · 衣服",clothingGraphic:"Motif · 图案",clothesColor:"Couleur de l'habit · 衣服颜色",face:"Expression · 表情",mask:"Masque · 口罩",headContrastColor:"Couleur des cheveux · 发色",clothingColor:"Couleur de l'habit · 衣服颜色"};
+const DBI={hair:"💇",hairColor:"🎨",head:"🗣️",eyes:"👁️",eyebrows:"🤨",mouth:"👄",nose:"👃",glasses:"👓",beard:"🧔",earrings:"💎",freckles:"✨",hairAccessories:"🎀",skinColor:"🧑",top:"🎩",hatColor:"🎨",facialHair:"🧔",facialHairColor:"🎨",accessories:"👓",clothing:"👕",clothingGraphic:"🖼️",clothesColor:"🎽",face:"😀",mask:"😷",headContrastColor:"🎨",clothingColor:"🎽"};
+const DBK=i=>"p"+String.fromCharCode(97+i);
+const dbStyle=a=>DBS[(a&&a.sty|0)%DBS.length];
+const dbSch=(st,n)=>window.DB.styles[st].schema.properties[n];
+const dbEnum=(st,n)=>{const p=dbSch(st,n);return p.items&&p.items.enum||[]};
+const dbDefCols=(st,n)=>(dbSch(st,n).default||[]).map(c=>"#"+String(c).replace("#",""));
+const DBC={};
+function dbOpts(a){const st=dbStyle(a),o={randomizeIds:true,seed:"fr"};DBP[st].forEach(([n,t],i)=>{const v=a[DBK(i)];
+  if(t==="c"){const d=dbDefCols(st,n);const c=/^#[0-9a-f]{6}$/i.test(v||"")?v:d[(v|0)%(d.length||1)]||d[0];if(c)o[n]=[c.replace("#","")]}
+  else{const en=dbEnum(st,n);if(!en.length)return;if(t==="o"){if(!(v>0)){o[n+"Probability"]=0}else{o[n+"Probability"]=100;o[n]=[en[(v-1)%en.length]]}}else o[n]=[en[(v|0)%en.length]]}});return o}
+function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+px;if(DBC[key])return DBC[key];
+  let s;try{s=window.DB.createAvatar(window.DB.styles[dbStyle(a)],Object.assign({size:px},o)).toString()}catch(e){s=""}
+  if(Object.keys(DBC).length>600)Object.keys(DBC).slice(0,200).forEach(k=>delete DBC[k]);return DBC[key]=s}
+/* cadeaux quotidiens : accessoires à collectionner (options facultatives du style choisi) */
 const RAR={c:["Commun · 普通","#2bb673"],r:["Rare · 稀有","#2f7fe0"],s:["Super rare · 超稀有","#8e44e0"],e:["Épique · 史诗","#ff9f1a"]};
-const LOCK={hat:{1:"r",2:"c",3:"c",4:"e",5:"r",6:"c",7:"s",8:"s",9:"e",10:"s",11:"r",12:"c",13:"r",14:"s"},glasses:{1:"c",2:"c",3:"r",4:"s",5:"s",6:"r",7:"s"},acc:{1:"c",2:"r",3:"r",4:"c",5:"c",6:"s",7:"e"},face:{1:"c",2:"c",3:"c",4:"r",5:"r",6:"e",7:"c",8:"s",9:"r"},beard:{1:"c",2:"c",3:"r",4:"r",5:"s"},top:{1:"r",2:"s",3:"r",4:"c",5:"e"}};
-const LOCKN=Object.values(LOCK).reduce((n,o)=>n+Object.keys(o).length,0);
-const owned=(k,i)=>!(LOCK[k]&&LOCK[k][i])||(S.unl||[]).includes(k+":"+i);
-const rarOf=(k,i)=>LOCK[k]&&LOCK[k][i];
-function giftDraw(){const un=[];Object.entries(LOCK).forEach(([k,o])=>Object.entries(o).forEach(([i,r])=>{if(!owned(k,+i))un.push([k,+i,r])}));if(!un.length)return null;
-  const W={c:60,r:25,s:11,e:4},av=[...new Set(un.map(u=>u[2]))],tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
-  const pool=un.filter(u=>u[2]===rr);return pool[Math.random()*pool.length|0]}
-function giftCheck(){if(document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
-  S.unl=S.unl||[];const a=S.av||{};Object.keys(LOCK).forEach(k=>{if(a[k]&&LOCK[k][a[k]]&&!S.unl.includes(k+":"+a[k]))S.unl.push(k+":"+a[k])});
-  S.lgd=t;const g=giftDraw();if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
-  S.unl.push(g[0]+":"+g[1]);save();giftShow(g)}
-function giftShow(g){const[k,i,r]=g,R=RAR[r],a=Object.assign({},AV_DEF,S.av||{},{[k]:i}),d=document.createElement("div");d.id="gift";
-  d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">🎁 Cadeau du jour · 每日礼物</div><div class="gav shiny">${avSVG(a,150)}</div><div class="gr">${R[0]}</div><div class="gn">${AV_LAB[k]||k} : ${(AV_NAMES[k]||[])[i]||""}</div><div class="gc">Collection : ${(S.unl||[]).length}/${LOCKN} · 收藏</div><div class="ga"><button onclick="giftEquip('${k}',${i})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
+const rarHash=(st,n,i)=>{let x=0;(st+n).split("").forEach(c=>x=(x*31+c.charCodeAt(0))%1009);const v=(x*7+i*37)%100;return v<52?"c":v<80?"r":v<94?"s":"e"};
+function dbLocks(st){const L=[];DBP[st].forEach(([n,t],i)=>{if(t==="o")dbEnum(st,n).forEach((_,j)=>L.push([n,i,j+1,rarHash(st,n,j+1)]))});return L}
+const owned=(st,n,i)=>(S.unl||[]).includes(st+":"+n+":"+i);
+function giftDraw(){const st=dbStyle(S.av||{}),un=dbLocks(st).filter(l=>!owned(st,l[0],l[2]));if(!un.length)return null;
+  const W={c:60,r:25,s:11,e:4},av=[...new Set(un.map(u=>u[3]))],tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
+  const pool=un.filter(u=>u[3]===rr);return pool[Math.random()*pool.length|0]}
+function giftCheck(){if(!window.DB||document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
+  S.unl=S.unl||[];S.lgd=t;const g=giftDraw(),st=dbStyle(S.av||{});if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
+  S.unl.push(st+":"+g[0]+":"+g[2]);save();giftShow(g)}
+function giftShow(g){const[n,i,v,r]=g,R=RAR[r],a=Object.assign({sty:0},S.av||{}),st=dbStyle(a),lk=dbLocks(st),tot=lk.length,mine=lk.filter(l=>owned(st,l[0],l[2])).length,d=document.createElement("div");d.id="gift";
+  a[DBK(i)]=v;d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">🎁 Cadeau du jour · 每日礼物</div><div class="gav shiny">${avSVG(a,150)}</div><div class="gr">${R[0]}</div><div class="gn">${DBL[n]}</div><div class="gc">Collection : ${mine}/${tot} · 收藏</div><div class="ga"><button onclick="giftEquip(${i},${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
   document.body.appendChild(d);loc(d);fanfare();burst(innerWidth/2,innerHeight/2,r==="e"?120:r==="s"?80:50);if(navigator.vibrate)try{navigator.vibrate(r==="e"?[60,40,60,40,120]:[60])}catch(e){}}
 function giftClose(){const d=document.getElementById("gift");if(d)d.remove()}
-function giftEquip(k,i){const a=avGet();a[k]=i;S.av=a;save();giftClose();head();if(cur)cur();toast("✨ Équipé ! · 已穿上")}
-const avGet=()=>Object.assign({},AV_DEF,S.av||{});
-function avOpen(){avDraw();document.getElementById("avp").classList.add("on")}
+function giftEquip(i,v){const a=avGet();a[DBK(i)]=v;S.av=a;save();giftClose();head();if(cur)cur();toast("✨ Équipé ! · 已穿上")}
+const avGet=()=>Object.assign({sty:1},S.av||{});
+function avStart(sty){const a={sty},st=DBS[sty],W={eyes:["default","happy"],eyebrows:["default","defaultNatural"],mouth:["smile","happy01","happy02"],top:["shortFlat","shortWaved","shortRound"],clothing:["hoodie","shirtCrewNeck","graphicShirt"],face:["smile","calm","cheeky"],head:["short1","short2"],hair:["variant01","variant02"]};
+  DBP[st].forEach(([n,t],i)=>{if(t==="c"){a[DBK(i)]=0}else if(t==="o"){a[DBK(i)]=n==="top"?(dbEnum(st,n).indexOf("shortFlat")+1||1):0}else{const en=dbEnum(st,n),w=(W[n]||[]).map(x=>en.indexOf(x)).filter(x=>x>=0);a[DBK(i)]=w.length?w[0]:0}});return a}
+function avOpen(){if(!S.av||S.av.sty===undefined){S.av=avStart(1);save()}AVT="sty";avDraw();document.getElementById("avp").classList.add("on")}
 function avClose(){document.getElementById("avp").classList.remove("on");mePrev();head();if(cur)cur()}
-function avSet(k,v){const a=avGet(),n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];if(!owned(k,(v+n)%n))return;a[k]=(v+n)%n;delete a[k+"C"];AVH.push(JSON.stringify(S.av||{}));S.av=a;save();avDraw()}
-function avCol(k,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[k+"C"]=v;S.av=a;save();avPrev()}
+function avSet(i,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[i==="sty"?"sty":DBK(i)]=v;S.av=a;save();avDraw()}
+function avCol(i,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[DBK(i)]=v;S.av=a;save();avPrev()}
 function avNone(){S.av=null;save();document.getElementById("avp").classList.remove("on");mePrev();head()}
 function avUndo(){const p=AVH.pop();if(!p)return toast("Rien à annuler");S.av=JSON.parse(p);save();avDraw()}
-let AVH=[],AVT="style";
-function avRand(){const a={};AVH.push(JSON.stringify(S.av||{}));Object.keys(AV_DEF).forEach(k=>{const n=AV_OPT[k]?AV_OPT[k].length:AV_N[k];let v,t=0;do{v=Math.random()*n|0}while(!owned(k,v)&&++t<40);a[k]=owned(k,v)?v:0});S.av=a;save();avDraw()}
-const AV_TABS=[["style","💇","Coupe · 发型"],["hair","🎨","Cheveux · 发色"],["hat","🎩","Chapeau · 帽子"],["skin","🧑","Peau · 肤色"],["eyes","👁️","Yeux · 眼睛"],["brows","🤨","Sourcils · 眉毛"],["nose","👃","Nez · 鼻子"],["mouth","👄","Bouche · 嘴巴"],["face","🎭","Visage · 脸部"],["glasses","👓","Lunettes · 眼镜"],["beard","🧔","Barbe · 胡子"],["top","👕","Habit · 衣服"],["clo","🎽","Couleur · 衣服颜色"],["acc","💎","Accessoire · 配饰"]];
-function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avSVG(avGet(),132)}
-function avDraw(){const a=avGet(),k=AVT;avPrev();
-  document.getElementById("avtabs").innerHTML=AV_TABS.map(t=>`<div role="button" class="avt${k===t[0]?" on":""}" onclick="AVT='${t[0]}';avDraw()"><span>${t[1]}</span>${t[2]}</div>`).join("");
+let AVH=[],AVT="sty";
+function avRand(){const a={sty:avGet().sty},st=dbStyle(a);AVH.push(JSON.stringify(S.av||{}));DBP[st].forEach(([n,t],i)=>{if(t==="c"){const d=dbDefCols(st,n);a[DBK(i)]=d[Math.random()*d.length|0]||"#000000"}else if(t==="o"){const m=[0,...dbEnum(st,n).map((_,j)=>j+1).filter(j=>owned(st,n,j))];a[DBK(i)]=m[Math.random()*m.length|0]}else a[DBK(i)]=Math.random()*dbEnum(st,n).length|0});S.av=a;save();avDraw()}
+function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avSVG(avGet(),150)}
+function avPrevItem(a,k,v){const b=Object.assign({},a);b[DBK(k)]=v;return avSVG(b,64)}
+function avDraw(){const a=avGet(),st=dbStyle(a);avPrev();
+  const tabs=[["sty","🎭","Style · 风格"],...DBP[st].map(([n],i)=>[i,DBI[n]||"•",DBL[n]])];if(!tabs.some(t=>t[0]===AVT))AVT="sty";const k=AVT;
+  document.getElementById("avtabs").innerHTML=tabs.map(t=>`<div role="button" class="avt${k===t[0]?" on":""}" onclick="AVT=${typeof t[0]==="number"?t[0]:"'sty'"};avDraw()"><span>${t[1]}</span>${t[2]}</div>`).join("");
   let h="";
-  if(AV_OPT[k]){const cur=/^#[0-9a-f]{6}$/i.test(a[k+"C"]||"")?a[k+"C"]:AV_OPT[k][a[k]];
-    h=`<div class="avsw2">${AV_OPT[k].map((c,i)=>`<button type="button" aria-label="${AV_LAB[k]} ${i+1}" aria-pressed="${!a[k+"C"]&&a[k]===i}" style="background:${c}" onclick="avSet('${k}',${i})"></button>`).join("")}</div>
-    <label class="avcu"><span>🎨 Couleur personnalisée</span><input type="color" value="${cur}" oninput="avCol('${k}',this.value)"></label>`}
-  else h=(LOCK[k]?`<div class="gcoll">🎁 Collection · 收藏 : ${(S.unl||[]).length}/${LOCKN} — connecte-toi chaque jour pour gagner un accessoire ! · 每天登录可获得一件配饰！</div>`:"")+`<div class="avgrid">${AV_NAMES[k].map((n,i)=>{const r=rarOf(k,i),ok=owned(k,i);return `<div role="button" class="avc${a[k]===i?" on":""}${r?" rar r-"+r:""}${ok?"":" lk"}" ${r?`style="--rc:${RAR[r][1]}"`:""} onclick="${ok?`avSet('${k}',${i})`:`toast('🔒 À gagner avec le cadeau du jour · 通过每日礼物获得')`}">${avSVG(Object.assign({},a,{[k]:i}),64)}${ok?"":"<span class=lkb>🔒</span>"}<small>${ok?n:RAR[r][0]}</small></div>`}).join("")}</div>`;
+  if(k==="sty")h=`<div class="avgrid">${DBS.map((s,i)=>`<div role="button" class="avc${a.sty===i?" on":""}" onclick="avSet('sty',${i})">${avSVG({sty:i},64)}<small>${DBN[i]}</small></div>`).join("")}</div>`;
+  else{const[n,t]=DBP[st][k];
+    if(t==="c"){const d=dbDefCols(st,n),cur=/^#[0-9a-f]{6}$/i.test(a[DBK(k)]||"")?a[DBK(k)]:d[(a[DBK(k)]|0)%d.length]||d[0];
+      h=`<div class="avsw2">${d.map(c=>`<button type="button" style="background:${c}" aria-pressed="${c.toLowerCase()===String(cur).toLowerCase()}" onclick="avSet(${k},'${c}')"></button>`).join("")}</div><label class="avcu"><span>🎨 Couleur personnalisée · 自定义颜色</span><input type="color" value="${cur}" oninput="avCol(${k},this.value)"></label>`}
+    else{const en=dbEnum(st,n),cur=a[DBK(k)]|0,opt=t==="o",lk=opt?dbLocks(st):[];
+      const items=(opt?[0]:[]).concat(en.map((_,j)=>opt?j+1:j));
+      h=(opt?`<div class="gcoll">🎁 Collection · 收藏 : ${lk.filter(l=>owned(st,l[0],l[2])).length}/${lk.length} — connecte-toi chaque jour pour gagner un accessoire ! · 每天登录可获得一件配饰！</div>`:"")+`<div class="avgrid">${items.map(v=>{const r=opt&&v>0?rarHash(st,n,v):"",ok=!r||owned(st,n,v);
+        return `<div role="button" class="avc${cur===v?" on":""}${r?" rar r-"+r:""}${ok?"":" lk"}" ${r?`style="--rc:${RAR[r][1]}"`:""} onclick="${ok?`avSet(${k},${v})`:`toast('🔒 À gagner avec le cadeau du jour · 通过每日礼物获得')`}">${avPrevItem(a,k,v)}${ok?"":"<span class=lkb>🔒</span>"}<small>${v===0&&opt?"Aucun · 无":ok?"#"+(opt?v:v+1):RAR[r][0]}</small></div>`}).join("")}</div>`}}
   document.getElementById("avrows").innerHTML=h}
 
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
