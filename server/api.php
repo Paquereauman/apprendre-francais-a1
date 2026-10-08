@@ -97,13 +97,14 @@ function rank_main($k, $base, $app) {
     $av = []; foreach (($S["av"] ?? []) as $ak => $av_v) { if (!is_string($ak) || !preg_match("/^[a-zA-Z]{2,8}$/", $ak) || count($av) >= 30) continue; if (is_int($av_v) && $av_v >= 0 && $av_v < 100) $av[$ak] = $av_v; elseif (is_string($av_v) && preg_match("/^#[0-9a-fA-F]{6}$/", $av_v)) $av[$ak] = $av_v; }
     $qr = ($app !== "") ? qres_load($base, $id) : null;
     list($pts, $chp) = $qr ? res_points($qr) : [0, 0];
+    $lts = 0; if ($qr) { foreach ($qr["res"] as $e0) { $lts = max($lts, (int)($e0["ts"] ?? 0)); } }
     list($mpts, $mts) = $qr ? month_pts($qr["hist"], $ym) : [0, 0];
     list($ppts, $pts2) = $qr ? month_pts($qr["hist"], $ymp) : [0, 0];
     $isme = ($id === $h); if ($isme) $me = true;
-    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "pts" => $pts, "ch" => $chp, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
+    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
   }
   $byPts = ($app !== "");
-  usort($out, function ($a, $b) use ($byPts) { return $byPts ? [$b["pts"], $b["xp"], $b["words"]] <=> [$a["pts"], $a["xp"], $a["words"]] : [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
+  usort($out, function ($a, $b) use ($byPts) { return $byPts ? [-$a["pts"], $a["lts"] ?: PHP_INT_MAX] <=> [-$b["pts"], $b["lts"] ?: PHP_INT_MAX] : [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
   $win = null;
   if ($app !== "") { $c = array_filter($out, function ($u) { return $u["pm"] > 0; }); usort($c, function ($a, $b) { return [$b["pm"], $a["pmt"]] <=> [$a["pm"], $b["pmt"]]; }); if ($c) { $w = array_values($c)[0]; $win = ["ym" => $ymp, "name" => $w["name"], "emo" => $w["emo"], "pts" => $w["pm"]]; } }
   echo json_encode(["app" => $app, "ym" => $ym, "winner" => $win, "classes" => ($app !== "" ? classes_load($base) : []), "list" => array_slice($out, 0, 300), "me" => $me, "total" => count($out)], JSON_UNESCAPED_UNICODE);

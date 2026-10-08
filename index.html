@@ -91,10 +91,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081403"></script>
-<script src="data-fr2.js?v=202610081403"></script>
-<script src="data-fr3.js?v=202610081403"></script>
-<script src="audio-fr/map.js?v=202610081403"></script>
+<script src="data-fr.js?v=202610081409"></script>
+<script src="data-fr2.js?v=202610081409"></script>
+<script src="data-fr3.js?v=202610081409"></script>
+<script src="audio-fr/map.js?v=202610081409"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -156,9 +156,9 @@ function timerHtml(T){if(!S.cls)return `<p style="color:var(--mut)">Élève indi
   if(p.from&&p.to)h+=`<p>🏖️ Vacances (le chronomètre est en pause) : du ${fmtD(p.from)} au ${fmtD(p.to)} · 假期（计时暂停）：${fmtZ(p.from)}至${fmtZ(p.to)}</p>`;
   if(!T||T.noEnd)return h+`<p style="color:var(--mut)">Ton professeur n'a pas encore défini la date de fin du parcours. · 老师尚未设定课程结束日期。</p>`;
   if(T.over)return h+`<p>⌛ La date de fin du parcours est dépassée. · 已超过课程结束日期。</p>`;
-  h+=T.onBreak?`<p style="font-size:1.1rem">⏸️ Pause vacances : le chronomètre est arrêté. · 假期暂停：计时已停止。</p><p>Il restera <b>${T.days}</b> jours de travail avant le ${fmtD(p.end)}. · 在${fmtZ(p.end)}之前还将有 <b>${T.days}</b> 个学习日。</p>`
-    :`<p style="font-size:1.1rem">⏳ Il reste <b>${T.days}</b> jours de travail avant le ${fmtD(p.end)}. · 距${fmtZ(p.end)}还剩 <b>${T.days}</b> 个学习日。</p>`;
-  if(T.days>0)h+=`<p>🎯 Rythme conseillé : <b>${T.perWeek}</b> chapitre(s) par semaine. · 建议进度：每周约 <b>${T.perWeek}</b> 章。</p>`;return h}
+  h+=T.onBreak?`<p style="font-size:1.1rem">⏸️ Pause vacances : le chronomètre est arrêté. · 假期暂停：计时已停止。</p><p>Il restera ${T.days} jours de travail avant le ${fmtD(p.end)}. · 在${fmtZ(p.end)}之前还将有 ${T.days} 个学习日。</p>`
+    :`<p style="font-size:1.1rem">⏳ Il reste ${T.days} jours de travail avant le ${fmtD(p.end)}. · 距${fmtZ(p.end)}还剩 ${T.days} 个学习日。</p>`;
+  if(T.days>0)h+=`<p>🎯 Rythme conseillé : ${T.perWeek} chapitre(s) par semaine. · 建议进度：每周约 ${T.perWeek} 章。</p>`;return h}
 function checkDone(){const n=[];ALL().forEach(c=>{if(!S.done[c.id]&&mastery(c)>=85){S.done[c.id]=1;n.push(c.name)}});if(n.length){save();celebrate((UI()==="zh"?"🎓 小节已掌握：":"🎓 Fiche maîtrisée : ")+n.map(nmCur).join(", "))}}
 /* ---- répétition espacée ---- */
 const INTV=[0,1,2,4,8,16,32];
@@ -400,7 +400,7 @@ function uMastery(u,c){if(c.mod)return Math.min(100,(u.phr||0)/c.n*100);const v=
 const heat=p=>`hsl(${Math.round(Math.max(0,Math.min(100,p))*1.2)},65%,${90-Math.round(p*.18)}%)`;
 const uTitle=u=>`${escH(u.emo||"🙂")} ${escH(u.nick||u.name)}${u.nick&&u.nick!==u.name?` <small>(${escH(u.name)})</small>`:""}${u.admin?" 🛡️":""}${u.rank?" 🏆":""}`;
 const admSeen=u=>u.seen?new Date(u.seen*1000).toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR"):"–";
-const ymL=ym=>{const[y,m]=ym.split("-");return MONTHS_FR[+m-1]+" "+y};
+const ymL=ym=>ymLabel(ym);
 async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Administration · 管理"]]);
   const H=`<h2 style="margin:0">🛡️ Administration · 管理</h2>`;
   $.innerHTML=`<div class="hm">${H}<div class="hm-card">Chargement… · 加载中……</div></div>`;await admStatus();
@@ -411,7 +411,7 @@ async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours 
   const filt=`<select onchange="AV.cls=this.value;adminPage()"><option value="*" ${AV.cls==="*"?"selected":""}>Toutes les classes · 所有班级</option>`+cl.map(c=>`<option value="${escH(c.id)}" ${AV.cls===c.id?"selected":""}>${escH(c.name)} (${all.filter(u=>u.cls===c.id).length})</option>`).join("")+`<option value="" ${AV.cls===""?"selected":""}>Élèves individuels · 个人学员 (${all.filter(u=>u.cls==="").length})</option></select>`;
   let body="";
   if(AV.tab==="eleves"){
-    body=`<div class="hm-card" style="font-size:.85rem;color:var(--mut)">Les cases colorées = résultat du <b>quiz de fin de chapitre</b> (corrigé par le serveur, fiable) pour chacun des ${STEPS.length} chapitres : rouge = à travailler, vert = validé (≥ 80 %). Touche un élève pour le détail. · 彩色方格 = 各章“章节测验”成绩（由服务器批改，可靠）：红色=需加强，绿色=已通过（≥80%）。点击学生查看详情。</div>`+
+    body=`<div class="hm-card" style="font-size:.85rem;color:var(--mut)">Les cases colorées = résultat du quiz de fin de chapitre (corrigé par le serveur, fiable) pour chacun des ${STEPS.length} chapitres : rouge = à travailler, vert = validé (≥ 80 %). Touche un élève pour le détail. · 彩色方格 = 各章“章节测验”成绩（由服务器批改，可靠）：红色=需加强，绿色=已通过（≥80%）。点击学生查看详情。</div>`+
     (users.map(u=>{const av=uAll(u);
       return `<details class="adu"><summary><span class="adn">${uTitle(u)}</span><span class="adp">${Math.round(av)} % · ${uDone(u)}/${STEPS.length}</span><span class="heat">${STEPS.map((s,i)=>`<i title="${i+1}. ${escH(nmCur(s[0]))} — ${uQ(u,i)} %" style="background:${heat(uQ(u,i))}"></i>`).join("")}</span></summary>
       <div class="adbody"><div class="lb-sub">⭐ ${u.xp} XP · 🔥 ${u.streak} · ${admSeen(u)}</div>
@@ -429,7 +429,7 @@ async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours 
     cl.map(c=>`<div class="hm-card"><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><b style="flex:1">🏫 ${escH(c.name)}</b><small style="color:var(--mut)">${all.filter(u=>u.cls===c.id).length} élève(s) · 名学生</small><button class="alt" style="padding:5px 9px" onclick="admRen('${escH(c.id)}')">Renommer · 重命名</button><button class="alt" style="padding:5px 9px" onclick="admDel('${escH(c.id)}')">Supprimer · 删除</button></div>
     <div class="adact" style="margin-top:8px"><span>🏖️ Vacances (pause du chronomètre) · 假期（计时暂停） :</span><input type="date" id="pf_${escH(c.id)}" value="${escH(c.from||"")}"><span>→</span><input type="date" id="pt_${escH(c.id)}" value="${escH(c.to||"")}"></div>
     <div class="adact"><span>🏁 Fin du parcours · 课程结束日期 :</span><input type="date" id="pe_${escH(c.id)}" value="${escH(c.end||"")}"><button onclick="admPer('${escH(c.id)}')">Enregistrer · 保存</button></div>
-    <div class="lb-sub">Le chronomètre compte les jours de travail jusqu'à la date de fin, <b>sans compter les vacances</b> (pause). Il ne concerne que les élèves de cette classe. Laisse vide pour ne pas en utiliser. · 计时器统计到结束日期之前的学习日，<b>假期不计入（暂停）</b>。仅对该班学生生效；留空则不启用。</div></div>`).join("")+
+    <div class="lb-sub">Le chronomètre compte les jours de travail jusqu'à la date de fin, sans compter les vacances (pause). Il ne concerne que les élèves de cette classe. Laisse vide pour ne pas en utiliser. · 计时器统计到结束日期之前的学习日，假期不计入（暂停）。仅对该班学生生效；留空则不启用。</div></div>`).join("")+
     `<div class="lb"><div class="lb-nm">👤 Élève individuel · 个人学员<div class="lb-sub">${all.filter(u=>u.cls==="").length} élève(s) · 名学生</div></div></div>`+
     `<div class="hm-card"><input id="ncl" class="t" style="margin:0 0 8px" placeholder="Nouvelle classe / 新班级（例如 Classe 2027）"><div class="nav" style="margin:0"><button onclick="admAdd()">➕ Créer la classe · 创建班级</button></div></div>`}
   $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🛡️ Administration · 管理</h2><small style="color:var(--mut)">${all.length} compte(s) · ${all.length} 个账号</small></div><div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div>${AV.tab==="classes"||AV.tab==="mois"?"":`<div>${filt}</div>`}${body}</div>`}
@@ -490,7 +490,7 @@ async function srvEnd(){const r=Q.sum||{};await loadQV();const pct=r.pct||0,i=Q.
   <div class="nav">${(QV&&QV.left&&QV.left[stepKey(i)]>0)?`<button onclick="chapQuizStart(${i})">🔁 Rejouer · 再来</button>`:""}<button class="alt" onclick="home()">🏠 Parcours · 路径</button><button class="alt" onclick="rankPage()">🏆 Classement · 排行榜</button></div></div>`}
 let RK={f:null,tab:"month"};
 const MONTHS_FR=["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
-function ymLabel(ym){const [y,m]=ym.split("-");return MONTHS_FR[+m-1]+" "+y+" · "+y+"年"+(+m)+"月"}
+function ymLabel(ym){const [y,m]=ym.split("-"),f=MONTHS_FR[+m-1]+" "+y,z=y+"年"+(+m)+"月";return UI()==="zh"?z:UI()==="fr"?f:f+" / "+z}
 async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Classement · 排行榜"]]);
   const H=`<h2 style="margin:0">🏆 Classement · 排行榜</h2>`;
   $.innerHTML=`<div class="hm">${H}<div class="hm-card">Chargement… · 加载中……</div></div>`;
@@ -501,16 +501,16 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
   const cl=R.classes||[],cn=id=>(cl.find(c=>c.id===id)||{name:id}).name,all=R.list||[],month=RK.tab==="month";
   if(RK.f===null)RK.f=S.cls||"*";
   const key=u=>month?u.m:u.pts;
-  const shown=all.filter(u=>RK.f==="*"||u.cls===RK.f).slice().sort((a,b)=>month?(b.m-a.m||(a.mt||9e15)-(b.mt||9e15)||b.pts-a.pts):(b.pts-a.pts||b.xp-a.xp)),pos=shown.findIndex(u=>u.me);
+  const shown=all.filter(u=>RK.f==="*"||u.cls===RK.f).slice().sort((a,b)=>month?(b.m-a.m||(a.mt||9e15)-(b.mt||9e15)||b.pts-a.pts):(b.pts-a.pts||(a.lts||9e15)-(b.lts||9e15))),pos=shown.findIndex(u=>u.me);
   const now=new Date(),dleft=Math.max(0,new Date(now.getFullYear(),now.getMonth()+1,1)-now)/864e5|0;
-  const prize=`<div class="hm-card" style="background:#fff8e1;border-color:#f4a300"><b>🎁 Classement du mois · 本月排行榜</b> — ${ymLabel(R.ym||"")}<br><span style="font-size:.88rem">Le 1er du mois gagne une petite surprise ! Plus que <b>${dleft}</b> jour(s). · 每月第一名可获得小惊喜！本月还剩 <b>${dleft}</b> 天。</span>${R.winner?`<br><span style="font-size:.88rem">🏆 Vainqueur de ${ymLabel(R.winner.ym)} : ${escH(R.winner.emo||"🙂")} <b>${escH(R.winner.name)}</b> (${R.winner.pts} pts) · 上月冠军</span>`:""}</div>`;
+  const prize=`<div class="hm-card" style="background:#fff8e1;border-color:#f4a300"><b>🎁 Classement du mois · 本月排行榜</b> — ${ymLabel(R.ym||"")}<br><span style="font-size:.88rem">Le 1er du mois gagne une petite surprise ! Plus que ${dleft} jour(s). · 每月第一名可获得小惊喜！本月还剩 ${dleft} 天。</span>${R.winner?`<br><span style="font-size:.88rem">🏆 Vainqueur du mois dernier · 上月冠军 : <span>${ymLabel(R.winner.ym)} — ${escH(R.winner.emo||"🙂")} ${escH(R.winner.name)} (${R.winner.pts} pts)</span></span>`:""}</div>`;
   const how=`<div class="hm-card" style="font-size:.84rem;color:var(--mut)">Points = meilleur score (sur 100) de chaque quiz de fin de chapitre, corrigé par le serveur. « Ce mois-ci » = points gagnés pendant le mois (progrès par rapport à tes meilleurs scores d'avant). · 积分 = 各章测验（由服务器批改）的最佳成绩（满分100）。“本月”= 本月内取得的进步分数。</div>`;
   const info=!PNAME?`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Connecte-toi pour apparaître dans le classement · 登录后即可进入排行榜</b></div><div class="nav" style="margin:0"><button onclick="profOpen()">Compte · 账号</button></div></div>`
-    :R.me?`<div class="hm-card" style="font-size:.88rem">${pos>=0?`🎯 Tu es n°<b>${pos+1}</b> sur ${shown.length} · 你排名第 <b>${pos+1}</b>（共 ${shown.length} 人）<br>`:""}Tu apparais avec ton pseudo et ton emoji. · 排行榜显示你的昵称和表情。 <span class="lb-leave" role="button" onclick="rankLeave()">Me retirer · 退出</span></div>`
+    :R.me?`<div class="hm-card" style="font-size:.88rem">${pos>=0?`🎯 Tu es n°${pos+1} sur ${shown.length} · 你排名第 ${pos+1}（共 ${shown.length} 人）<br>`:""}Tu apparais avec ton pseudo et ton emoji. · 排行榜显示你的昵称和表情。 <span class="lb-leave" role="button" onclick="rankLeave()">Me retirer · 退出</span></div>`
     :`<div class="hm-sync"><div style="flex:1 1 240px"><b>Tu n'es pas dans le classement · 你不在排行榜中</b></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Revenir · 加入</button></div></div>`;
   const tabs=[["month","📅 Ce mois-ci · 本月"],["total","🏆 Total · 总榜"]].map(([k,l])=>`<button style="padding:7px 13px;border:0;border-radius:10px;color:#fff;background:${RK.tab===k?"var(--blue)":"#8d99ae"}" onclick="RK.tab='${k}';rankPage()">${l}</button>`).join("");
   const chips=[["*","🌍 Tous · 全部",all.length],...cl.map(c=>[c.id,"🏫 "+c.name,all.filter(u=>u.cls===c.id).length]),["","👤 Individuels · 个人",all.filter(u=>!u.cls).length]].map(([f,l,n])=>`<button class="${RK.f===f?"":"alt"}" style="padding:6px 11px;border:0;border-radius:99px;color:#fff;background:${RK.f===f?"var(--blue)":"#8d99ae"};font-size:.85rem" onclick="RK.f='${escH(f)}';rankPage()">${l} (${n})</button>`).join("");
-  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${key(u)>0||!month?medal(i):"·"}</div><div class="lb-nm">${escH(u.emo||"🙂")} ${escH(u.name)}${u.me?" <small>(toi)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub">🏁 ${u.ch} chapitre(s) validé(s) · ${u.ch}章 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">🏆 ${key(u)}<small> pts · 分</small></div></div>`).join("");
+  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${key(u)>0||!month?medal(i):"·"}</div><div class="lb-nm">${escH(u.emo||"🙂")} ${escH(u.name)}${u.me?" <small>(toi · 你)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub">🏁 ${u.ch} chapitre(s) validé(s) · ${u.ch}章 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">🏆 ${key(u)}<small> pts · 分</small></div></div>`).join("");
   $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">${H}<small style="color:var(--mut)">${shown.length} participant${shown.length>1?"s":""} · ${shown.length} 位参与者</small></div>${prize}<div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${chips}</div>${info}`+
     (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+how+`</div>`}
 try{speechSynthesis.getVoices()}catch(e){}
