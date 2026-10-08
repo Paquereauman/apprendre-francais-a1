@@ -678,12 +678,12 @@ Je bois de l'eau|ʒə bwa də lo|我喝水|wǒ hē shuǐ|💧
 Bon appétit !|bɔ̃ na.pe.ti|祝你好胃口！|zhù nǐ hǎo wèikǒu|😋`);
 
 /* ---- Parcours (ordre du cours FLE débutant) ---- */
-STEPS=[["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
-["C'est moi : salutations & se présenter · 这是我：问候与自我介绍",["salut","presente","nombres"]],
+STEPS=[["C'est moi : salutations & se présenter · 这是我：问候与自我介绍",["salut","presente","nombres"]],
+["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
 ["L'âge, les nombres jusqu'à 30 & poser des questions · 年龄、30以内的数字与提问",["n11","age","questions"]],
 ["Ma famille · 我的家人",["famille","possessifs","animaux"]],
-["Les jours, les mois & la date · 星期、月份与日期",["jours","mois"]],
-["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n40","n100","heure","nombres2"]],
+["Les jours, les nombres jusqu'à 40, les mois & la date · 星期、40以内的数字、月份与日期",["jours","n40","mois"]],
+["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n100","heure","nombres2"]],
 ["Le temps qu'il fait · 天气",["meteo","temps"]],
 ["Comment on s'habille · 怎么穿衣",["vetements","couleurs"]],
 ["Décrire une personne · 描述一个人",["physique","cheveux"]],

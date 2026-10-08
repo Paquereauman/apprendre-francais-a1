@@ -62,14 +62,27 @@ select{font:inherit;padding:4px;border-radius:8px}
  .opts{gap:6px}.opts button{padding:9px;font-size:1rem}
  .hm-sync{padding:8px 10px;gap:6px 10px}.hm-sync .hm-sub{display:none}.hm-sync .nav button{padding:6px 12px;font-size:.85rem}
 }
+.egrid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin:8px 0}.eb{font-size:1.45rem;padding:3px;border:2px solid transparent;border-radius:10px;background:#f4f6fb;cursor:pointer;line-height:1.3}.eb.on{border-color:var(--blue);background:#e3edff}
+.pcl{display:block;margin:4px 0;font-size:.95rem}.modal .pcl input{width:auto;margin:0 6px 0 0}
+.adu{background:#fff;border:1px solid #e3e9f5;border-radius:12px;margin-bottom:6px}.adu summary{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:8px 10px;cursor:pointer;list-style:none}.adu summary::-webkit-details-marker{display:none}
+.adn{font-weight:700;flex:1 1 150px;min-width:0}.adp{font-weight:800;color:var(--blue)}.heat{display:flex;gap:2px;flex:1 1 100%}.heat i{flex:1;height:14px;border-radius:3px;min-width:6px}
+.adbody{padding:4px 10px 10px;font-size:.85rem}.adact{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}.adact button{padding:5px 9px;border:0;border-radius:8px;background:var(--blue);color:#fff;cursor:pointer}.adact .alt{background:#8d99ae}
+.adst{margin-top:6px}.adus{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}.adc{padding:2px 7px;border-radius:99px;font-size:.78rem}
+.adt{border-collapse:collapse;width:100%;font-size:.82rem;background:#fff}.adt th,.adt td{border:1px solid #e3e9f5;padding:4px 6px;text-align:center}.adt td:first-child,.adt th:first-child{text-align:left;position:sticky;left:0;background:#fff}
+@media(max-width:700px){.egrid{grid-template-columns:repeat(6,1fr)}}
 </style></head><body>
-<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profOpen()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><h1 onclick="home()">🥖 Bonjour ! · 学法语 A1</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
 <button class="langb" onclick="setLang('fr')">🇫🇷 Français</button><button class="langb" onclick="setLang('zh')">🇨🇳 中文</button><button class="langb" onclick="setLang('both')">🇫🇷 + 🇨🇳 Français + 中文</button></div></div>
+<div class="modal" id="me"><div class="box"><h3>🙂 Mon profil · 我的资料</h3><div id="mlogin" class="evd"></div>
+<div style="text-align:center;font-size:3rem" id="mprev">🙂</div>
+<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div id="mmsg" class="evd"></div>
+<div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
+<div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
-<div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
+<div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <script src="data-fr.js"></script>
 <script src="data-fr2.js"></script>
@@ -107,14 +120,18 @@ function addXp(n){const a=lvOf(S.xp);S.xp+=n;touchStreak();save();head();const b
 const mastery=c=>{if(c.mod)return Math.min(100,(S.phr||0)/c.n*100);const v=[(S.known[c.id]||[]).length/c.items.length*100];if(S.best[c.id])v.push(S.best[c.id]);if(S.test[c.id]!=null)v.push(S.test[c.id]);return v.reduce((a,b)=>a+b)/v.length};
 const estF=c=>c.mod?mastery(c)/100:Math.max((S.known[c.id]||[]).length/c.items.length,S.test[c.id]!=null?S.test[c.id]/100:0);
 function stats(){const rows=ALL().map(c=>({c,m:mastery(c),rem:c.items.length*(1-estF(c))}));const tot=rows.reduce((n,r)=>n+r.c.items.length,0),rem=rows.reduce((n,r)=>n+r.rem,0);return{all:rows.reduce((n,r)=>n+r.m,0)/rows.length,tot,rem,done:rows.filter(r=>r.m>=85).length,n:rows.length,rows}}
-const goalDay=()=>{const st=stats(),c=courseInfo();return Math.min(60,Math.max(1,Math.ceil(st.rem*1.25/c.left)))};
-/* ---- le cours A1 se déroule du 15 janvier au 7 mars : le chronomètre ne compte que sur cette période ---- */
+const goalDay=()=>{if(!inWindow())return Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));const st=stats(),c=courseInfo();return Math.min(60,Math.max(1,Math.ceil(st.rem*1.25/c.left)))};
+/* ---- 15 janvier – 7 mars : vacances (pas de cours). Le chronomètre ne concerne que la Classe 2026 ; les autres élèves ont un rythme personnel. ---- */
+const inWindow=()=>S.cls==="classe2026";
 function courseWindow(){const n=new Date(),y=n.getFullYear();let s=new Date(y,0,15),e=new Date(y,2,7,23,59,59);if(n>e){s=new Date(y+1,0,15);e=new Date(y+1,2,7,23,59,59)}return{s,e}}
 const dayDiff=(a,b)=>Math.ceil((b-a)/864e5);
 function courseInfo(){const{s,e}=courseWindow(),n=new Date(),before=n<s,from=before?s:n;return{s,e,before,left:Math.max(1,dayDiff(from,e)),toStart:before?dayDiff(n,s):0}}
-function eta(st){if(st.rem<st.tot*.08)return null;const c=courseInfo();
-  return{dur:c.before?"Début dans "+c.toStart+" jour"+(c.toStart>1?"s":"")+" · "+c.toStart+"天后开始":"Il reste "+c.left+" jour"+(c.left>1?"s":"")+" · 还剩"+c.left+"天",
-   date:c.e.toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR",{day:"numeric",month:"long",year:"numeric"})}}
+const fmtDate=d=>d.toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR",{day:"numeric",month:"long",year:"numeric"});
+function eta(st){if(st.rem<st.tot*.08)return null;
+  if(inWindow()){const c=courseInfo();
+    return{dur:c.before?"Début dans "+c.toStart+" jour"+(c.toStart>1?"s":"")+" · "+c.toStart+"天后开始":"Il reste "+c.left+" jour"+(c.left>1?"s":"")+" · 还剩"+c.left+"天",date:fmtDate(c.e)}}
+  const wpd=S.unit==="week"?S.pace/7:S.pace,d=Math.ceil(st.rem*1.25/wpd);
+  return{dur:d>=14?"~"+Math.ceil(d/7)+" semaines · 约"+Math.ceil(d/7)+"周":"~"+d+" jour"+(d>1?"s":"")+" · 约"+d+"天",date:fmtDate(new Date(Date.now()+d*864e5))}}
 function checkDone(){const n=[];ALL().forEach(c=>{if(!S.done[c.id]&&mastery(c)>=85){S.done[c.id]=1;n.push(c.name)}});if(n.length){save();celebrate((UI()==="zh"?"🎓 章节完成：":"🎓 Chapitre validé : ")+n.map(nmCur).join(", "))}}
 /* ---- répétition espacée ---- */
 const INTV=[0,1,2,4,8,16,32];
@@ -124,7 +141,7 @@ function setKnown(cid,h,on){const a=S.known[cid]=S.known[cid]||[],i=a.indexOf(h)
 /* ---- navigation / accueil ---- */
 let cat,Q,cur;
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
-  document.getElementById("prfb").textContent=PNAME?"👤 "+PNAME.slice(0,10):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%"}
+  document.getElementById("prfb").textContent=PNAME?(S.emo||"🙂")+" "+dispName().slice(0,12):"👤 Connexion · 登录";document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%"}
 function crumb(p){const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
@@ -225,8 +242,8 @@ function setPace(v){S.pace=+v;save();plan()}function setUnit(u){S.unit=u;S.pace=
 const lvl=m=>m<30?["À démarrer · 待开始","#e63946"]:m<60?["En cours · 学习中","#f4a300"]:m<85?["Presque · 快掌握","#457b9d"]:["Acquis · 已掌握","#2bb673"];
 function plan(){cur=plan;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Mon plan · 我的计划"]]);const st=stats(),E=eta(st),u=S.unit,v=S.pace;
   $.innerHTML=`<h2>📊 Mon plan vers l'A1 · 我的A1计划</h2><div class="q" style="text-align:left"><div style="display:flex;justify-content:space-between"><b>Ce que tu maîtrises · 你已掌握</b><b>${Math.round(st.tot-st.rem)} / ${st.tot}</b></div><div class="bar" style="height:12px"><i style="width:${(st.tot-st.rem)/st.tot*100}%"></i></div>
-  <p>📅 Cours A1 : du 15 janvier au 7 mars · A1课程：1月15日至3月7日</p><p>🎯 Objectif : <b>${goalDay()}</b> mots par jour · 目标：每天 <b>${goalDay()}</b> 个词</p>
-  ${E?`<p style="font-size:1.15rem">⏳ ${E.dur}<br>📅 Fin du cours · 课程结束 : <b>${E.date}</b></p><small style="color:var(--mut)">Objectif : mots restants + 25 % de révision, répartis sur les jours restants. · 目标：剩余词数加25%复习，平均分配到剩余天数。</small>`:`<p>🎉 <b>Niveau A1 atteint ! · 达到A1水平！</b></p>`}</div>
+  ${inWindow()?`<p>📅 Vacances (pas de cours) : du 15 janvier au 7 mars · 假期（无课）：1月15日至3月7日</p><p>🎯 Objectif : <b>${goalDay()}</b> mots par jour · 目标：每天 <b>${goalDay()}</b> 个词</p>`:`<p>🎯 Je veux apprendre · 我想学 <select onchange="setPace(this.value)">${PACE[u].map(x=>`<option ${x===v?"selected":""} value="${x}">${x} mots · 个词</option>`).join("")}</select> <select onchange="setUnit(this.value)"><option value="day" ${u==="day"?"selected":""}>par jour · 每天</option><option value="week" ${u==="week"?"selected":""}>par semaine · 每周</option></select></p>`}
+  ${E?`<p style="font-size:1.15rem">⏳ ${E.dur}<br>📅 ${inWindow()?"Fin des vacances · 假期结束":"Fin prévue · 预计完成"} : <b>${E.date}</b></p><small style="color:var(--mut)">${inWindow()?"Objectif : mots restants + 25 % de révision, répartis sur les jours de vacances restants. · 目标：剩余词数加25%复习，平均分配到剩余的假期天数。":"Calcul : mots restants ÷ mots par jour, +25 % de révision. · 计算方法：剩余词数 ÷ 每日词数，另加25%复习。"}</small>`:`<p>🎉 <b>Niveau A1 atteint ! · 达到A1水平！</b></p>`}</div>
   <div class="tiles"><div class="tile" onclick="testStart(1)"><span>⚡</span><b>Test rapide · 快速测试</b><small>1 mot par thème · 每个主题1个词${S.testDate?" — "+S.testDate:""}</small></div><div class="tile" onclick="testStart(2)"><span>📝</span><b>Test complet · 完整测试</b><small>2 mots par thème · 每个主题2个词</small></div></div>
   <div class="nav" style="justify-content:flex-start"><button class="alt" onclick="resetAll()">🔄 Tout réinitialiser · 全部重置</button></div><h3>Ton parcours · 学习路径</h3>`+
   st.rows.map(({c,m,rem})=>{const[l,col]=lvl(m);return`<div class="rowp" onclick="openAny('${c.id}')"><div class="rv" style="font-size:1.6rem">${c.icon}</div><div class="rt"><b style="font-size:.95rem">${c.name}</b><div class="bar" style="height:5px"><i style="width:${m}%;background:${col}"></i></div></div><div style="text-align:right;font-size:.75rem"><b style="color:${col}">${l}</b><br>${Math.round(m)} % · ${rem>=.5?"~"+Math.ceil(rem)+" restants · 剩余":"✔"}</div></div>`}).join("")}
@@ -257,13 +274,13 @@ if(!CODE){try{CODE=rndCode();localStorage.setItem("frA1code",CODE)}catch(e){CODE
 let pushT=null;
 const setCloud=x=>{const e=document.getElementById("cld");if(e)e.textContent=x};
 function schedPush(){if(!PNAME)return;clearTimeout(pushT);pushT=setTimeout(push,800);setCloud("☁️…")}
-async function push(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ+"&n="+encodeURIComponent(PNAME),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️")}catch(e){setCloud("☁️ ⚠️")}}
+async function push(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ+"&n="+encodeURIComponent(PNAME)+"&c="+encodeURIComponent(S.cls||""),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️")}catch(e){setCloud("☁️ ⚠️")}}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);if(eA>eB)return clone(A);
   const M=clone(A);M.known=M.known||{};M.best=M.best||{};
   Object.entries(B.known||{}).forEach(([id,arr])=>{const k=M.known[id]=M.known[id]||[];arr.forEach(h=>{if(!k.includes(h))k.push(h)})});
   Object.entries(B.best||{}).forEach(([id,v])=>M.best[id]=Math.max(M.best[id]||0,v));
-  if((B.ts||0)>(A.ts||0)){M.test=Object.assign({},M.test||{},B.test||{});M.testDate=B.testDate||M.testDate;if(B.pace){M.pace=B.pace;M.unit=B.unit}}
+  if((B.ts||0)>(A.ts||0)){M.nick=B.nick||M.nick;M.emo=B.emo||M.emo;M.test=Object.assign({},M.test||{},B.test||{});M.testDate=B.testDate||M.testDate;if(B.pace){M.pace=B.pace;M.unit=B.unit}}
   M.ev=M.ev||{};Object.entries(B.ev||{}).forEach(([k,a])=>{M.ev[k]=[...new Set([...(M.ev[k]||[]),...a])]});
   M.rev=M.rev||{};Object.entries(B.rev||{}).forEach(([k,e])=>{if(!M.rev[k]||e.d>M.rev[k].d)M.rev[k]=e});
   M.xp=Math.max(A.xp||0,B.xp||0);M.phr=Math.max(A.phr||0,B.phr||0);
@@ -271,7 +288,7 @@ function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);
   M.done=Object.assign({},B.done||{},M.done||{});
   if(B.day&&(!M.day||B.day.d>M.day.d||(B.day.d===M.day.d&&B.day.n>M.day.n)))M.day=B.day;
   M.ts=Math.max(A.ts||0,B.ts||0);return M}
-const keepLocal=M=>{M.ui=S.ui;M.uiChosen=S.uiChosen;M.sp=S.sp;M.dismissSync=S.dismissSync;return M};
+const keepLocal=M=>{M.cls=S.cls||M.cls;M.ui=S.ui;M.uiChosen=S.uiChosen;M.sp=S.sp;M.dismissSync=S.dismissSync;return M};
 async function pull(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
   if(!t||t==="null"){setCloud("☁️ ✓");push();return}
   const R=JSON.parse(t),M=keepLocal(mergeS(S,R)),chS=JSON.stringify(M)!==JSON.stringify(S),chR=JSON.stringify(M)!==JSON.stringify(R);
@@ -280,7 +297,7 @@ async function pull(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+AP
 async function deriveKey(name,pw){const en=new TextEncoder(),km=await crypto.subtle.importKey("raw",en.encode(pw),"PBKDF2",false,["deriveBits"]);
   const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:en.encode("frA1:"+name.trim().toLowerCase()),iterations:200000},km,160);
   return [...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,"0")).join("")}
-function profOpen(){const p=document.getElementById("prof");document.getElementById("pmsg").textContent="";document.getElementById("pn").value=PNAME;document.getElementById("pp").value="";
+function profOpen(){loadClasses();const p=document.getElementById("prof");document.getElementById("pmsg").textContent="";document.getElementById("pn").value=PNAME;document.getElementById("pp").value="";
   document.getElementById("pout").style.display=PNAME?"block":"none";p.classList.add("on")}
 function profClose(){document.getElementById("prof").classList.remove("on")}
 function profLater(){S.dismissSync=1;save();profClose();if(cur)cur()}
@@ -290,7 +307,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   m.textContent="Connexion… · 连接中……";
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
     if(t==="null"&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
-    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
+    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}const sc=document.querySelector("input[name=pcl]:checked");if(t==="null")S.cls=sc?sc.value:"";
     S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();admStatus();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
@@ -299,20 +316,68 @@ function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste s
   S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"},keep);save();profClose();head();home()}
 function syncBanner(){if(PNAME||S.dismissSync)return "";return`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Sauvegarde ta progression · 保存你的进度</b><div class="hm-sub" style="margin:0">Crée un compte pour la retrouver sur tous tes appareils et entrer dans le classement. · 创建账号即可在所有设备上同步进度并参加排行榜。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Compte · 账号</button><button class="alt" onclick="profLater()">Plus tard · 稍后</button></div></div>`}
 
-/* ---- administration (les droits sont vérifiés par le serveur) ---- */
-let ADM=null;
+/* ---- classes (choix à la création du compte) ---- */
+let CLS=[{id:"classe2026",name:"Classe 2026"}];
+const dispName=()=>S.nick||PNAME;
+function renderPcls(){const e=document.getElementById("pcls");if(!e)return;const sel=document.querySelector("input[name=pcl]:checked"),cur=sel?sel.value:undefined;
+  e.innerHTML=`<div class="evd" style="margin-top:8px">Pour un nouveau compte, je suis · 新账号请选择：</div>`+CLS.map((c,i)=>`<label class="pcl"><input type="radio" name="pcl" value="${escH(c.id)}" ${(cur!==undefined?cur===c.id:i===0)?"checked":""}> ${escH(c.name)}</label>`).join("")+`<label class="pcl"><input type="radio" name="pcl" value="" ${cur===""?"checked":""}> Élève individuel · 个人学员</label>`}
+async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ,{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length)CLS=j.classes}}catch(e){}renderPcls()}
+/* ---- profil : pseudo + emoji personnage ---- */
+const EMOS=["🐼","🐯","🦊","🐱","🐶","🐰","🐻","🐨","🦁","🐸","🐵","🦄","🐲","🐧","🦉","🦋","🐢","🐙","🐬","🦖","🤖","👽","🧙","🥷","🧚","🦸","🧜","🎅","👩‍🎓","🧑‍🏫","🧑‍🍳","🧑‍🎨","😎","🤓","🥳","😺","👻","🎃","🌸","🍀","⭐","🔥","🍕","🥐","⚽","🎸","🚀","🌈"];
+let MEEMO="";
+function profClick(){PNAME?meOpen():profOpen()}
+function meOpen(){MEEMO=S.emo||"🙂";document.getElementById("nk").value=dispName();document.getElementById("mmsg").textContent="";
+  document.getElementById("mlogin").textContent="Compte · 账号 : "+PNAME+(S.cls?" — "+((CLS.find(c=>c.id===S.cls)||{name:S.cls}).name):" — Élève individuel · 个人学员");
+  document.getElementById("egrid").innerHTML=EMOS.map(e=>`<button type="button" class="eb${e===MEEMO?" on":""}" onclick="mePick(this)">${e}</button>`).join("");
+  document.getElementById("me").classList.add("on")}
+function mePick(b){MEEMO=b.textContent;document.querySelectorAll("#egrid .eb").forEach(x=>x.classList.toggle("on",x===b));document.getElementById("mprev").textContent=MEEMO}
+function meClose(){document.getElementById("me").classList.remove("on")}
+function meSave(){const n=document.getElementById("nk").value.trim().replace(/\s+/g," "),m=document.getElementById("mmsg");
+  if(!/^[\p{L}\p{N} _.\-]{2,20}$/u.test(n)){m.textContent="Pseudo : 2 à 20 caractères (lettres, chiffres, espace, _ . -). · 昵称：2到20个字符（字母、数字、空格、_ . -）。";return}
+  S.nick=n;S.emo=MEEMO||"🙂";save();head();meClose();toast("✅ Profil enregistré · 资料已保存");if(cur)cur()}
+/* ---- administration (droits vérifiés par le serveur) ---- */
+let ADM=null,AV={tab:"eleves",cls:"*",chap:0};
 async function admStatus(){if(!PNAME){ADM=null;head();return}try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{cache:"no-store"});if(r.ok)ADM=await r.json()}catch(e){}head()}
 async function admPost(body){try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});return r.ok}catch(e){return false}}
-async function admDo(action,id){if(await admPost({action,id})){toast("✅ OK");adminPage()}else toast("Refusé ou impossible · 被拒绝或无法完成")}
+async function admDo(action,extra){if(await admPost(Object.assign({action},extra||{}))){toast("✅ OK");adminPage()}else toast("Refusé ou impossible · 被拒绝或无法完成")}
 async function admClaim(){const t=document.getElementById("atok").value.trim();if(!t)return;if(await admPost({action:"claim",token:t})){toast("✅ Tu es administrateur · 你已成为管理员");await admStatus();adminPage()}else toast("Code incorrect · 代码不正确")}
+const clsName=id=>id===""?"Élève individuel · 个人学员":((ADM&&ADM.classes||[]).find(c=>c.id===id)||{name:id}).name;
+/* maîtrise d'un élève (mêmes règles que pour soi-même) */
+function uMastery(u,c){if(c.mod)return Math.min(100,(u.phr||0)/c.n*100);const v=[((u.known||{})[c.id]||0)/c.items.length*100];if((u.best||{})[c.id])v.push(u.best[c.id]);if((u.test||{})[c.id]!=null)v.push(u.test[c.id]);return v.reduce((a,b)=>a+b)/v.length}
+const uStep=(u,i)=>{const ids=STEPS[i][1];return ids.reduce((n,id)=>n+uMastery(u,unit(id)),0)/ids.length};
+const uAll=u=>{const a=ALL();return a.reduce((n,c)=>n+uMastery(u,c),0)/a.length};
+const heat=p=>`hsl(${Math.round(Math.max(0,Math.min(100,p))*1.2)},65%,${90-Math.round(p*.18)}%)`;
+const uTitle=u=>`${escH(u.emo||"🙂")} ${escH(u.nick||u.name)}${u.nick&&u.nick!==u.name?` <small>(${escH(u.name)})</small>`:""}${u.admin?" 🛡️":""}${u.rank?" 🏆":""}`;
+const admSeen=u=>u.seen?new Date(u.seen*1000).toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR"):"–";
 async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Administration · 管理"]]);
-  $.innerHTML=`<div class="hm"><h2 style="margin:0">🛡️ Administration · 管理</h2><div class="hm-card">Chargement… · 加载中……</div></div>`;await admStatus();
-  if(!ADM){$.innerHTML=`<div class="hm"><h2 style="margin:0">🛡️ Administration · 管理</h2><div class="hm-card">Serveur injoignable ou version du serveur trop ancienne. · 无法连接服务器，或服务器版本过旧。</div></div>`;return}
-  if(!ADM.admin){$.innerHTML=`<div class="hm"><h2 style="margin:0">🛡️ Administration · 管理</h2>`+(ADM.claimable?`<div class="hm-card">Première activation : entre le code d'activation donné par le propriétaire du serveur. · 首次启用：请输入服务器所有者提供的启用代码。<input id="atok" class="t" autocomplete="off" placeholder="Code / 代码" onkeydown="if(event.key==='Enter')admClaim()"><div class="nav"><button onclick="admClaim()">Activer · 启用</button></div></div>`:`<div class="hm-card">Accès réservé aux administrateurs. · 仅限管理员访问。</div>`)+`</div>`;return}
-  const rows=(ADM.users||[]).map(u=>`<div class="lb${u.me?" me":""}"><div class="lb-nm">${escH(u.name)}${u.me?" <small>(toi)</small>":""}${u.admin?" 🛡️":""}${u.rank?" 🏆":""}<div class="lb-sub">⭐ ${u.xp} XP · 📚 ${u.words} mots · 个词 · ${u.seen?new Date(u.seen*1000).toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR"):"–"}</div></div>`+
-    `<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">`+(u.admin?`<button class="alt" style="padding:5px 9px" onclick="admDo('demote','${u.id}')">Retirer admin · 取消管理员</button>`:`<button style="padding:5px 9px;border:0;border-radius:8px;background:var(--blue);color:#fff" onclick="admDo('promote','${u.id}')">Nommer admin · 设为管理员</button>`)+(u.rank?`<button class="alt" style="padding:5px 9px" onclick="admDo('kick','${u.id}')">Retirer du classement · 移出排行榜</button>`:"")+`</div></div>`).join("");
-  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🛡️ Administration · 管理</h2><small style="color:var(--mut)">${(ADM.users||[]).length} compte(s) · ${(ADM.users||[]).length} 个账号</small></div>
-  <div class="hm-card" style="font-size:.88rem;color:var(--mut)">Tu peux nommer ou retirer des administrateurs et retirer quelqu'un du classement. Les comptes apparaissent ici après leur première sauvegarde. · 你可以任命或取消管理员，并将用户移出排行榜。账号在首次保存进度后显示在此处。</div>${rows||`<div class="hm-card">Aucun compte pour l'instant. · 暂无账号。</div>`}</div>`}
+  const H=`<h2 style="margin:0">🛡️ Administration · 管理</h2>`;
+  $.innerHTML=`<div class="hm">${H}<div class="hm-card">Chargement… · 加载中……</div></div>`;await admStatus();
+  if(!ADM){$.innerHTML=`<div class="hm">${H}<div class="hm-card">Serveur injoignable ou version du serveur trop ancienne. · 无法连接服务器，或服务器版本过旧。</div></div>`;return}
+  if(!ADM.admin){$.innerHTML=`<div class="hm">${H}`+(ADM.claimable?`<div class="hm-card">Première activation : entre le code d'activation donné par le propriétaire du serveur. · 首次启用：请输入服务器所有者提供的启用代码。<input id="atok" class="t" autocomplete="off" placeholder="Code / 代码" onkeydown="if(event.key==='Enter')admClaim()"><div class="nav"><button onclick="admClaim()">Activer · 启用</button></div></div>`:`<div class="hm-card">Accès réservé aux administrateurs. · 仅限管理员访问。</div>`)+`</div>`;return}
+  const all=ADM.users||[],cl=ADM.classes||[],users=all.filter(u=>AV.cls==="*"||u.cls===AV.cls);
+  const tabs=[["eleves","👩‍🎓 Élèves · 学生"],["chap","📚 Chapitres · 章节"],["classes","🏫 Classes · 班级"]].map(([k,l])=>`<button class="${AV.tab===k?"":"alt"}" style="padding:7px 12px;border:0;border-radius:10px;color:#fff;background:${AV.tab===k?"var(--blue)":"#8d99ae"}" onclick="AV.tab='${k}';adminPage()">${l}</button>`).join("");
+  const filt=`<select onchange="AV.cls=this.value;adminPage()"><option value="*" ${AV.cls==="*"?"selected":""}>Toutes les classes · 所有班级</option>`+cl.map(c=>`<option value="${escH(c.id)}" ${AV.cls===c.id?"selected":""}>${escH(c.name)} (${all.filter(u=>u.cls===c.id).length})</option>`).join("")+`<option value="" ${AV.cls===""?"selected":""}>Élèves individuels · 个人学员 (${all.filter(u=>u.cls==="").length})</option></select>`;
+  let body="";
+  if(AV.tab==="eleves"){
+    body=`<div class="hm-card" style="font-size:.85rem;color:var(--mut)">Touche un élève pour voir ce qu'il maîtrise, chapitre par chapitre. Les cases colorées résument les ${STEPS.length} chapitres (rouge = à travailler, vert = acquis). · 点击学生查看各章节掌握情况。彩色方格代表 ${STEPS.length} 个章节（红色=需加强，绿色=已掌握）。</div>`+
+    (users.map(u=>{const av=uAll(u);
+      return `<details class="adu"><summary><span class="adn">${uTitle(u)}</span><span class="adp">${Math.round(av)} %</span><span class="heat">${STEPS.map((s,i)=>`<i title="${i+1}. ${escH(nmCur(s[0]))} — ${Math.round(uStep(u,i))} %" style="background:${heat(uStep(u,i))}"></i>`).join("")}</span></summary>
+      <div class="adbody"><div class="lb-sub">⭐ ${u.xp} XP · 📚 ${u.words} mots · 个词 · 🔥 ${u.streak} · ${admSeen(u)}</div>
+      <div class="adact"><span>Classe · 班级 :</span><select onchange="admDo('setclass',{id:'${u.id}',cls:this.value})"><option value="" ${u.cls===""?"selected":""}>Élève individuel · 个人学员</option>${cl.map(c=>`<option value="${escH(c.id)}" ${u.cls===c.id?"selected":""}>${escH(c.name)}</option>`).join("")}</select>
+      ${u.admin?`<button class="alt" onclick="admDo('demote',{id:'${u.id}'})">Retirer admin · 取消管理员</button>`:`<button onclick="admDo('promote',{id:'${u.id}'})">Nommer admin · 设为管理员</button>`}${u.rank?`<button class="alt" onclick="admDo('kick',{id:'${u.id}'})">Retirer du classement · 移出排行榜</button>`:""}</div>
+      ${STEPS.map((s,i)=>`<div class="adst"><b>${i+1}. ${escH(nmCur(s[0]))}</b> <span style="color:var(--mut)">${Math.round(uStep(u,i))} %</span><div class="adus">${s[1].map(id=>{const c=unit(id),m=uMastery(u,c);return `<span class="adc" style="background:${heat(m)}">${c.icon} ${escH(nmCur(c.name))} · ${Math.round(m)} %</span>`}).join("")}</div></div>`).join("")}</div></details>`}).join("")||`<div class="hm-card">Aucun élève dans cette sélection. · 此范围内没有学生。</div>`)}
+  else if(AV.tab==="chap"){const i=Math.min(AV.chap,STEPS.length-1),us=STEPS[i][1].map(unit),rows=users.map(u=>({u,m:uStep(u,i)})).sort((a,b)=>b.m-a.m);
+    body=`<div class="hm-card"><select onchange="AV.chap=+this.value;adminPage()" style="max-width:100%">${STEPS.map((s,k)=>`<option value="${k}" ${k===i?"selected":""}>${k+1}. ${escH(nmCur(s[0]))}</option>`).join("")}</select></div>`+
+    `<div style="overflow-x:auto"><table class="adt"><tr><th>Élève · 学生</th>${us.map(c=>`<th title="${escH(nmCur(c.name))}">${c.icon}</th>`).join("")}<th>Moy. · 平均</th></tr>`+
+    (rows.map(({u,m})=>`<tr><td>${uTitle(u)}</td>${us.map(c=>{const v=uMastery(u,c);return `<td style="background:${heat(v)}">${Math.round(v)}</td>`}).join("")}<td style="background:${heat(m)}"><b>${Math.round(m)} %</b></td></tr>`).join("")||`<tr><td colspan="${us.length+2}">Aucun élève. · 没有学生。</td></tr>`)+`</table></div>`}
+  else{body=`<div class="hm-card">Crée des classes, renomme-les, et range les élèves dedans (onglet Élèves). À la création du compte, l'élève choisit sa classe ou « Élève individuel ». · 创建和重命名班级，并在“学生”页签中为学生分班。创建账号时，学生选择班级或“个人学员”。</div>`+
+    cl.map(c=>`<div class="lb"><div class="lb-nm">🏫 ${escH(c.name)}<div class="lb-sub">${all.filter(u=>u.cls===c.id).length} élève(s) · 名学生</div></div><div style="display:flex;gap:6px"><button class="alt" style="padding:5px 9px" onclick="admRen('${escH(c.id)}')">Renommer · 重命名</button><button class="alt" style="padding:5px 9px" onclick="admDel('${escH(c.id)}')">Supprimer · 删除</button></div></div>`).join("")+
+    `<div class="lb"><div class="lb-nm">👤 Élève individuel · 个人学员<div class="lb-sub">${all.filter(u=>u.cls==="").length} élève(s) · 名学生</div></div></div>`+
+    `<div class="hm-card"><input id="ncl" class="t" style="margin:0 0 8px" placeholder="Nouvelle classe / 新班级（例如 Classe 2027）"><div class="nav" style="margin:0"><button onclick="admAdd()">➕ Créer la classe · 创建班级</button></div></div>`}
+  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🛡️ Administration · 管理</h2><small style="color:var(--mut)">${all.length} compte(s) · ${all.length} 个账号</small></div><div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div>${AV.tab==="classes"?"":`<div>${filt}</div>`}${body}</div>`}
+function admAdd(){const n=document.getElementById("ncl").value.trim();if(n.length<2){toast("Nom trop court · 名称太短");return}admDo("addclass",{name:n})}
+function admRen(id){const c=((ADM&&ADM.classes)||[]).find(x=>x.id===id),n=prompt(locText("Nouveau nom de la classe · 班级新名称"),c?c.name:"");if(n&&n.trim().length>=2)admDo("renameclass",{cls:id,name:n.trim()})}
+function admDel(id){if(confirm(locText("Supprimer cette classe ? Ses élèves deviendront « individuels ». · 删除该班级？其学生将变为“个人学员”。")))admDo("delclass",{cls:id})}
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
 const medal=i=>["🥇","🥈","🥉"][i]||String(i+1);
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -326,8 +391,8 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
   if(!R){$.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。</div></div>`;return}
   if(R.app!=="fr"){$.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Le classement du français n'est pas encore activé sur le serveur. Ta progression, elle, est bien sauvegardée avec ton compte. · 法语排行榜尚未在服务器上启用。你的学习进度仍会随账号保存。</div></div>`;return}
   const join=!PNAME?`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Connecte-toi pour participer · 登录后参加</b><div class="hm-sub" style="margin:0">Le classement est réservé aux comptes. · 排行榜仅限已注册账号。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Se connecter / créer un compte · 登录 / 创建账号</button></div></div>`
-    :!R.me?`<div class="hm-sync"><div style="flex:1 1 240px"><b>Rejoindre le classement ? · 加入排行榜？</b><div class="hm-sub" style="margin:0">Seront visibles par les autres inscrits : ton nom « ${escH(PNAME)} », ton XP, tes mots acquis et ta série. Tu peux quitter à tout moment. · 其他注册用户将看到你的名字、经验值、已掌握词数和连续天数。可随时退出。</div></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Rejoindre · 加入</button></div></div>`:"";
-  const rows=R.list.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${medal(i)}</div><div class="lb-nm">${escH(u.name)}${u.me?" <small>(toi)</small>":""}<div class="lb-sub">📚 ${u.words} mots · 个词 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">⭐ ${u.xp}<small> XP</small></div></div>`).join("");
+    :!R.me?`<div class="hm-sync"><div style="flex:1 1 240px"><b>Rejoindre le classement ? · 加入排行榜？</b><div class="hm-sub" style="margin:0">Seront visibles par les autres inscrits : ton pseudo « ${escH(dispName())} », ton XP, tes mots acquis et ta série. Tu peux quitter à tout moment. · 其他注册用户将看到你的名字、经验值、已掌握词数和连续天数。可随时退出。</div></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Rejoindre · 加入</button></div></div>`:"";
+  const rows=R.list.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${medal(i)}</div><div class="lb-nm">${escH(u.emo||"🙂")} ${escH(u.name)}${u.me?" <small>(toi)</small>":""}<div class="lb-sub">📚 ${u.words} mots · 个词 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">⭐ ${u.xp}<small> XP</small></div></div>`).join("");
   $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🏆 Classement · 排行榜</h2><small style="color:var(--mut)">${R.total} participant${R.total>1?"s":""} · ${R.total} 位参与者</small></div>${join}`+
     (R.list.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne dans le classement pour l'instant. Sois le premier ! · 排行榜还没有人，来当第一名吧！</div>`)+
     (PNAME&&R.me?`<div style="text-align:center"><span class="lb-leave" role="button" onclick="rankLeave()">Quitter le classement · 退出排行榜</span></div>`:"")+`</div>`}
