@@ -104,7 +104,7 @@ const CATS=[
 ["le billet","lə bi.jɛ","票","piào","🎫"],["le passeport","lə pas.pɔʁ","护照","hùzhào","🛂"],["la photo","la fɔ.to","照片","zhàopiàn","📸"],["visiter","vi.zi.te","参观","cānguān","🗺️"],["se reposer","sə ʁə.po.ze","休息","xiūxi","😌"],["le musée","lə my.ze","博物馆","bówùguǎn","🖼️"],["le soleil","lə sɔ.lɛj","太阳","tàiyáng","☀️"],["Bon voyage !","bɔ̃ vwa.jaʒ","一路平安！","yílù píng'ān","✈️"]]}
 
 ];
-const STEPS=[["Les verbes de la classe · 课堂动词",["verbes"]],
+let STEPS=[["Les verbes de la classe · 课堂动词",["verbes"]],
 ["Premiers mots · 入门词汇",["salut","presente","nombres"]],
 ["La maison & la famille · 家和家人",["maison","famille","corps"]],
 ["S'habiller · 穿衣打扮",["vetements","couleurs"]],

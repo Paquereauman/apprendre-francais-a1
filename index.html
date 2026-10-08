@@ -45,6 +45,7 @@ select{font:inherit;padding:4px;border-radius:8px}
 <header><h1 onclick="home()">🥖 Bonjour ! 学法语 A1</h1><span id="xp"></span><span id="streak"></span><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
 <script src="data-fr.js"></script>
+<script src="data-fr2.js"></script>
 <script src="audio-fr/map.js"></script>
 <script>
 const $=document.getElementById("app");
@@ -106,7 +107,8 @@ function home(){cur=home;cat=null;head();crumb([]);const st=stats(),E=eta(st),L=
 function menu(id){cur=menu;if(id)cat=unit(id);head();crumb([["🏠 Parcours","home"],[cat.name]]);const k=(S.known[cat.id]||[]).length;
   $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut)">${k}/${cat.items.length} mots connus · meilleur quiz : ${S.best[cat.id]||0}%</p>${bar(mastery(cat))}
   <div class="tiles"><div class="tile" onclick="list()"><span>📖</span><b>Liste · 词表</b><small>emoji, prononciation, 中文</small></div><div class="tile" onclick="cards()"><span>🃏</span><b>Cartes · 卡片</b><small>retourne et écoute</small></div>
-  <div class="tile" onclick="quiz('mix')"><span>❓</span><b>Quiz · 测验</b><small>10 questions</small></div><div class="tile" onclick="quiz('listen')"><span>🎧</span><b>Écoute · 听力</b><small>reconnais le son</small></div></div>`}
+  <div class="tile" onclick="quiz('mix')"><span>❓</span><b>Quiz · 测验</b><small>10 questions</small></div><div class="tile" onclick="quiz('listen')"><span>🎧</span><b>Écoute · 听力</b><small>reconnais le son</small></div>${POSTER[cat.id]?`<div class="tile" onclick="poster()"><span>🖼️</span><b>Affiche · 图片</b><small>l'image du cours</small></div>`:""}</div>`}
+function poster(){cur=poster;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.name,"menu"],["Affiche"]]);$.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><img src="img-fr/${POSTER[cat.id]}.jpg" alt="" style="width:100%;border-radius:12px;box-shadow:0 2px 8px #0003"><div class="nav"><button class="alt" onclick="menu()">◀ Retour</button></div>`}
 function list(){cur=list;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.name,"menu"],["Liste"]]);const kn=S.known[cat.id]||[];
   $.innerHTML=`<h2>${cat.icon} ${cat.name}</h2><p style="color:var(--mut)">Touche l'emoji ou le mot pour écouter 🔊 · coche ✅ les mots que tu connais.</p>`+cat.items.map((it,i)=>`<div class="row"><div class="rv" onclick="say(cat.items[${i}][0])">${it[4]}</div><div class="rt" onclick="say(cat.items[${i}][0])"><b>${it[0]}</b> <span class="ipa">/${it[1]}/</span><small>${it[2]} · ${it[3]}</small></div><input type="checkbox" ${kn.includes(it[0])?"checked":""} onchange="setKnown(cat.id,cat.items[${i}][0],this.checked);head()"></div>`).join("")}
 function cards(){cur=cards;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.name,"menu"],["Cartes"]]);let i=0,flip=false,order=shuffle(cat.items);
@@ -116,7 +118,7 @@ function cards(){cur=cards;crumb([["🏠 Parcours","home"],[cat.icon+" "+cat.nam
 
 /* ---- questions ---- */
 const typesFor=mode=>mode==="listen"?["c","d"]:["a","b","c","d","p"];
-function mkQ(it,pool,t,c){if(t==="p")return{it,c,t,right:-1,say:it[0]};
+function mkQ(it,pool,t,c){if(t==="p"&&(it[0].length>24||/[…?!(,]/.test(it[0])))t="b";if(t==="p")return{it,c,t,right:-1,say:it[0]};
   let w=shuffle(pool.filter(x=>x[0]!==it[0]&&x[2]!==it[2]));if(w.length<3)w=w.concat(shuffle(words().flatMap(k=>k.items).filter(x=>x[0]!==it[0]&&x[2]!==it[2]&&!w.includes(x))));
   const opts=shuffle([it,...w.slice(0,3)]);return{it,c,t,opts,right:opts.indexOf(it),say:it[0]}}
 function mkPhrase(t){const e=PH[Math.random()*PH.length|0],w=e[0].split("/");

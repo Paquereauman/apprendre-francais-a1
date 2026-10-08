@@ -1,6 +1,6 @@
 import asyncio, json, hashlib, os, re, subprocess
 import edge_tts
-src = open('data-fr.js', encoding='utf8').read()
+src = open('data-fr.js', encoding='utf8').read() + chr(10) + open('data-fr2.js', encoding='utf8').read()
 js = src + "\nconsole.log(JSON.stringify([...new Set([...CATS.flatMap(c=>c.items.map(i=>i[0])),...PH.map(p=>p[0].split('/').join(' '))])]));"
 open('_t.js','w',encoding='utf8').write(js)
 texts = json.loads(subprocess.check_output(['node','_t.js']).decode('utf8'))
