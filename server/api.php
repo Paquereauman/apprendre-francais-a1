@@ -21,6 +21,7 @@ if (isset($_GET["classes"])) {
 }
 if (isset($_GET["setcls"])) { self_setcls($k, $base, $app); exit; }
 if (isset($_GET["recover"])) { recover_main($base, $app); exit; }
+if (isset($_GET["avail"])) { echo json_encode(["free" => ($app !== "" ? name_free($base, clean_name($_GET["n"] ?? "", 20), "") : true)]); exit; }
 if (isset($_GET["quiz"])) { quiz_main($k, $base, $app); exit; }
 if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; exit; }
 $h = hash("sha256", $k);
@@ -28,6 +29,9 @@ $f = "$base/$h.json";
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $b = file_get_contents("php://input", false, null, 0, 300001);
   if (strlen($b) > 300000 || !is_array(json_decode($b, true))) { http_response_code(400); echo "{\"error\":\"bad body\"}"; exit; }
+  // un nom de compte ne peut être pris que par une seule personne (vérifié à la création du profil)
+  $n0 = clean_name($_GET["n"] ?? "", 20);
+  if ($app !== "" && $n0 !== "" && !is_file("$base/users/$h.json") && !name_free($base, $n0, $h)) { http_response_code(409); echo "{\"error\":\"name taken\"}"; exit; }
   // copie de sécurité de la version précédente (au plus 1 toutes les 10 min, 40 gardées)
   if (is_file($f)) {
     $dir = "$base/bak"; $last = glob("$dir/{$h}_*.json"); sort($last);
@@ -416,4 +420,15 @@ function quiz_main($k, $base, $app) {
   $Q["res"][$key] = $e; $Q["hist"][] = [$now, $key, $pct]; qres_save($base, $h, $Q); @unlink($sf);
   $out["done"] = true; $out["pct"] = $pct; $out["good"] = $good; $out["n"] = $n; $out["best"] = $e["b"]; $out["pass"] = $e["b"] >= 80; $out["a"] = $e["a"];
   echo json_encode($out, JSON_UNESCAPED_UNICODE);
+}
+
+// ---- Nom de compte libre ? (comparaison sans tenir compte des majuscules)
+function name_free($base, $name, $selfId) {
+  $n = mb_strtolower(trim((string)$name), "UTF-8"); if ($n === "") { return true; }
+  foreach (glob("$base/users/*.json") ?: [] as $uf) {
+    $id = basename($uf, ".json"); if ($id === $selfId) { continue; }
+    $u = json_decode(@file_get_contents($uf), true);
+    if (is_array($u) && mb_strtolower(trim((string)($u["name"] ?? "")), "UTF-8") === $n) { return false; }
+  }
+  return true;
 }

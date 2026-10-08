@@ -90,10 +90,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081350"></script>
-<script src="data-fr2.js?v=202610081350"></script>
-<script src="data-fr3.js?v=202610081350"></script>
-<script src="audio-fr/map.js?v=202610081350"></script>
+<script src="data-fr.js?v=202610081354"></script>
+<script src="data-fr2.js?v=202610081354"></script>
+<script src="data-fr3.js?v=202610081354"></script>
+<script src="audio-fr/map.js?v=202610081354"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -101,7 +101,7 @@ const unit=id=>id.startsWith("m:")?MODS[id.slice(2)]:CATS.find(c=>c.id===id);
 const flatIds=()=>STEPS.flatMap(s=>s[1]);const ALL=()=>flatIds().map(unit);const words=()=>ALL().filter(u=>!u.mod);
 const K="frA1";let S;try{S=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}
 S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"},S||{});
-const save=()=>{S.ts=Date.now();try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}schedPush()};
+const save=()=>{S.ts=Date.now();try{S.owner=ownerId()}catch(e){}try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}schedPush()};
 const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
 const strip=x=>x.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
 const norm=x=>strip(x).replace(/[’']/g,"'").replace(/[^a-z0-9' ]/g,"").replace(/\s+/g," ").trim();
@@ -278,12 +278,18 @@ const API=(location.hostname.endsWith("github.io")?"https://chinois.45-192-198-9
 const APPQ="&app=fr";
 const rndCode=()=>[...crypto.getRandomValues(new Uint8Array(12))].map(b=>"abcdefghjkmnpqrstuvwxyz23456789"[b%31]).join("");
 let CODE="",PNAME="";
+const wordsIn=X=>Object.values((X&&X.known)||{}).reduce((n,a)=>n+(Array.isArray(a)?a.length:0),0);
+const freshS=()=>({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"});
+const ownerId=()=>PNAME?"u:"+CODE.slice(0,16):"anon";
 try{CODE=localStorage.getItem("frA1code")||"";PNAME=localStorage.getItem("frA1name")||""}catch(e){}
 if(!CODE){try{CODE=rndCode();localStorage.setItem("frA1code",CODE)}catch(e){CODE="anon"+Date.now().toString(36)}}
+/* la progression locale appartient à UN compte : si le propriétaire ne correspond pas, on repart d'un état vierge (jamais de mélange) */
+function ownerGuard(){const o=ownerId();if(S.owner===undefined)S.owner=o;else if(S.owner!==o){const k={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:S.dismissSync};S=Object.assign(freshS(),k);S.owner=o;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}
+ownerGuard();
 let pushT=null;
 const setCloud=x=>{const e=document.getElementById("cld");if(e)e.textContent=x};
 function schedPush(){if(!PNAME)return;clearTimeout(pushT);pushT=setTimeout(push,800);setCloud("☁️…")}
-async function push(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ+"&n="+encodeURIComponent(PNAME)+"&c="+encodeURIComponent(S.cls||""),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️")}catch(e){setCloud("☁️ ⚠️")}}
+async function push(){if(!PNAME)return 0;try{const r=await fetch(API+"?k="+CODE+APPQ+"&n="+encodeURIComponent(PNAME)+"&c="+encodeURIComponent(S.cls||""),{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(S)});setCloud(r.ok?"☁️ ✓":"☁️ ⚠️");return r.status}catch(e){setCloud("☁️ ⚠️");return 0}}
 const clone=x=>JSON.parse(JSON.stringify(x));
 function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);if(eA>eB)return clone(A);
   const M=clone(A);M.known=M.known||{};M.best=M.best||{};
@@ -297,7 +303,7 @@ function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);
   M.done=Object.assign({},B.done||{},M.done||{});
   if(B.day&&(!M.day||B.day.d>M.day.d||(B.day.d===M.day.d&&B.day.n>M.day.n)))M.day=B.day;
   M.ts=Math.max(A.ts||0,B.ts||0);return M}
-const keepLocal=M=>{M.cls=S.cls||M.cls;M.ui=S.ui;M.uiChosen=S.uiChosen;M.sp=S.sp;M.dismissSync=S.dismissSync;return M};
+const keepLocal=M=>{M.owner=S.owner;M.cls=S.cls||M.cls;M.ui=S.ui;M.uiChosen=S.uiChosen;M.sp=S.sp;M.dismissSync=S.dismissSync;return M};
 async function pull(){if(!PNAME)return;try{const r=await fetch(API+"?k="+CODE+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
   if(!t||t==="null"){setCloud("☁️ ✓");push();return}
   const R=JSON.parse(t),M=keepLocal(mergeS(S,R)),chS=JSON.stringify(M)!==JSON.stringify(S),chR=JSON.stringify(M)!==JSON.stringify(R);
@@ -314,15 +320,24 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   if(n.length<2||pw.length<6){m.textContent="Nom : 2 caractères minimum. Mot de passe : 6 minimum. · 用户名至少2个字符，密码至少6位。";return}
   if(!window.crypto||!crypto.subtle){m.textContent="Connexion impossible ici : ouvre le site en https. · 请使用 https 打开本站。";return}
   m.textContent="Connexion… · 连接中……";
-  try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
-    if(t==="null"&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
-    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}const sc=document.querySelector("input[name=pcl]:checked");if(t==="null"){S.cls=sc?sc.value:"";loadClasses()}
-    S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();admStatus();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(t==="null")setTimeout(meOpen,700)}
+  try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim(),exists=t!=="null";
+    if(!exists&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
+    if(exists&&mode==="create"){m.textContent="Ce compte existe déjà (même nom et même mot de passe) : connecte-toi, ou choisis un autre mot de passe. · 该账号已存在（用户名和密码相同）：请直接登录，或换一个密码。";return}
+    if(!exists){try{const a=await fetch(API+"?avail=1&n="+encodeURIComponent(n)+APPQ,{cache:"no-store"});if(a.ok){const j=await a.json();if(j.free===false){m.textContent="Ce nom est déjà pris par un autre élève : choisis-en un autre. · 该用户名已被其他学生使用，请换一个。";return}}}catch(e){}}
+    /* la progression déjà présente sur cet appareil n'est JAMAIS mélangée à un autre compte */
+    const sc=document.querySelector("input[name=pcl]:checked"),prevAnon=!PNAME&&(S.xp>0||wordsIn(S)>0),keepPrefs={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp};
+    let carry=null;if(!exists&&prevAnon&&confirm(locText("Associer la progression faite sur cet appareil (sans compte) à ce nouveau compte ? OK = oui, Annuler = repartir de zéro. · 把本设备上（未登录时）的学习进度并入新账号？确定=是，取消=从零开始。")))carry=S;
+    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
+    S=Object.assign(carry||freshS(),keepPrefs);S.owner=ownerId();S.cls=exists?"":(sc?sc.value:"");
+    S.dismissSync=1;S.ts=0;await pull();
+    if(!exists){const st=await push();if(st===409){logoutLocal();m.textContent="Ce nom vient d'être pris par un autre élève : choisis-en un autre. · 该用户名刚被其他学生使用，请换一个。";return}}
+    loadClasses();profClose();head();if(cur)cur();admStatus();toast(!exists?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(!exists)setTimeout(meOpen,700)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
-function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
-  const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";ADM=null;CODE=rndCode();
+function logoutLocal(){const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";ADM=null;CODE=rndCode();
   try{localStorage.removeItem("frA1name");localStorage.setItem("frA1code",CODE);localStorage.removeItem(K)}catch(e){}
-  S=Object.assign({known:{},ev:{},best:{},test:{},rev:{},done:{},xp:0,streak:0,sp:1,phr:0,pace:5,unit:"day",ui:"both"},keep);save();profClose();head();home()}
+  S=Object.assign(freshS(),keep);S.owner=ownerId();save();head()}
+function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
+  logoutLocal();profClose();home()}
 function syncBanner(){if(PNAME||S.dismissSync)return "";return`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Sauvegarde ta progression · 保存你的进度</b><div class="hm-sub" style="margin:0">Crée un compte pour la retrouver sur tous tes appareils et entrer dans le classement. · 创建账号即可在所有设备上同步进度并参加排行榜。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Compte · 账号</button><button class="alt" onclick="profLater()">Plus tard · 稍后</button></div></div>`}
 
 /* ---- classes (choix à la création du compte) ---- */
@@ -406,6 +421,7 @@ async function recGo(){const n=document.getElementById("rn").value.trim(),code=d
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?recover=1"+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,newk:k})});
     if(!r.ok){m.textContent="Code invalide ou expiré, ou ce nom / mot de passe est déjà utilisé. · 代码无效或已过期，或该用户名/密码已被使用。";return}
     CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
+    {const kp={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp};S=Object.assign(freshS(),kp);S.owner=ownerId()}
     S.dismissSync=1;S.ts=0;await pull();recClose();head();admStatus();loadClasses();if(cur)cur();toast("✅ Compte récupéré · 账号已找回")}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 async function admRecovery(id){try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"recovery",id})});if(!r.ok)throw 0;const j=await r.json();
