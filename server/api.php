@@ -410,7 +410,7 @@ function quiz_main($k, $base, $app) {
   if ($i !== (int)$s["i"]) { http_response_code(409); echo json_encode(["error" => "out of order", "i" => $s["i"]]); return; }
   $n = count($s["q"]); $q = $s["q"][$i]; $el = microtime(true) - (float)$s["tq"];
   if ($now - (int)$s["t0"] > $n * 150 + 60) { @unlink($sf); http_response_code(410); echo "{\"error\":\"expired\"}"; return; }
-  $ok = ($el >= 1.2 && $el <= 180) ? quiz_grade($q, $b["a"] ?? null) : false;
+  $ok = ($el >= 1.0 && $el <= 180) ? quiz_grade($q, $b["a"] ?? null) : false;
   $s["ok"][] = $ok ? 1 : 0; $s["i"] = $i + 1; $s["tq"] = microtime(true);
   $out = ["ok" => $ok, "right" => $q["right"], "fb" => $q["item"]];
   if ($s["i"] < $n) { $out["next"] = $s["q"][$s["i"]]["pub"]; file_put_contents($sf, json_encode($s, JSON_UNESCAPED_UNICODE), LOCK_EX); echo json_encode($out, JSON_UNESCAPED_UNICODE); return; }

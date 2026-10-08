@@ -412,7 +412,7 @@ le village|lə vi.laʒ|村庄|cūnzhuāng|🏘️
 l'hôtel|lo.tɛl|酒店|jiǔdiàn|🏨
 le camping|lə kɑ̃.piŋ|露营地|lùyíngdì|⛺
 la location|la lo.ka.sjɔ̃|租房|zūfáng|🏠
-la chambre d'hôtes|la ʃɑ̃bʁ do.t|民宿|mínsù|🛏️
+la chambre d'hôtes|la ʃɑ̃bʁ dot|民宿|mínsù|🛏️
 la ferme|la fɛʁm|农场|nóngchǎng|🚜
 la tente|la tɑ̃t|帐篷|zhàngpeng|⛺
 se baigner|sə bɛ.ɲe|游泳|yóuyǒng|🏊

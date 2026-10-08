@@ -91,10 +91,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081400"></script>
-<script src="data-fr2.js?v=202610081400"></script>
-<script src="data-fr3.js?v=202610081400"></script>
-<script src="audio-fr/map.js?v=202610081400"></script>
+<script src="data-fr.js?v=202610081403"></script>
+<script src="data-fr2.js?v=202610081403"></script>
+<script src="data-fr3.js?v=202610081403"></script>
+<script src="audio-fr/map.js?v=202610081403"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -159,7 +159,7 @@ function timerHtml(T){if(!S.cls)return `<p style="color:var(--mut)">Élève indi
   h+=T.onBreak?`<p style="font-size:1.1rem">⏸️ Pause vacances : le chronomètre est arrêté. · 假期暂停：计时已停止。</p><p>Il restera <b>${T.days}</b> jours de travail avant le ${fmtD(p.end)}. · 在${fmtZ(p.end)}之前还将有 <b>${T.days}</b> 个学习日。</p>`
     :`<p style="font-size:1.1rem">⏳ Il reste <b>${T.days}</b> jours de travail avant le ${fmtD(p.end)}. · 距${fmtZ(p.end)}还剩 <b>${T.days}</b> 个学习日。</p>`;
   if(T.days>0)h+=`<p>🎯 Rythme conseillé : <b>${T.perWeek}</b> chapitre(s) par semaine. · 建议进度：每周约 <b>${T.perWeek}</b> 章。</p>`;return h}
-function checkDone(){const n=[];ALL().forEach(c=>{if(!S.done[c.id]&&mastery(c)>=85){S.done[c.id]=1;n.push(c.name)}});if(n.length){save();celebrate((UI()==="zh"?"🎓 章节完成：":"🎓 Chapitre validé : ")+n.map(nmCur).join(", "))}}
+function checkDone(){const n=[];ALL().forEach(c=>{if(!S.done[c.id]&&mastery(c)>=85){S.done[c.id]=1;n.push(c.name)}});if(n.length){save();celebrate((UI()==="zh"?"🎓 小节已掌握：":"🎓 Fiche maîtrisée : ")+n.map(nmCur).join(", "))}}
 /* ---- répétition espacée ---- */
 const INTV=[0,1,2,4,8,16,32];
 function srs(h,ok){const k=nk(h),e=S.rev[k];if(ok){const b=e?Math.min(e.b+1,6):1;S.rev[k]={b,d:addD(INTV[b])};if(b===4&&(!e||e.b<4))setTimeout(()=>toast("🧠 Mot ancré · 已牢记 : "+h),900)}else S.rev[k]={b:0,d:tdy()}}
@@ -221,7 +221,7 @@ function qShow(){if(Q.i>=Q.qs.length)return qEnd();Q.lock=0;clearTimeout(Q.tm);c
   else if(t==="b")p=`<div class="emo">${it[4]}</div><div class="zh">${it[2]}</div><div class="ipa">${it[3]}</div><p>Comment dit-on en français ? · 用法语怎么说？</p>`;
   else if(t==="c")p=`<div class="emo">🎧</div>${spk}<p>Qu'as-tu entendu ? (le sens) · 你听到了什么？（意思）</p>`;
   else if(t==="d")p=`<div class="emo">✍️</div>${spk}<p>Dictée : quel mot as-tu entendu ? · 听写：你听到哪个词？</p>`;
-  else if(t==="p")p=`<div class="emo">${it[4]}</div><div class="zh">${it[2]}</div>${spk}<p>Écris le mot en français · 写出法语单词</p><input id="inp" class="t" autocomplete="off" autocapitalize="none" placeholder="ex : bonjour" onkeydown="if(event.key==='Enter')pCheck()"><small style="color:var(--mut)">Avec accents = parfait · sans accents = accepté. 带重音最佳，不带也可以。</small><div class="nav"><button onclick="pCheck()">Valider · 确定</button></div>`;
+  else if(t==="p")p=`<div class="emo">${it[4]}</div><div class="zh">${it[2]}</div>${spk}<p>Écris le mot en français (avec son article) · 写出法语单词（连同冠词）</p><input id="inp" class="t" autocomplete="off" autocapitalize="none" placeholder="ex : bonjour" onkeydown="if(event.key==='Enter')pCheck()"><small style="color:var(--mut)">Avec accents = parfait · sans accents = accepté. 带重音最佳，不带也可以。</small><div class="nav"><button onclick="pCheck()">Valider · 确定</button></div>`;
   else if(t==="z")p=`<p style="font-size:1.2rem">${q.zh}</p><div class="fw">${q.sentence}</div><p>Quel mot manque ? · 缺哪个词？</p>`;
   else if(t==="o")p=`<p style="font-size:1.2rem">${q.zh}</p><p>🧩 Remets la phrase en ordre · 排列成正确的句子</p><div id="oq"></div>`;
   if(q.opts)o=`<div class="opts">${q.opts.map((x,k)=>`<button onclick="ans(${k})">${lab(q,x)}</button>`).join("")}</div>`;
@@ -266,7 +266,7 @@ function qEnd(){if(Q.srv)return srvEnd();const pct=Math.round(Q.s/Q.qs.length*10
 function testEnd(){const per={};Q.qs.forEach(q=>{if(!q.it)return;const c=per[q.c.id]=per[q.c.id]||{},w=c[nk(q.it[0])]=c[nk(q.it[0])]||{ok:0,n:0};w.n++;if(q.good)w.ok++});
   let conf=0,tot=0;Object.entries(per).forEach(([id,ws])=>{const a=Object.values(ws),n=a.length,cf=a.filter(w=>w.ok===w.n).length;conf+=cf;tot+=n;S.test[id]=100*cf/(n+2)});
   S.testDate=new Date().toLocaleDateString(UI()==="zh"?"zh-CN":"fr-FR");save();checkDone();head();
-  $.innerHTML=`<div class="q" style="text-align:left"><div class="emo" style="text-align:center">📊</div><h2 style="text-align:center">Résultat du test · 测试结果</h2><p>📚 <b>Vocabulaire</b> : ${conf} mots confirmés sur ${tot} testés · 词汇：${tot}个测试词中已确认${conf}个</p><p>🧩 Score total · 总分 : ${Q.s} / ${Q.qs.length}</p><small style="color:var(--mut)">Ton estimation de durée est mise à jour. · 预计学习时间已更新。</small><div class="nav"><button onclick="plan()">📊 Mon plan · 我的计划</button><button class="alt" onclick="home()">🏠 Accueil · 首页</button></div></div>`}
+  $.innerHTML=`<div class="q" style="text-align:left"><div class="emo" style="text-align:center">📊</div><h2 style="text-align:center">Résultat du test · 测试结果</h2><p>📚 <b>Vocabulaire · 词汇</b> : ${conf} mots confirmés sur ${tot} testés · ${tot}个测试词中已确认${conf}个</p><p>🧩 Score total · 总分 : ${Q.s} / ${Q.qs.length}</p><small style="color:var(--mut)">Ce test est un entraînement : il ne compte pas pour le classement. Pour valider un chapitre, passe son quiz de fin de chapitre. · 此测试仅为练习，不计入排名。要通过章节，请参加该章的章节测验。</small><div class="nav"><button onclick="plan()">📊 Mon plan · 我的计划</button><button class="alt" onclick="home()">🏠 Accueil · 首页</button></div></div>`}
 
 /* ---- plan ---- */
 function plan(){cur=plan;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Mon plan · 我的计划"]]);const st=stats(),T=timerInfo();
@@ -289,7 +289,7 @@ function loc(root){if(!root||typeof document.createTreeWalker!=="function")retur
   const w=document.createTreeWalker(root,4),a=[];let n;while((n=w.nextNode()))a.push(n);a.forEach(locNode)}
 try{new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(loc))).observe(document.body,{childList:true,subtree:true})}catch(e){}
 const LANGS=["both","fr","zh"],LANGLAB={both:"FR + 中文",fr:"Français",zh:"中文"};
-function setLang(l){S.ui=l;S.uiChosen=1;save();loc(document.body);head();langClose();if(cur)cur();else home()}
+function setLang(l){S.ui=l;S.uiChosen=1;save();loc(document.body);head();langClose();if(cur)cur()}
 function cycLang(){setLang(LANGS[(LANGS.indexOf(UI())+1)%3])}
 function langOpen(){document.getElementById("lang").classList.add("on")}
 function langClose(){document.getElementById("lang").classList.remove("on")}
