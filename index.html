@@ -84,9 +84,9 @@ select{font:inherit;padding:4px;border-radius:8px}
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js"></script>
-<script src="data-fr2.js"></script>
-<script src="audio-fr/map.js"></script>
+<script src="data-fr.js?v=202610081314"></script>
+<script src="data-fr2.js?v=202610081314"></script>
+<script src="audio-fr/map.js?v=202610081314"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -308,7 +308,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim();
     if(t==="null"&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
     CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}const sc=document.querySelector("input[name=pcl]:checked");if(t==="null")S.cls=sc?sc.value:"";
-    S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();admStatus();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n)}
+    S.dismissSync=1;S.ts=0;await pull();if(t==="null")await push();profClose();head();if(cur)cur();admStatus();toast(t==="null"?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(t==="null")setTimeout(meOpen,700)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste sur le serveur : reconnecte-toi avec ton nom et ton mot de passe. · 退出登录？进度保存在服务器上，用用户名和密码重新登录即可。")))return;
   const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";ADM=null;CODE=rndCode();
@@ -384,18 +384,24 @@ const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"
 async function rankPost(body){try{const r=await fetch(API+"?rank=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});return r.ok}catch(e){return false}}
 async function rankJoin(){if(await rankPost({name:PNAME})){toast("🏆 Tu es dans le classement · 你已加入排行榜");rankPage()}else toast("Impossible pour le moment · 暂时无法加入")}
 async function rankLeave(){if(!confirm(locText("Quitter le classement ? Ton nom n'y sera plus visible. · 退出排行榜？你的名字将不再显示。")))return;if(await rankPost({leave:1})){toast("Tu as quitté le classement · 你已退出排行榜");rankPage()}}
+let RK={f:null};
 async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Classement · 排行榜"]]);
-  $.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Chargement… · 加载中……</div></div>`;
+  const H=`<h2 style="margin:0">🏆 Classement · 排行榜</h2>`;
+  $.innerHTML=`<div class="hm">${H}<div class="hm-card">Chargement… · 加载中……</div></div>`;
   if(PNAME){try{await push()}catch(e){}}
   let R=null;try{const r=await fetch(API+"?rank=1&k="+CODE+APPQ,{cache:"no-store"});if(r.ok)R=await r.json()}catch(e){}
-  if(!R){$.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。</div></div>`;return}
-  if(R.app!=="fr"){$.innerHTML=`<div class="hm"><h2 style="margin:0">🏆 Classement · 排行榜</h2><div class="hm-card">Le classement du français n'est pas encore activé sur le serveur. Ta progression, elle, est bien sauvegardée avec ton compte. · 法语排行榜尚未在服务器上启用。你的学习进度仍会随账号保存。</div></div>`;return}
-  const join=!PNAME?`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Connecte-toi pour participer · 登录后参加</b><div class="hm-sub" style="margin:0">Le classement est réservé aux comptes. · 排行榜仅限已注册账号。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Se connecter / créer un compte · 登录 / 创建账号</button></div></div>`
-    :!R.me?`<div class="hm-sync"><div style="flex:1 1 240px"><b>Rejoindre le classement ? · 加入排行榜？</b><div class="hm-sub" style="margin:0">Seront visibles par les autres inscrits : ton pseudo « ${escH(dispName())} », ton XP, tes mots acquis et ta série. Tu peux quitter à tout moment. · 其他注册用户将看到你的名字、经验值、已掌握词数和连续天数。可随时退出。</div></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Rejoindre · 加入</button></div></div>`:"";
-  const rows=R.list.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${medal(i)}</div><div class="lb-nm">${escH(u.emo||"🙂")} ${escH(u.name)}${u.me?" <small>(toi)</small>":""}<div class="lb-sub">📚 ${u.words} mots · 个词 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">⭐ ${u.xp}<small> XP</small></div></div>`).join("");
-  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap"><h2 style="margin:0">🏆 Classement · 排行榜</h2><small style="color:var(--mut)">${R.total} participant${R.total>1?"s":""} · ${R.total} 位参与者</small></div>${join}`+
-    (R.list.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne dans le classement pour l'instant. Sois le premier ! · 排行榜还没有人，来当第一名吧！</div>`)+
-    (PNAME&&R.me?`<div style="text-align:center"><span class="lb-leave" role="button" onclick="rankLeave()">Quitter le classement · 退出排行榜</span></div>`:"")+`</div>`}
+  if(!R){$.innerHTML=`<div class="hm">${H}<div class="hm-card">Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。</div></div>`;return}
+  if(R.app!=="fr"){$.innerHTML=`<div class="hm">${H}<div class="hm-card">Le classement du français n'est pas encore activé sur le serveur. · 法语排行榜尚未在服务器上启用。</div></div>`;return}
+  const cl=R.classes||[],cn=id=>(cl.find(c=>c.id===id)||{name:id}).name,all=R.list||[];
+  if(RK.f===null)RK.f=S.cls||"*";
+  const shown=all.filter(u=>RK.f==="*"||u.cls===RK.f),pos=shown.findIndex(u=>u.me);
+  const info=!PNAME?`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Connecte-toi pour apparaître dans le classement · 登录后即可进入排行榜</b><div class="hm-sub" style="margin:0">Tous les comptes participent automatiquement. · 所有账号会自动参与排名。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Compte · 账号</button></div></div>`
+    :R.me?`<div class="hm-card" style="font-size:.88rem">${pos>=0?`🎯 Tu es n°<b>${pos+1}</b> sur ${shown.length} · 你排名第 <b>${pos+1}</b>（共 ${shown.length} 人）<br>`:""}Tu apparais avec ton pseudo, ton emoji, ton XP et ta série. · 排行榜显示你的昵称、表情、经验值和连续天数。 <span class="lb-leave" role="button" onclick="rankLeave()">Me retirer · 退出</span></div>`
+    :`<div class="hm-sync"><div style="flex:1 1 240px"><b>Tu n'es pas dans le classement · 你不在排行榜中</b></div><div class="nav" style="margin:0"><button onclick="rankJoin()">🏆 Revenir · 加入</button></div></div>`;
+  const chips=[["*","🌍 Tous · 全部",all.length],...cl.map(c=>[c.id,"🏫 "+c.name,all.filter(u=>u.cls===c.id).length]),["","👤 Individuels · 个人",all.filter(u=>!u.cls).length]].map(([f,l,n])=>`<button class="${RK.f===f?"":"alt"}" style="padding:6px 11px;border:0;border-radius:99px;color:#fff;background:${RK.f===f?"var(--blue)":"#8d99ae"};font-size:.85rem" onclick="RK.f='${escH(f)}';rankPage()">${l} (${n})</button>`).join("");
+  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${medal(i)}</div><div class="lb-nm">${escH(u.emo||"🙂")} ${escH(u.name)}${u.me?" <small>(toi)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub">📚 ${u.words} mots · 个词 &nbsp; 🔥 ${u.streak} j · 天</div></div><div class="lb-xp">⭐ ${u.xp}<small> XP</small></div></div>`).join("");
+  $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">${H}<small style="color:var(--mut)">${shown.length} participant${shown.length>1?"s":""} · ${shown.length} 位参与者</small></div><div style="display:flex;gap:6px;flex-wrap:wrap">${chips}</div>${info}`+
+    (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+`</div>`}
 
 try{speechSynthesis.getVoices()}catch(e){}
 touchStreak();home();loc(document.body);pull();admStatus();if(!S.uiChosen)langOpen();
