@@ -20,6 +20,7 @@ if (isset($_GET["classes"])) {
   echo json_encode($o, JSON_UNESCAPED_UNICODE); exit;
 }
 if (isset($_GET["setcls"])) { self_setcls($k, $base, $app); exit; }
+if (isset($_GET["recover"])) { recover_main($base, $app); exit; }
 if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; exit; }
 $h = hash("sha256", $k);
 $f = "$base/$h.json";
@@ -131,12 +132,20 @@ function admin_main($k, $base, $app) {
     }
     if (!$isAdmin) { http_response_code(403); echo "{\"error\":\"denied\"}"; return; }
     $id = (string)($b["id"] ?? "");
-    if (in_array($act, ["promote", "demote", "kick", "setclass"], true) && !preg_match("/^[a-f0-9]{64}$/", $id)) { http_response_code(400); echo "{\"error\":\"bad id\"}"; return; }
+    if (in_array($act, ["promote", "demote", "kick", "setclass", "recovery"], true) && !preg_match("/^[a-f0-9]{64}$/", $id)) { http_response_code(400); echo "{\"error\":\"bad id\"}"; return; }
     $cls = classes_load($base);
     if ($act === "promote") { $admins[] = $id; admin_save($base, $admins); }
     elseif ($act === "demote") {
       if (count($admins) <= 1 && $id === $admins[0]) { http_response_code(400); echo "{\"error\":\"last admin\"}"; return; }
       admin_save($base, array_diff($admins, [$id]));
+    }
+    elseif ($act === "recovery") {
+      if (!is_file("$base/$id.json")) { http_response_code(400); echo "{\"error\":\"no profile\"}"; return; }
+      $al = "abcdefghjkmnpqrstuvwxyz23456789"; $code = "";
+      for ($i = 0; $i < 12; $i++) { $code .= $al[random_int(0, strlen($al) - 1)]; }
+      $rd = "$base/recover"; if (!is_dir($rd)) { @mkdir($rd, 0700, true); }
+      file_put_contents("$rd/" . hash("sha256", $code) . ".json", json_encode(["id" => $id, "exp" => time() + 259200]), LOCK_EX);
+      echo json_encode(["ok" => true, "code" => substr($code, 0, 4) . "-" . substr($code, 4, 4) . "-" . substr($code, 8, 4), "days" => 3]); return;
     }
     elseif ($act === "kick") { if ($app !== "") { $ro = "$base/rankout"; if (!is_dir($ro)) { @mkdir($ro, 0700, true); } file_put_contents("$ro/$id", "1"); } else { @unlink("$base/rank/$id.json"); } }
     elseif ($act === "setclass") {
@@ -210,4 +219,28 @@ function self_setcls($k, $base, $app) {
   if (!is_array($u)) { $u = ["name" => "", "ts" => time()]; }
   $u["cls"] = $cid; file_put_contents($uf, json_encode($u, JSON_UNESCAPED_UNICODE), LOCK_EX);
   echo json_encode(["ok" => true, "cls" => $cid]);
+}
+
+// ---- Récupération de compte : un administrateur génère un code à usage unique (valable 3 jours) pour un élève ;
+// l'élève choisit lui-même un nouveau mot de passe (nouvelle clé) et son profil est transféré. L'admin ne voit jamais de mot de passe.
+function recover_main($base, $app) {
+  if (!$app || $_SERVER["REQUEST_METHOD"] !== "POST") { http_response_code(400); echo "{\"error\":\"bad request\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 501), true);
+  $code = strtolower(preg_replace("/[^a-zA-Z0-9]/", "", (string)(is_array($b) ? ($b["code"] ?? "") : "")));
+  $nk = (string)(is_array($b) ? ($b["newk"] ?? "") : "");
+  $fail = function ($m) { sleep(1); http_response_code(403); echo json_encode(["error" => $m]); };
+  if (strlen($code) !== 12 || !preg_match("/^[a-z0-9]{8,40}$/", $nk)) { $fail("bad code"); return; }
+  $rf = "$base/recover/" . hash("sha256", $code) . ".json";
+  $r = is_file($rf) ? json_decode(@file_get_contents($rf), true) : null;
+  if (!is_array($r) || (int)($r["exp"] ?? 0) < time() || !preg_match("/^[a-f0-9]{64}$/", (string)($r["id"] ?? ""))) { $fail("invalid"); return; }
+  $old = $r["id"]; $new = hash("sha256", $nk);
+  if ($new !== $old) {
+    if (is_file("$base/$new.json")) { $fail("exists"); return; }
+    if (!is_file("$base/$old.json")) { $fail("gone"); return; }
+    rename("$base/$old.json", "$base/$new.json");
+    foreach (["users/$old.json" => "users/$new.json", "rankout/$old" => "rankout/$new"] as $from => $to) { if (is_file("$base/$from")) { @rename("$base/$from", "$base/$to"); } }
+    $adm = admin_load($base);
+    if (in_array($old, $adm, true)) { $adm = array_diff($adm, [$old]); $adm[] = $new; admin_save($base, $adm); }
+  }
+  @unlink($rf); echo json_encode(["ok" => true]);
 }

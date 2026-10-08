@@ -82,14 +82,18 @@ select{font:inherit;padding:4px;border-radius:8px}
 <input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="evd">Choisis ton personnage · 选择你的角色</div><div class="egrid" id="egrid"></div><div id="mmsg" class="evd"></div>
 <div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
+<div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
+<input id="rn" placeholder="Nom de compte / 用户名" autocomplete="username"><input id="rc" placeholder="Code (xxxx-xxxx-xxxx) / 找回代码" autocomplete="off"><input id="rp" type="password" placeholder="Nouveau mot de passe (6 min.) / 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
+<div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
 <div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
+<div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081326"></script>
-<script src="data-fr2.js?v=202610081326"></script>
-<script src="data-fr3.js?v=202610081326"></script>
-<script src="audio-fr/map.js?v=202610081326"></script>
+<script src="data-fr.js?v=202610081330"></script>
+<script src="data-fr2.js?v=202610081330"></script>
+<script src="data-fr3.js?v=202610081330"></script>
+<script src="audio-fr/map.js?v=202610081330"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -373,7 +377,7 @@ async function adminPage(){cur=adminPage;cat=null;head();crumb([["🏠 Parcours 
       return `<details class="adu"><summary><span class="adn">${uTitle(u)}</span><span class="adp">${Math.round(av)} %</span><span class="heat">${STEPS.map((s,i)=>`<i title="${i+1}. ${escH(nmCur(s[0]))} — ${Math.round(uStep(u,i))} %" style="background:${heat(uStep(u,i))}"></i>`).join("")}</span></summary>
       <div class="adbody"><div class="lb-sub">⭐ ${u.xp} XP · 📚 ${u.words} mots · 个词 · 🔥 ${u.streak} · ${admSeen(u)}</div>
       <div class="adact"><span>Classe · 班级 :</span><select onchange="admDo('setclass',{id:'${u.id}',cls:this.value})"><option value="" ${u.cls===""?"selected":""}>Élève individuel · 个人学员</option>${cl.map(c=>`<option value="${escH(c.id)}" ${u.cls===c.id?"selected":""}>${escH(c.name)}</option>`).join("")}</select>
-      ${u.admin?`<button class="alt" onclick="admDo('demote',{id:'${u.id}'})">Retirer admin · 取消管理员</button>`:`<button onclick="admDo('promote',{id:'${u.id}'})">Nommer admin · 设为管理员</button>`}${u.rank?`<button class="alt" onclick="admDo('kick',{id:'${u.id}'})">Retirer du classement · 移出排行榜</button>`:""}</div>
+      ${u.admin?`<button class="alt" onclick="admDo('demote',{id:'${u.id}'})">Retirer admin · 取消管理员</button>`:`<button onclick="admDo('promote',{id:'${u.id}'})">Nommer admin · 设为管理员</button>`}${u.rank?`<button class="alt" onclick="admDo('kick',{id:'${u.id}'})">Retirer du classement · 移出排行榜</button>`:""}<button class="alt" onclick="admRecovery('${u.id}')">🔑 Code de récupération · 找回代码</button></div>
       ${STEPS.map((s,i)=>`<div class="adst"><b>${i+1}. ${escH(nmCur(s[0]))}</b> <span style="color:var(--mut)">${Math.round(uStep(u,i))} %</span><div class="adus">${s[1].map(id=>{const c=unit(id),m=uMastery(u,c);return `<span class="adc" style="background:${heat(m)}">${c.icon} ${escH(nmCur(c.name))} · ${Math.round(m)} %</span>`}).join("")}</div></div>`).join("")}</div></details>`}).join("")||`<div class="hm-card">Aucun élève dans cette sélection. · 此范围内没有学生。</div>`)}
   else if(AV.tab==="chap"){const i=Math.min(AV.chap,STEPS.length-1),us=STEPS[i][1].map(unit),rows=users.map(u=>({u,m:uStep(u,i)})).sort((a,b)=>b.m-a.m);
     body=`<div class="hm-card"><select onchange="AV.chap=+this.value;adminPage()" style="max-width:100%">${STEPS.map((s,k)=>`<option value="${k}" ${k===i?"selected":""}>${k+1}. ${escH(nmCur(s[0]))}</option>`).join("")}</select></div>`+
@@ -390,6 +394,21 @@ function admPer(id){const f=document.getElementById("pf_"+id).value,t=document.g
 function admAdd(){const n=document.getElementById("ncl").value.trim();if(n.length<2){toast("Nom trop court · 名称太短");return}admDo("addclass",{name:n})}
 function admRen(id){const c=((ADM&&ADM.classes)||[]).find(x=>x.id===id),n=prompt(locText("Nouveau nom de la classe · 班级新名称"),c?c.name:"");if(n&&n.trim().length>=2)admDo("renameclass",{cls:id,name:n.trim()})}
 function admDel(id){if(confirm(locText("Supprimer cette classe ? Ses élèves deviendront « individuels ». · 删除该班级？其学生将变为“个人学员”。")))admDo("delclass",{cls:id})}
+
+/* ---- récupération de compte (code généré par un administrateur) ---- */
+function recOpen(){profClose();document.getElementById("rmsg").textContent="";document.getElementById("rn").value=PNAME||"";document.getElementById("rc").value="";document.getElementById("rp").value="";document.getElementById("rec").classList.add("on")}
+function recClose(){document.getElementById("rec").classList.remove("on")}
+async function recGo(){const n=document.getElementById("rn").value.trim(),code=document.getElementById("rc").value.trim(),pw=document.getElementById("rp").value,m=document.getElementById("rmsg");
+  if(n.length<2||pw.length<6||code.replace(/[^a-zA-Z0-9]/g,"").length!==12){m.textContent="Nom (2 car. min.), code à 12 caractères et mot de passe (6 min.) requis. · 请填写用户名（至少2个字符）、12位代码和密码（至少6位）。";return}
+  if(!window.crypto||!crypto.subtle){m.textContent="Ouvre le site en https. · 请使用 https 打开本站。";return}
+  m.textContent="Vérification… · 验证中……";
+  try{const k=await deriveKey(n,pw),r=await fetch(API+"?recover=1"+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,newk:k})});
+    if(!r.ok){m.textContent="Code invalide ou expiré, ou ce nom / mot de passe est déjà utilisé. · 代码无效或已过期，或该用户名/密码已被使用。";return}
+    CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
+    S.dismissSync=1;S.ts=0;await pull();recClose();head();admStatus();loadClasses();if(cur)cur();toast("✅ Compte récupéré · 账号已找回")}
+  catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
+async function admRecovery(id){try{const r=await fetch(API+"?admin=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"recovery",id})});if(!r.ok)throw 0;const j=await r.json();
+  prompt(locText("Code de récupération (valable 3 jours, une seule utilisation). Donne-le à l'élève. · 找回代码（3天内有效，仅限一次）。请把它交给学生。"),j.code)}catch(e){toast("Impossible de créer le code · 无法生成代码")}}
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
 const medal=i=>["🥇","🥈","🥉"][i]||String(i+1);
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
