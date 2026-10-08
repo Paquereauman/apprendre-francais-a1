@@ -173,6 +173,28 @@ Object.assign(GROUPS,{
 TIPS.conj={"Les verbes en -er : parler · -er动词：parler":["Verbes en -er : racine + e, es, e, ons, ez, ent. · -er 动词：词根 + e, es, e, ons, ez, ent。","Prononciation : je parle, tu parles, il parle, ils parlent se disent pareil (/paʁl/). · 发音：je parle / tu parles / il parle / ils parlent 读音相同（/paʁl/）。"]};
 TIPS.loisirs={"Dire ce qu'on aime · 表达喜好":["J'aime + nom (J'aime la musique) ou + verbe (J'aime danser). Négation : je n'aime pas. · J'aime + 名词或动词原形；否定：je n'aime pas。"]};
 TIPS.nombres2={"Cent et les centaines · 百":["cent prend un « s » seulement s'il n'y a rien après : deux cents, mais deux cent trois. · cent 后面没有其他数字时才加 s：deux cents；但 deux cent trois 不加。"],"Les milliers · 千与百万":["mille ne change jamais : deux mille, dix mille. · mille 永远不变：deux mille、dix mille。"]};
+
+/* ===== Liaisons : le signe ‿ marque la consonne de liaison ; corrections de phonétique (liaison / enchaînement) ===== */
+const IPAFIX={
+ "Comment allez-vous ?":"kɔ.mɑ̃‿ta.le vu","Comment vous appelez-vous ?":"kɔ.mɑ̃ vu‿za.pə.le vu","Comment aller à… ?":"kɔ.mɑ̃‿ta.le a",
+ "vous êtes":"vu‿zɛt","nous avons":"nu‿za.vɔ̃","vous avez":"vu‿za.ve","ils ont":"il‿zɔ̃","nous allons":"nu‿za.lɔ̃","vous allez":"vu‿za.le",
+ "Bon appétit !":"bɔ̃‿na.pe.ti","Bon anniversaire !":"bɔ̃‿na.ni.vɛʁ.sɛʁ","Vous avez une table pour deux ?":"vu‿za.ve yn tabl puʁ dø","C'est épicé ?":"sɛ‿te.pi.se",
+ "Je vais essayer ce t-shirt":"ʒə vɛ‿ze.sɛ.je sə ti.ʃœʁt","Je vais à l'école en bus":"ʒə vɛ‿za le.kɔl ɑ̃ bys","Je vais à la boulangerie":"ʒə vɛ‿za la bu.lɑ̃ʒ.ʁi","Je vais à la mer":"ʒə vɛ‿za la mɛʁ","Je vais en Bretagne":"ʒə vɛ‿zɑ̃ bʁə.taɲ",
+ "un euro":"œ̃‿nø.ʁo","Ça coûte cent euros":"sa kut sɑ̃‿tø.ʁo","les œufs":"le‿zø","les yeux":"le‿zjø","les yeux marron":"le‿zjø ma.ʁɔ̃","Elle a les yeux bleus":"ɛl a le‿zjø blø",
+ "mes amis":"me‿za.mi","tes enfants":"te‿zɑ̃.fɑ̃","nos amis":"no‿za.mi","leurs enfants":"lœʁ‿zɑ̃.fɑ̃","les urgences":"le‿zyʁ.ʒɑ̃s","les escaliers":"le‿zɛs.ka.lje",
+ "J'ai vingt ans":"ʒe vɛ̃‿tɑ̃","un an":"œ̃‿nɑ̃","Il est une heure":"i.lɛ‿tyn œʁ","Il est huit heures":"i.lɛ ɥi‿tœʁ","Il est trois heures dix":"i.lɛ tʁwa‿zœʁ dis","À huit heures":"a ɥi‿tœʁ",
+ "Quelle heure est-il ?":"kɛ.lœʁ ɛ.til","À quelle heure ?":"a kɛ.lœʁ","Quel âge as-tu ?":"kɛ.laʒ a ty","Quel âge avez-vous ?":"kɛ.laʒ a.ve vu","Quel jour est-on ?":"kɛl ʒuʁ ɛ‿tɔ̃",
+ "C'est au bord de la mer":"sɛ‿t o bɔʁ də la mɛʁ","J'y suis allé(e) en train":"ʒi sɥi‿za.le ɑ̃ tʁɛ̃"};
+CATS.forEach(c=>c.items.forEach(i=>{if(IPAFIX[i[0]])i[1]=IPAFIX[i[0]]}));
+const PHFIX={"Nous allons à l'école":"nu‿za.lɔ̃ a le.kɔl","Il est mon ami":"i.lɛ mɔ̃‿na.mi","Nous avons deux enfants":"nu‿za.vɔ̃ dø‿zɑ̃.fɑ̃","Je vais en Bretagne":"ʒə vɛ‿zɑ̃ bʁə.taɲ"};
+PH.forEach(p=>{const t=p[0].split("/").join(" ");if(PHFIX[t])p[1]=PHFIX[t]});
+Object.assign(TIPS.salut=TIPS.salut||{},{"*":["Le signe ‿ montre la liaison : on prononce la consonne finale d'un mot devant un mot qui commence par une voyelle. · 符号 ‿ 表示连读：后一个词以元音开头时，前一个词末尾的辅音要发音。"],
+ "Prendre des nouvelles · 问候近况":["Attention à la liaison : Comment‿allez-vous ? → le « t » de « comment » se prononce : /kɔ.mɑ̃.ta.le.vu/. · 注意连读：Comment allez-vous ? 中 comment 的 t 要发音：/kɔ.mɑ̃.ta.le.vu/。"]});
+TIPS.conj=Object.assign(TIPS.conj||{},{"Avoir · 有":["Liaison en [z] : nous‿avons, vous‿avez, ils‿ont. · [z] 连读：nous‿avons、vous‿avez、ils‿ont。"]});
+TIPS.possessifs=Object.assign(TIPS.possessifs||{},{"Mon, ma, mes · 我的":["Liaison en [z] devant une voyelle : mes‿amis, tes‿enfants, nos‿amis. · 元音前 [z] 连读：mes‿amis、tes‿enfants、nos‿amis。"]});
+TIPS.heure=Object.assign(TIPS.heure||{},{"Dire l'heure · 说时间":["Il est une heure (singulier) ; deux heures (pluriel). Midi et minuit : sans « heure ». · une heure 用单数；deux heures 用复数。midi、minuit 后不加 heure。","Liaison : trois‿heures [tʁwa.zœʁ], huit‿heures [ɥi.tœʁ]. · 连读：trois‿heures、huit‿heures。"]});
+TIPS.nombres=Object.assign(TIPS.nombres||{},{"De 0 à 5 · 0到5":["Liaison : deux‿enfants → [dø.zɑ̃.fɑ̃], trois‿amis → [tʁwa.za.mi]. · 连读：deux‿enfants 读作 [dø.zɑ̃.fɑ̃]，trois‿amis 读作 [tʁwa.za.mi]。"]});
+TIPS.age=Object.assign(TIPS.age||{},{"Demander et dire son âge · 问年龄和说年龄":["On ne dit pas « je suis 25 ans » : en français, on dit « j'ai 25 ans » (verbe avoir). · 法语不说“je suis 25 ans”，而说 j'ai 25 ans（用 avoir，“有”）。","Liaison : vingt‿ans [vɛ̃.tɑ̃] ; enchaînement : quel âge [kɛ.laʒ]. · 连读：vingt‿ans；连音：quel âge [kɛ.laʒ]。"]});
 (function(){for(const id of Object.keys(GROUPS)){const c=CATS.find(x=>x.id===id);if(!c)continue;const by=new Map(c.items.map(i=>[i[0],i])),out=[];
   GROUPS[id].forEach(([t,keys])=>keys.forEach(k=>{const it=by.get(k);if(it){it[5]=t;out.push(it);by.delete(k)}}));
   by.forEach(it=>{it[5]="Autres · 其他";out.push(it)});c.items=out}})();
