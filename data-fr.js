@@ -1,8 +1,5 @@
 // [français, prononciation (API), 中文, pinyin, emoji]
 const CATS=[
-{id:"sons",name:"Sons du français · 法语发音",icon:"🔊",color:"#e63946",items:[
-["tu","ty","你","nǐ","👉"],["tout","tu","全部","quánbù","🌐"],["rue","ʁy","街道","jiēdào","🛣️"],["roue","ʁu","轮子","lúnzi","🛞"],["pain","pɛ̃","面包","miànbāo","🍞"],["bon","bɔ̃","好","hǎo","👍"],["blanc","blɑ̃","白色","báisè","⚪"],
-["un","œ̃","一","yī","1️⃣"],["chat","ʃa","猫","māo","🐱"],["je","ʒə","我","wǒ","🙋"],["feu","fø","火","huǒ","🔥"],["fleur","flœʁ","花","huā","🌸"],["oiseau","wa.zo","鸟","niǎo","🐦"],["chien","ʃjɛ̃","狗","gǒu","🐶"]]},
 {id:"salut",name:"Salutations · 问候",icon:"👋",color:"#f77f00",items:[
 ["Bonjour","bɔ̃.ʒuʁ","你好 / 早上好","nǐ hǎo","👋"],["Bonsoir","bɔ̃.swaʁ","晚上好","wǎnshang hǎo","🌆"],["Salut","sa.ly","嗨 / 再见（随意）","hāi","🤙"],
 ["Au revoir","o ʁə.vwaʁ","再见","zàijiàn","👋"],["Merci","mɛʁ.si","谢谢","xièxie","🙏"],["S'il vous plaît","sil vu plɛ","请","qǐng","🙏"],
@@ -77,7 +74,7 @@ const CATS=[
 {id:"loisirs",name:"Loisirs · 爱好",icon:"⚽",color:"#06d6a0",items:[
 ["la musique","la my.zik","音乐","yīnyuè","🎵"],["le sport","lə spɔʁ","运动","yùndòng","🏃"],["le football","lə fut.bol","足球","zúqiú","⚽"],["le cinéma","lə si.ne.ma","电影院","diànyǐngyuàn","🎬"],["le livre","lə livʁ","书","shū","📚"],["voyager","vwa.ja.ʒe","旅行","lǚxíng","🌍"],["nager","na.ʒe","游泳","yóuyǒng","🏊"],["le téléphone","lə te.le.fɔn","手机 / 电话","shǒujī","📱"]]}
 ];
-const STEPS=[["Prononciation & premiers mots · 发音与入门",["sons","salut","presente","nombres"]],
+const STEPS=[["Premiers mots · 入门词汇",["salut","presente","nombres"]],
 ["Les verbes les plus utiles · 最常用动词",["etre","conj","verbes","m:phr"]],
 ["Ma vie · 我的生活",["famille","corps","couleurs","vetements","animaux","loisirs"]],
 ["Manger & faire les courses · 吃饭与购物",["manger","resto","courses"]],

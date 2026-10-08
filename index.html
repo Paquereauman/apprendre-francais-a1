@@ -140,7 +140,7 @@ function qShow(){if(Q.i>=Q.qs.length)return qEnd();Q.lock=0;clearTimeout(Q.tm);c
   else if(t==="z")p=`<p style="font-size:1.2rem">${q.zh}</p><div class="fw">${q.sentence}</div><p>Quel mot manque ? · 缺哪个词？</p>`;
   else if(t==="o")p=`<p style="font-size:1.2rem">${q.zh}</p><p>🧩 Remets la phrase en ordre · 排列成正确的句子</p><div id="oq"></div>`;
   if(q.opts)o=`<div class="opts">${q.opts.map((x,k)=>`<button onclick="ans(${k})">${lab(q,x)}</button>`).join("")}</div>`;
-  $.innerHTML=`<div class="top"><button class="alt" onclick="clearTimeout(Q.tm);${Q.mode==='test'||Q.mode==='rev'||!Q.mode?'home':Q.mode==='phr'?'home':'menu'}()">✖ Quitter · 退出</button><span class="pill">${Q.i+1} / ${Q.qs.length} · ✔ ${Q.s}</span></div>
+  $.innerHTML=`<div class="top"><button class="alt" onclick="clearTimeout(Q.tm);${Q.mode==='test'||Q.mode==='rev'||!Q.mode||Q.mode==='phr'?'home':'menu'}()">✖ Quitter · 退出</button><span class="pill">${Q.i+1} / ${Q.qs.length} · ✔ ${Q.s}</span></div>
   <div class="bar" style="margin-bottom:14px"><i style="width:${Q.i/Q.qs.length*100}%"></i></div>
   <div class="q">${p}${o}<div class="nav"><button class="alt" onclick="qDone(false,true,-1)">🤷 Je ne sais pas · 不知道</button></div></div>`;
   if(t==="o")ordDraw();if(t==="p")setTimeout(()=>{const e=document.getElementById("inp");e&&e.focus()},50);if(t==="c"||t==="d")setTimeout(()=>say(q.say),300)}
@@ -182,6 +182,7 @@ function testEnd(){const per={};Q.qs.forEach(q=>{if(!q.it)return;const c=per[q.c
   let conf=0,tot=0;Object.entries(per).forEach(([id,ws])=>{const a=Object.values(ws),n=a.length,cf=a.filter(w=>w.ok===w.n).length;conf+=cf;tot+=n;S.test[id]=100*cf/(n+2)});
   S.testDate=new Date().toLocaleDateString("fr-FR");save();checkDone();head();
   $.innerHTML=`<div class="q" style="text-align:left"><div class="emo" style="text-align:center">📊</div><h2 style="text-align:center">Résultat du test · 测试结果</h2><p>📚 <b>Vocabulaire</b> : ${conf} mots confirmés sur ${tot} testés (2 types de questions par mot).</p><p>🧩 Score total : ${Q.s} / ${Q.qs.length}</p><small style="color:var(--mut)">Ton estimation de durée est mise à jour. · 预计学习时间已更新。</small><div class="nav"><button onclick="plan()">📊 Mon plan</button><button class="alt" onclick="home()">🏠 Accueil</button></div></div>`}
+
 /* ---- plan ---- */
 const PACE={day:[1,2,3,4,5,6,8,10,12,15,20,25,30],week:[5,7,10,14,20,25,30,40,50,70,100]};
 function setPace(v){S.pace=+v;save();plan()}function setUnit(u){S.unit=u;S.pace=u==="week"?30:5;save();plan()}
