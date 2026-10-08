@@ -21,6 +21,7 @@ if (isset($_GET["classes"])) {
 }
 if (isset($_GET["setcls"])) { self_setcls($k, $base, $app); exit; }
 if (isset($_GET["recover"])) { recover_main($base, $app); exit; }
+if (isset($_GET["quiz"])) { quiz_main($k, $base, $app); exit; }
 if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; exit; }
 $h = hash("sha256", $k);
 $f = "$base/$h.json";
@@ -70,7 +71,7 @@ function rank_main($k, $base, $app) {
     file_put_contents("$dir/$h.json", json_encode(["name" => $name, "ts" => time()], JSON_UNESCAPED_UNICODE), LOCK_EX);
     echo "{\"ok\":true}"; exit;
   }
-  $out = []; $me = false; $yday = date("Y-m-d", time() - 86400);
+  $out = []; $me = false; $yday = date("Y-m-d", time() - 86400); $ym = cur_ym(); $ymp = cur_ym(-1);
   $src = [];
   if ($app !== "") {
     foreach (array_slice(glob("$base/users/*.json") ?: [], 0, 500) as $uf) {
@@ -90,11 +91,18 @@ function rank_main($k, $base, $app) {
     $words = 0; foreach (($S["known"] ?? []) as $a) { if (is_array($a)) $words += count($a); }
     $streak = (int)($S["streak"] ?? 0); if (($S["last"] ?? "") < $yday) $streak = 0;
     $av = []; foreach (($S["av"] ?? []) as $ak => $av_v) { if (!is_string($ak) || !preg_match("/^[a-zA-Z]{2,8}$/", $ak) || count($av) >= 30) continue; if (is_int($av_v) && $av_v >= 0 && $av_v < 100) $av[$ak] = $av_v; elseif (is_string($av_v) && preg_match("/^#[0-9a-fA-F]{6}$/", $av_v)) $av[$ak] = $av_v; }
+    $qr = ($app !== "") ? qres_load($base, $id) : null;
+    list($pts, $chp) = $qr ? res_points($qr) : [0, 0];
+    list($mpts, $mts) = $qr ? month_pts($qr["hist"], $ym) : [0, 0];
+    list($ppts, $pts2) = $qr ? month_pts($qr["hist"], $ymp) : [0, 0];
     $isme = ($id === $h); if ($isme) $me = true;
-    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
+    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "pts" => $pts, "ch" => $chp, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
   }
-  usort($out, function ($a, $b) { return [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
-  echo json_encode(["app" => $app, "classes" => ($app !== "" ? classes_load($base) : []), "list" => array_slice($out, 0, 300), "me" => $me, "total" => count($out)], JSON_UNESCAPED_UNICODE);
+  $byPts = ($app !== "");
+  usort($out, function ($a, $b) use ($byPts) { return $byPts ? [$b["pts"], $b["xp"], $b["words"]] <=> [$a["pts"], $a["xp"], $a["words"]] : [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
+  $win = null;
+  if ($app !== "") { $c = array_filter($out, function ($u) { return $u["pm"] > 0; }); usort($c, function ($a, $b) { return [$b["pm"], $a["pmt"]] <=> [$a["pm"], $b["pmt"]]; }); if ($c) { $w = array_values($c)[0]; $win = ["ym" => $ymp, "name" => $w["name"], "emo" => $w["emo"], "pts" => $w["pm"]]; } }
+  echo json_encode(["app" => $app, "ym" => $ym, "winner" => $win, "classes" => ($app !== "" ? classes_load($base) : []), "list" => array_slice($out, 0, 300), "me" => $me, "total" => count($out)], JSON_UNESCAPED_UNICODE);
 }
 
 // ---- Administration : les administrateurs sont des profils (hash de la clé) listés dans admins.json.
@@ -161,10 +169,10 @@ function admin_main($k, $base, $app) {
       $cls[] = ["id" => $cid, "name" => $name]; classes_save($base, $cls);
     }
     elseif ($act === "setperiod") {
-      $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $df = (string)($b["from"] ?? ""); $dt = (string)($b["to"] ?? "");
+      $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $df = (string)($b["from"] ?? ""); $dt = (string)($b["to"] ?? ""); $de = (string)($b["end"] ?? "");
       $okd = function ($d) { return $d === "" || (bool)preg_match("/^\d{4}-\d{2}-\d{2}$/", $d); };
-      if (!class_exists_in($base, $cid) || !$okd($df) || !$okd($dt) || (($df === "") !== ($dt === "")) || ($df !== "" && $dt < $df)) { http_response_code(400); echo "{\"error\":\"bad period\"}"; return; }
-      foreach ($cls as $i => $c) { if ($c["id"] === $cid) { if ($df === "") { unset($cls[$i]["from"], $cls[$i]["to"]); } else { $cls[$i]["from"] = $df; $cls[$i]["to"] = $dt; } } }
+      if (!class_exists_in($base, $cid) || !$okd($df) || !$okd($dt) || !$okd($de) || (($df === "") !== ($dt === "")) || ($df !== "" && $dt < $df)) { http_response_code(400); echo "{\"error\":\"bad period\"}"; return; }
+      foreach ($cls as $i => $c) { if ($c["id"] === $cid) { if ($df === "") { unset($cls[$i]["from"], $cls[$i]["to"]); } else { $cls[$i]["from"] = $df; $cls[$i]["to"] = $dt; } if ($de === "") { unset($cls[$i]["end"]); } else { $cls[$i]["end"] = $de; } } }
       classes_save($base, $cls);
     }
     elseif ($act === "renameclass") {
@@ -187,7 +195,7 @@ function admin_main($k, $base, $app) {
   }
   $out = ["admin" => $isAdmin, "claimable" => $claimable];
   if ($isAdmin) {
-    $users = [];
+    $users = []; $months = [cur_ym(), cur_ym(-1), cur_ym(-2), cur_ym(-3), cur_ym(-4), cur_ym(-5)]; $mt = [];
     foreach (array_slice(glob("$base/users/*.json") ?: [], 0, 500) as $uf) {
       $id = basename($uf, ".json"); if (!preg_match("/^[a-f0-9]{64}$/", $id)) continue;
       $u = json_decode(@file_get_contents($uf), true); if (!is_array($u)) continue;
@@ -196,12 +204,17 @@ function admin_main($k, $base, $app) {
       foreach (($S["known"] ?? []) as $cid => $a) { if (is_array($a) && preg_match("/^[a-z0-9_]{1,20}$/", (string)$cid)) { $kn[$cid] = count($a); $words += count($a); } }
       $best = []; foreach (($S["best"] ?? []) as $cid => $v) { if (is_numeric($v) && preg_match("/^[a-z0-9_]{1,20}$/", (string)$cid)) { $best[$cid] = (float)$v; } }
       $test = []; foreach (($S["test"] ?? []) as $cid => $v) { if (is_numeric($v) && preg_match("/^[a-z0-9_]{1,20}$/", (string)$cid)) { $test[$cid] = (float)$v; } }
-      $users[] = ["id" => $id, "name" => (string)($u["name"] ?? "?"), "cls" => (string)($u["cls"] ?? ""), "nick" => clean_name($S["nick"] ?? "", 20), "emo" => clean_emo($S["emo"] ?? ""), "seen" => (int)($u["ts"] ?? 0), "xp" => (int)($S["xp"] ?? 0), "words" => $words,
+      $qr = qres_load($base, $id);
+      $nm = clean_name($S["nick"] ?? "", 20); if ($nm === "") { $nm = (string)($u["name"] ?? "?"); }
+      foreach ($months as $ym2) { list($pp, $tt) = month_pts($qr["hist"], $ym2); if ($pp > 0) { $mt[$ym2][] = ["name" => $nm, "pts" => $pp, "ts" => $tt]; } }
+      $users[] = ["id" => $id, "res" => (object)$qr["res"], "name" => (string)($u["name"] ?? "?"), "cls" => (string)($u["cls"] ?? ""), "nick" => clean_name($S["nick"] ?? "", 20), "emo" => clean_emo($S["emo"] ?? ""), "seen" => (int)($u["ts"] ?? 0), "xp" => (int)($S["xp"] ?? 0), "words" => $words,
         "known" => $kn, "best" => $best, "test" => $test, "phr" => (int)($S["phr"] ?? 0), "streak" => (int)($S["streak"] ?? 0),
         "admin" => in_array($id, $admins, true), "rank" => ($app !== "" ? !is_file("$base/rankout/$id") : is_file("$base/rank/$id.json")), "me" => $id === $h];
     }
     usort($users, function ($a, $b) { return $b["seen"] <=> $a["seen"]; });
-    $out["users"] = $users; $out["classes"] = classes_load($base);
+    $win = [];
+    foreach ($months as $ym2) { $l = $mt[$ym2] ?? []; usort($l, function ($a, $b) { return [$b["pts"], $a["ts"]] <=> [$a["pts"], $b["ts"]]; }); $win[] = ["ym" => $ym2, "top" => array_slice($l, 0, 3)]; }
+    $out["users"] = $users; $out["classes"] = classes_load($base); $out["winners"] = $win;
   }
   echo json_encode($out, JSON_UNESCAPED_UNICODE);
 }
@@ -238,9 +251,169 @@ function recover_main($base, $app) {
     if (is_file("$base/$new.json")) { $fail("exists"); return; }
     if (!is_file("$base/$old.json")) { $fail("gone"); return; }
     rename("$base/$old.json", "$base/$new.json");
-    foreach (["users/$old.json" => "users/$new.json", "rankout/$old" => "rankout/$new"] as $from => $to) { if (is_file("$base/$from")) { @rename("$base/$from", "$base/$to"); } }
+    foreach (["users/$old.json" => "users/$new.json", "rankout/$old" => "rankout/$new", "quizres/$old.json" => "quizres/$new.json"] as $from => $to) { if (is_file("$base/$from")) { @rename("$base/$from", "$base/$to"); } }
     $adm = admin_load($base);
     if (in_array($old, $adm, true)) { $adm = array_diff($adm, [$old]); $adm[] = $new; admin_save($base, $adm); }
   }
   @unlink($rf); echo json_encode(["ok" => true]);
+}
+
+// =====================================================================================================
+// Quiz de fin de chapitre : fabriqué, corrigé et enregistré par le SERVEUR (le navigateur ne peut pas falsifier un score).
+// - Le navigateur reçoit les questions sans les réponses ; il envoie ses réponses une par une ; le serveur corrige.
+// - Le classement ne compte que ces résultats. Meilleur score conservé par chapitre ; historique des essais pour le classement mensuel.
+// - Garde-fous : réponse < 0,6 s = fausse, durée maximale de session, 6 essais par chapitre et par 24 h.
+// =====================================================================================================
+function quiz_max() { return 6; }
+function vocab_data() {
+  static $v = null;
+  if ($v === null) { $f = __DIR__ . "/vocab-fr.json"; $v = is_file($f) ? json_decode(@file_get_contents($f), true) : null; if (!is_array($v)) { $v = ["steps" => [], "units" => [], "phrases" => []]; } }
+  return $v;
+}
+function quiz_keys() { $o = []; foreach (vocab_data()["steps"] as $s) { $o[] = (string)$s["key"]; } return $o; }
+function qres_load($base, $h) {
+  $f = "$base/quizres/$h.json"; $a = is_file($f) ? json_decode(@file_get_contents($f), true) : null;
+  if (!is_array($a)) { $a = []; }
+  foreach (["res", "tries", "hist"] as $k) { if (!isset($a[$k]) || !is_array($a[$k])) { $a[$k] = []; } }
+  return $a;
+}
+function qres_save($base, $h, $a) {
+  $d = "$base/quizres"; if (!is_dir($d)) { @mkdir($d, 0700, true); }
+  if (count($a["hist"]) > 600) { $a["hist"] = array_slice($a["hist"], -600); }
+  file_put_contents("$d/$h.json", json_encode($a), LOCK_EX);
+}
+function res_points($qr) { $p = 0; $c = 0; foreach ($qr["res"] as $e) { $b = (int)($e["b"] ?? 0); if ($b >= 0 && $b <= 100) { $p += $b; if ($b >= 80) { $c++; } } } return [$p, $c]; }
+function accents_off($s) {
+  $s = mb_strtolower((string)$s, "UTF-8");
+  $s = strtr($s, ["à" => "a", "â" => "a", "ä" => "a", "é" => "e", "è" => "e", "ê" => "e", "ë" => "e", "î" => "i", "ï" => "i", "ô" => "o", "ö" => "o", "ù" => "u", "û" => "u", "ü" => "u", "ç" => "c", "œ" => "oe", "æ" => "ae", "ÿ" => "y", "’" => "'"]);
+  $s = preg_replace("/[^a-z0-9' ]/", "", $s);
+  return trim(preg_replace("/\\s+/", " ", $s));
+}
+// ---- mois : points gagnés pendant le mois (progrès par rapport aux meilleurs scores d'avant le mois)
+function cur_ym($off = 0) { $d = new DateTime("now", new DateTimeZone("Europe/Paris")); $d->modify("first day of this month"); if ($off) { $d->modify($off . " month"); } return $d->format("Y-m"); }
+function month_range($ym) { $s = new DateTime($ym . "-01 00:00:00", new DateTimeZone("Europe/Paris")); $e = clone $s; $e->modify("+1 month"); return [$s->getTimestamp(), $e->getTimestamp()]; }
+function month_pts($hist, $ym) {
+  list($s, $e) = month_range($ym); $before = []; $within = []; $when = [];
+  foreach ($hist as $x) {
+    if (!is_array($x) || count($x) < 3) { continue; }
+    $ts = (int)$x[0]; $key = (string)$x[1]; $pc = (int)$x[2];
+    if ($ts < $s) { $before[$key] = max($before[$key] ?? 0, $pc); }
+    elseif ($ts < $e && $pc > ($within[$key] ?? 0)) { $within[$key] = $pc; $when[$key] = $ts; }
+  }
+  $pts = 0; $last = 0;
+  foreach ($within as $key => $w) { $b = $before[$key] ?? 0; if ($w > $b) { $pts += $w - $b; $last = max($last, $when[$key]); } }
+  return [$pts, $last];
+}
+// ---- fabrication des questions
+function quiz_distractors($it, $pool, $all) {
+  $c = [];
+  foreach ($pool as $x) { if ($x[0] !== $it[0] && $x[2] !== $it[2]) { $c[] = $x; } }
+  shuffle($c);
+  if (count($c) < 3) {
+    $more = []; foreach ($all as $x) { if ($x[0] !== $it[0] && $x[2] !== $it[2] && !in_array($x, $c, true)) { $more[] = $x; } }
+    shuffle($more); foreach ($more as $x) { if (count($c) >= 3) { break; } $c[] = $x; }
+  }
+  return array_slice($c, 0, 3);
+}
+function quiz_question($t, $it, $pool, $all) {
+  $emo = $it[4] ?? "";
+  if ($t === "p") { return ["t" => "p", "item" => $it, "right" => null, "pub" => ["t" => "p", "it" => ["", "", $it[2], $it[3], $emo]]]; }
+  $opts = quiz_distractors($it, $pool, $all); $opts[] = $it; shuffle($opts); $right = (int)array_search($it, $opts, true);
+  $fr = function ($x) { return [$x[0], $x[1], "", "", $x[4] ?? ""]; };
+  $zh = function ($x) { return ["", "", $x[2], $x[3], $x[4] ?? ""]; };
+  if ($t === "a") { $pub = ["t" => "a", "say" => $it[0], "it" => [$it[0], $it[1], "", "", $emo], "opts" => array_map($zh, $opts)]; }
+  elseif ($t === "b") { $pub = ["t" => "b", "it" => ["", "", $it[2], $it[3], $emo], "opts" => array_map($fr, $opts)]; }
+  elseif ($t === "c") { $pub = ["t" => "c", "say" => $it[0], "opts" => array_map($zh, $opts)]; }
+  else { $t = "d"; $pub = ["t" => "d", "say" => $it[0], "opts" => array_map($fr, $opts)]; }
+  return ["t" => $t, "item" => $it, "right" => $right, "pub" => $pub];
+}
+function quiz_phrase($t, $V) {
+  $P = $V["phrases"]; $e = $P[random_int(0, count($P) - 1)]; $w = explode("/", $e[0]);
+  $item = ["full" => implode(" ", $w), "ipa" => $e[1], "zh" => $e[2]];
+  if ($t === "o") { $bank = $w; shuffle($bank); return ["t" => "o", "item" => $item, "ans" => $w, "right" => null, "pub" => ["t" => "o", "zh" => $e[2], "bank" => $bank]]; }
+  $idx = random_int(0, count($w) - 1); $ans = $w[$idx]; $pool = [];
+  foreach ($P as $pp) { foreach (explode("/", $pp[0]) as $x) { if ($x !== $ans) { $pool[$x] = 1; } } }
+  $cands = array_map("strval", array_keys($pool)); shuffle($cands); $opts = array_slice($cands, 0, 3); $opts[] = $ans; shuffle($opts);
+  $sent = $w; $sent[$idx] = "＿＿";
+  return ["t" => "z", "item" => $item, "right" => (int)array_search($ans, $opts, true), "pub" => ["t" => "z", "zh" => $e[2], "sentence" => implode(" ", $sent), "opts" => $opts]];
+}
+function quiz_build($key) {
+  $V = vocab_data(); $step = null;
+  foreach ($V["steps"] as $s) { if ((string)$s["key"] === $key) { $step = $s; } }
+  if (!$step) { return null; }
+  $units = []; $hasPhr = false; $all = [];
+  foreach ($V["units"] as $u) { foreach ($u["items"] as $x) { $all[] = $x; } }
+  foreach ($step["units"] as $uid) { if ($uid === "m:phr") { $hasPhr = true; } elseif (isset($V["units"][$uid])) { $units[$uid] = $V["units"][$uid]["items"]; } }
+  $nu = count($units); if ($nu === 0 && !$hasPhr) { return null; }
+  $total = max(12, min(24, $nu * 6)); $nphr = ($hasPhr && count($V["phrases"]) > 0) ? 6 : 0; $nw = $total - $nphr;
+  $picks = [];
+  if ($nu > 0) {
+    $per = (int)ceil($nw / $nu);
+    foreach ($units as $uid => $items) { $idx = range(0, count($items) - 1); shuffle($idx); foreach (array_slice($idx, 0, min($per, count($items))) as $i) { $picks[] = [$uid, $i]; } }
+    shuffle($picks); $picks = array_slice($picks, 0, $nw);
+    $uids = array_keys($units);
+    while (count($picks) < min($nw, 10)) { $uid = $uids[random_int(0, count($uids) - 1)]; $picks[] = [$uid, random_int(0, count($units[$uid]) - 1)]; }
+  }
+  $types = ["a", "b", "c", "d", "p"]; $qs = [];
+  foreach ($picks as $pk) {
+    $items = $units[$pk[0]]; $it = $items[$pk[1]]; $t = $types[random_int(0, 4)];
+    if ($t === "p" && (mb_strlen($it[0]) > 24 || preg_match('/[…?!(,]/u', $it[0]))) { $t = "b"; }
+    $qs[] = quiz_question($t, $it, $items, $all);
+  }
+  for ($i = 0; $i < $nphr; $i++) { $qs[] = quiz_phrase($i % 2 ? "o" : "z", $V); }
+  shuffle($qs);
+  return $qs;
+}
+function quiz_grade($q, $a) {
+  if ($a === null) { return false; }
+  if ($q["t"] === "p") {
+    $typed = accents_off((string)$a); if ($typed === "") { return false; }
+    foreach (explode(" / ", $q["item"][0]) as $part) { if ($typed === accents_off($part)) { return true; } }
+    return $typed === accents_off($q["item"][0]);
+  }
+  if ($q["t"] === "o") { return is_array($a) && array_values($a) === $q["ans"]; }
+  return is_int($a) && $a === $q["right"];
+}
+function quiz_main($k, $base, $app) {
+  if (!$app || !preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad request\"}"; return; }
+  $h = hash("sha256", $k);
+  if (!is_file("$base/$h.json")) { http_response_code(400); echo "{\"error\":\"no profile\"}"; return; }
+  $act = (string)$_GET["quiz"]; $Q = qres_load($base, $h); $now = time();
+  if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    $left = []; foreach (quiz_keys() as $key) { $tr = array_filter($Q["tries"][$key] ?? [], function ($x) use ($now) { return $x > $now - 86400; }); $left[$key] = max(0, quiz_max() - count($tr)); }
+    echo json_encode(["res" => (object)$Q["res"], "left" => (object)$left]); return;
+  }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 4001), true);
+  if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
+  $sd = "$base/quiz";
+  if ($act === "start") {
+    $key = preg_replace("/[^a-z0-9]/", "", (string)($b["chap"] ?? ""));
+    $qs = quiz_build($key); if (!$qs) { http_response_code(400); echo "{\"error\":\"bad chapter\"}"; return; }
+    $tr = array_values(array_filter($Q["tries"][$key] ?? [], function ($x) use ($now) { return $x > $now - 86400; }));
+    if (count($tr) >= quiz_max()) { http_response_code(429); echo json_encode(["error" => "limit", "retry" => $tr[0] + 86400 - $now]); return; }
+    $tr[] = $now; $Q["tries"][$key] = $tr; qres_save($base, $h, $Q);
+    if (!is_dir($sd)) { @mkdir($sd, 0700, true); }
+    foreach (glob("$sd/*.json") ?: [] as $f) { if (filemtime($f) < $now - 10800) { @unlink($f); } }
+    $sid = bin2hex(random_bytes(8));
+    file_put_contents("$sd/$sid.json", json_encode(["h" => $h, "chap" => $key, "q" => $qs, "i" => 0, "ok" => [], "t0" => $now, "tq" => microtime(true)], JSON_UNESCAPED_UNICODE), LOCK_EX);
+    echo json_encode(["sid" => $sid, "n" => count($qs), "q" => $qs[0]["pub"], "left" => quiz_max() - count($tr)], JSON_UNESCAPED_UNICODE); return;
+  }
+  if ($act !== "answer") { http_response_code(400); echo "{\"error\":\"bad action\"}"; return; }
+  $sid = preg_replace("/[^a-f0-9]/", "", (string)($b["sid"] ?? "")); $sf = "$sd/$sid.json";
+  $s = (strlen($sid) === 16 && is_file($sf)) ? json_decode(@file_get_contents($sf), true) : null;
+  if (!is_array($s) || ($s["h"] ?? "") !== $h) { http_response_code(400); echo "{\"error\":\"no session\"}"; return; }
+  $i = (int)($b["i"] ?? -1);
+  if ($i !== (int)$s["i"]) { http_response_code(409); echo json_encode(["error" => "out of order", "i" => $s["i"]]); return; }
+  $n = count($s["q"]); $q = $s["q"][$i]; $el = microtime(true) - (float)$s["tq"];
+  if ($now - (int)$s["t0"] > $n * 150 + 60) { @unlink($sf); http_response_code(410); echo "{\"error\":\"expired\"}"; return; }
+  $ok = ($el >= 1.2 && $el <= 180) ? quiz_grade($q, $b["a"] ?? null) : false;
+  $s["ok"][] = $ok ? 1 : 0; $s["i"] = $i + 1; $s["tq"] = microtime(true);
+  $out = ["ok" => $ok, "right" => $q["right"], "fb" => $q["item"]];
+  if ($s["i"] < $n) { $out["next"] = $s["q"][$s["i"]]["pub"]; file_put_contents($sf, json_encode($s, JSON_UNESCAPED_UNICODE), LOCK_EX); echo json_encode($out, JSON_UNESCAPED_UNICODE); return; }
+  $good = array_sum($s["ok"]); $pct = (int)round($good * 100 / $n); $dur = max(1, $now - (int)$s["t0"]); $key = $s["chap"];
+  $e = $Q["res"][$key] ?? ["b" => 0, "a" => 0]; $e["a"] = (int)($e["a"] ?? 0) + 1; $e["l"] = $pct; $e["ts"] = $now;
+  if ($pct >= (int)($e["b"] ?? 0)) { $e["b"] = $pct; $e["n"] = $n; $e["t"] = $dur; }
+  $Q["res"][$key] = $e; $Q["hist"][] = [$now, $key, $pct]; qres_save($base, $h, $Q); @unlink($sf);
+  $out["done"] = true; $out["pct"] = $pct; $out["good"] = $good; $out["n"] = $n; $out["best"] = $e["b"]; $out["pass"] = $e["b"] >= 80; $out["a"] = $e["a"];
+  echo json_encode($out, JSON_UNESCAPED_UNICODE);
 }

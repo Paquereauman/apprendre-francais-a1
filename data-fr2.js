@@ -678,23 +678,23 @@ Je bois de l'eau|ʒə bwa də lo|我喝水|wǒ hē shuǐ|💧
 Bon appétit !|bɔ̃ na.pe.ti|祝你好胃口！|zhù nǐ hǎo wèikǒu|😋`);
 
 /* ---- Parcours (ordre du cours FLE débutant) ---- */
-STEPS=[["C'est moi : salutations & se présenter · 这是我：问候与自我介绍",["salut","presente","nombres"]],
-["Les verbes de la classe · 课堂动词",["verbes","classe2"]],
-["L'âge, les nombres jusqu'à 30 & poser des questions · 年龄、30以内的数字与提问",["n11","age","questions"]],
-["Ma famille · 我的家人",["famille","possessifs","animaux"]],
-["Les jours, les nombres jusqu'à 40, les mois & la date · 星期、40以内的数字、月份与日期",["jours","n40","mois"]],
-["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n100","heure","nombres2"]],
-["Le temps qu'il fait · 天气",["meteo","temps"]],
-["Comment on s'habille · 怎么穿衣",["vetements","couleurs"]],
-["Décrire une personne · 描述一个人",["physique","cheveux"]],
-["Ma maison · 我的家（房子）",["chambre","maison"]],
-["J'ai faim ! Au restaurant · 我饿了！在餐厅",["manger","fruits","viandes","cuisine","resto"]],
-["Commerces & courses · 商店与购物",["commerces","marche","courses"]],
-["Chez le médecin · 看医生",["corps","docteur","medic"]],
-["Sports & loisirs · 运动与爱好",["sports","loisirs"]],
-["En ville · 在城里",["ville","directions","lieux","taxi"]],
-["Vacances & voyage · 度假与旅行",["vacances","retour","aeroport"]],
-["Les verbes les plus utiles · 最常用动词",["etre","conj","conj3","verbes2","m:phr"]]];
+STEPS=[["C'est moi : salutations & se présenter · 这是我：问候与自我介绍",["salut","presente","nombres"],"moi"],
+["Les verbes de la classe · 课堂动词",["verbes","classe2"],"classe"],
+["L'âge, les nombres jusqu'à 30 & poser des questions · 年龄、30以内的数字与提问",["n11","age","questions"],"age"],
+["Ma famille · 我的家人",["famille","possessifs","animaux"],"famille"],
+["Les jours, les nombres jusqu'à 40, les mois & la date · 星期、40以内的数字、月份与日期",["jours","n40","mois"],"jours"],
+["Les nombres jusqu'à 100 & l'heure · 100以内的数字与时间",["n100","heure","nombres2"],"nb100"],
+["Le temps qu'il fait · 天气",["meteo","temps"],"meteo"],
+["Comment on s'habille · 怎么穿衣",["vetements","couleurs"],"habits"],
+["Décrire une personne · 描述一个人",["physique","cheveux"],"portrait"],
+["Ma maison · 我的家（房子）",["maison","chambre"],"maison"],
+["J'ai faim ! Au restaurant · 我饿了！在餐厅",["manger","fruits","viandes","cuisine","resto"],"faim"],
+["Commerces & courses · 商店与购物",["commerces","marche","courses"],"commerces"],
+["Chez le médecin · 看医生",["corps","docteur","medic"],"sante"],
+["Sports & loisirs · 运动与爱好",["sports","loisirs"],"sports"],
+["En ville · 在城里",["ville","directions","taxi"],"ville"],
+["Vacances & voyage · 度假与旅行",["vacances","retour","aeroport"],"vacances"],
+["Les verbes les plus utiles · 最常用动词",["etre","conj","conj3","verbes2","m:phr"],"verbes"]];
 
 /* ---- Affiches du cours (images) ---- */
 const POSTER={verbes:"classe",meteo:"saisons",vetements:"vetements",couleurs:"vetements",physique:"physique",cheveux:"physique",animaux:"animaux",chambre:"chambre",fruits:"nourriture",viandes:"nourriture",cuisine:"cuisine",resto:"restaurant",commerces:"commerces",corps:"sante",docteur:"sante",medic:"sante",sports:"sport",ville:"ville",directions:"ville",taxi:"transports",vacances:"vacances"};

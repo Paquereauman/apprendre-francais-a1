@@ -102,6 +102,77 @@ vetements:{"Le haut · 上衣":["un / une / des : un pull, une chemise, des chau
 sports:{"Faire du sport · 做运动":["On dit « faire du / de la » + sport : je fais du vélo, du tennis, de la natation. · 说 faire du / de la + 运动：je fais du vélo、du tennis、de la natation。"]},
 etre:{"*":["Ces verbes sont irréguliers : il faut les apprendre par cœur. · 这些是不规则动词，需要熟记。"]}
 };
+
+/* ===== Curation : supprime les répétitions entre fiches (un mot = une seule fiche), remplace par des mots distincts ===== */
+const DROP=["lieux"];
+const REMOVE={
+ conj:["je vais","tu vas","nous allons","je fais","je peux","je veux","je mange"],
+ presente:["l'âge","Quel âge as-tu ?","J'ai vingt-cinq ans"],
+ verbes2:["dormir","partir"],
+ manger:["le lait","le riz","le fromage","le poisson","la pomme"],
+ courses:["le marché","le supermarché","la boulangerie"],
+ directions:["souvent","parfois","jamais","rarement"],
+ loisirs:["le livre","voyager","le football","nager"],
+ chambre:["la chambre","la fenêtre","le livre"],
+ maison:["le lit","la chaise"],
+ medic:["la pharmacie"],
+ n40:["trente"],
+ n100:["quarante","cent"]
+};
+const REPLACE={
+ presente:{"Je suis":["Je suis étudiant(e)","ʒə sɥi e.ty.djɑ̃(t)","我是学生","wǒ shì xuésheng","🎓"],"Tu es":["Tu es professeur","ty ɛ pʁɔ.fɛ.sœʁ","你是老师","nǐ shì lǎoshī","👩‍🏫"]},
+ vetements:{"neuf":["neuf / neuve","nœf / nœv","新的","xīn de","🆕"]},
+ directions:{"aller":["aller à","a.le a","去（某地）","qù","🚶"]},
+ animaux:{"le poisson":["le poisson rouge","lə pwa.sɔ̃ ʁuʒ","金鱼","jīnyú","🐠"]},
+ cheveux:{"gris":["les cheveux gris","le ʃə.vø gʁi","灰白的头发","huībái de tóufa","👵"],"marron":["les yeux marron","le zjø ma.ʁɔ̃","棕色的眼睛","zōngsè de yǎnjing","🟤"]},
+ sports:{"le vélo":["le cyclisme","lə si.klism","自行车运动","zìxíngchē yùndòng","🚴"]},
+ classe2:{"Le tableau":["Le tableau noir","lə ta.blo nwaʁ","黑板","hēibǎn","🧑‍🏫"]}
+};
+const ADD={
+ conj:[["vous avez","vu za.ve","您有 / 你们有","nín yǒu","👥"],["ils ont","il zɔ̃","他们有","tāmen yǒu","👬"],["tu parles","ty paʁl","你说","nǐ shuō","🗣️"],["il parle","il paʁl","他说","tā shuō","👨"],["nous parlons","nu paʁ.lɔ̃","我们说","wǒmen shuō","👫"],["vous parlez","vu paʁ.le","您说 / 你们说","nín shuō","👥"],["ils parlent","il paʁl","他们说","tāmen shuō","👬"]],
+ temps:[["rarement","ʁaʁ.mɑ̃","很少","hěn shǎo","🔅"]],
+ ville:[["la gare","la gaʁ","火车站","huǒchēzhàn","🚉"],["l'école","le.kɔl","学校","xuéxiào","🏫"]],
+ commerces:[["le magasin","lə ma.ga.zɛ̃","商店","shāngdiàn","🏪"]],
+ maison:[["la maison","la mɛ.zɔ̃","房子 / 家","fángzi","🏠"]],
+ loisirs:[["jouer aux jeux vidéo","ʒwe o ʒø vi.de.o","玩电子游戏","wán diànzǐ yóuxì","🎮"],["regarder un film","ʁə.gaʁ.de œ̃ film","看电影","kàn diànyǐng","🎬"],["danser","dɑ̃.se","跳舞","tiàowǔ","💃"],["chanter","ʃɑ̃.te","唱歌","chànggē","🎤"],["dessiner","de.si.ne","画画","huàhuà","🎨"],
+  ["J'aime la musique","ʒɛm la my.zik","我喜欢音乐","wǒ xǐhuan yīnyuè","❤️"],["J'aime danser","ʒɛm dɑ̃.se","我喜欢跳舞","wǒ xǐhuan tiàowǔ","💃"],["Je n'aime pas le sport","ʒə nɛm pa lə spɔʁ","我不喜欢运动","wǒ bù xǐhuan yùndòng","👎"]]
+};
+(function(){
+  for(const id of DROP){const i=CATS.findIndex(c=>c.id===id);if(i>=0)CATS.splice(i,1);delete GROUPS[id]}
+  for(const [id,keys] of Object.entries(REMOVE)){const c=CATS.find(x=>x.id===id);if(c)c.items=c.items.filter(i=>!keys.includes(i[0]))}
+  for(const [id,m] of Object.entries(REPLACE)){const c=CATS.find(x=>x.id===id);if(c)c.items=c.items.map(i=>m[i[0]]?m[i[0]].slice():i)}
+  for(const [id,arr] of Object.entries(ADD)){const c=CATS.find(x=>x.id===id);if(c)arr.forEach(it=>c.items.push(it.slice()))}
+  const nm=(id,n)=>{const c=CATS.find(x=>x.id===id);if(c)c.name=n};
+  nm("n40","Les nombres de 31 à 40 · 数字31到40");nm("n100","Les nombres de 50 à 99 · 数字50到99");
+})();
+Object.assign(GROUPS,{
+ presente:[["Mon nom · 我的名字",["Je m'appelle","Comment vous appelez-vous ?","le nom","le prénom"]],["Qui je suis · 我是谁",["Je suis étudiant(e)","Tu es professeur","étudiant","professeur","ami"]],
+  ["D'où je viens · 我来自哪里",["D'où viens-tu ?","Je viens de Chine","Quelle est ta nationalité ?","Je suis chinois(e)","la France","la Chine","français","chinois","J'habite"]]],
+ conj:[["Être · 是",["je suis","tu es","il est","nous sommes","vous êtes","ils sont"]],["Avoir · 有",["j'ai","tu as","il a","nous avons","vous avez","ils ont"]],["Les verbes en -er : parler · -er动词：parler",["je parle","tu parles","il parle","nous parlons","vous parlez","ils parlent"]]],
+ verbes2:[["Communiquer · 交流",["parler","demander","répondre","appeler"]],["Apprendre · 学习",["écouter","regarder","lire","écrire","comprendre","apprendre","répéter"]],["Chercher et aider · 寻找与帮助",["chercher","trouver","aider","attendre"]],["Commencer et finir · 开始与结束",["commencer","finir","ouvrir","fermer"]],
+  ["La vie de tous les jours · 日常生活",["travailler","habiter","manger","boire","acheter"]],["Arriver · 到达",["arriver"]]],
+ manger:[["J'ai faim, j'ai soif · 饿了渴了",["J'ai faim","J'ai soif","Je mange","Je bois de l'eau","Bon appétit !"]],["Boire · 饮料",["l'eau","le café","le thé","le vin"]],["Manger · 食物",["le pain","la viande","l'œuf","le légume","le gâteau"]]],
+ courses:[["Acheter · 购买",["le caddie","le sac","la liste de courses","le vendeur / la vendeuse"]],["L'argent · 钱",["l'argent","un euro","cher","pas cher","payer","la carte bancaire"]]],
+ directions:[["Demander son chemin · 问路",["Où est… ?","Comment aller à… ?","Je cherche le parc","Je suis perdu(e)"]],["La position · 方位",["à gauche","à droite","tout droit","devant","derrière","à côté de","en face de"]],["Les verbes · 动词",["aller à","tourner","continuer","traverser","suivre"]]],
+ temps:[["Hier, aujourd'hui, demain · 昨天今天明天",["hier","aujourd'hui","maintenant","demain"]],["Dans la journée · 一天中",["le jour","l'heure","tôt","tard"]],["La fréquence · 频率",["toujours","souvent","parfois","rarement","jamais"]]],
+ loisirs:[["Mes passe-temps · 我的爱好",["la musique","le cinéma","le téléphone","le sport","jouer aux jeux vidéo","regarder un film"]],["Activités artistiques · 艺术活动",["danser","chanter","dessiner"]],["Dire ce qu'on aime · 表达喜好",["J'aime la musique","J'aime danser","Je n'aime pas le sport"]]],
+ chambre:[["Le coin repos · 睡觉区",["le lit","le coussin","le doudou","l'armoire","le miroir"]],["Le coin travail · 学习区",["le bureau","la chaise","l'ordinateur portable","l'étagère"]],["La décoration · 装饰",["la lampe","le tableau","le tapis"]],["Des phrases · 句子",["Il y a un lit","Où est la lampe ?"]]],
+ maison:[["Les pièces · 房间",["la maison","le salon","la salle à manger","la cuisine","la chambre","la salle de bains","les toilettes"]],["Dehors · 户外",["le jardin","le balcon"]],["Dans la maison · 屋内",["la porte","la fenêtre","l'escalier","la table"]]],
+ medic:[["Les médicaments · 药品",["le médicament","le sirop","le paracétamol","la vitamine C"]],["Les métiers · 医疗职业",["le médecin","l'infirmier / l'infirmière","le dentiste","le pharmacien / la pharmacienne"]],["Les lieux · 地点",["chez le médecin","l'hôpital","les urgences"]]],
+ commerces:[["Pour manger · 食品店",["la boulangerie","la boucherie","la poissonnerie","la fromagerie","le marché","le supermarché"]],["Autres magasins · 其他商店",["le magasin","la librairie","le fleuriste","le magasin de vêtements","le coiffeur"]],["Les services · 服务",["la poste","la banque","la pharmacie"]],["Sortir · 外出",["le restaurant","le bar"]],["Des phrases · 句子",["Je vais à la boulangerie","Je vais chez le boulanger"]]],
+ ville:[["Dans la rue · 街上",["la rue","l'avenue","le feu","le panneau stop","le rond-point","le pont"]],["Pour se reposer · 休闲处",["le parc","le banc","la fontaine","les escaliers"]],["Les bâtiments · 建筑",["la mairie","l'église","le musée","la bibliothèque","la police","l'aéroport","la gare","l'école"]]],
+ n40:[["De 31 à 35 · 31到35",["trente et un","trente-deux","trente-trois","trente-quatre","trente-cinq"]],["De 36 à 40 · 36到40",["trente-six","trente-sept","trente-huit","trente-neuf","quarante"]],["Dans une date · 在日期中",["Le trente et un décembre"]]],
+ n100:[["Les dizaines · 整十",["cinquante","soixante","soixante-dix","quatre-vingts","quatre-vingt-dix"]],["Les cas particuliers · 特殊情况",["cinquante-cinq","soixante et un","soixante et onze","soixante-quinze","quatre-vingt-un","quatre-vingt-quinze"]]],
+ nombres2:[["Cent et les centaines · 百",["cent","deux cents","deux cent trois","trois cents"]],["Les milliers · 千与百万",["mille","deux mille","dix mille","un million"]],["Un prix · 价格",["Ça coûte cent euros"]]],
+ sports:[["Faire du sport · 做运动",["faire du sport","Je fais du vélo"]],["Les sports d'équipe · 团体运动",["le football","le basketball","le volley-ball"]],["Avec une raquette · 球拍运动",["le tennis","le ping-pong"]],["Les sports individuels · 个人运动",["la natation","nager","le cyclisme","la course","courir","le yoga","la musculation"]]],
+ animaux:[["À la maison · 家里的动物",["le chien","le chat","le lapin","le poisson rouge"]],["À la ferme · 农场",["le cochon","le mouton","la poule","le canard","la vache","le cheval"]],["Sauvages et du monde · 野生动物",["l'éléphant","la girafe","le lion","le panda","la grenouille","le crabe"]]],
+ cheveux:[["Les cheveux · 头发",["les cheveux","longs","courts","lisses / raides","frisés","bouclés"]],["La couleur des cheveux · 发色",["noirs","bruns","blonds","roux","les cheveux gris"]],["Les yeux · 眼睛",["les yeux","les yeux marron","bleus","verts"]]],
+ classe2:[["Parler en classe · 课堂交流",["Répétez après moi","Pouvez-vous répéter ?","Plus lentement, s'il vous plaît","Je ne comprends pas","J'ai une question"]],["Traduire · 翻译",["Comment dit-on… en français ?","Pouvez-vous traduire cette phrase ?","Quelle est la traduction de… ?","Essayez de le dire en français"]],["Le matériel · 学习用品",["Le livre","Le cahier","Le stylo","Le crayon","La gomme","La règle"]],["La classe · 教室",["La classe","Le tableau noir","L'exercice"]]],
+ vetements:[["Le haut · 上衣",["un tee-shirt","une chemise","un pull","un manteau"]],["Le bas · 下装",["un pantalon","une jupe","une robe"]],["Les accessoires · 配饰",["un chapeau","un bonnet","une écharpe","des chaussettes","des chaussures"]],["Décrire ce qu'on porte · 描述穿着",["Il porte quoi ?","Il porte un t-shirt rouge","neuf / neuve","d'occasion"]],["Au magasin · 在商店",["la taille","la pointure","Je vais essayer ce t-shirt","Avez-vous une taille plus grande ?"]]]
+});
+TIPS.conj={"Les verbes en -er : parler · -er动词：parler":["Verbes en -er : racine + e, es, e, ons, ez, ent. · -er 动词：词根 + e, es, e, ons, ez, ent。","Prononciation : je parle, tu parles, il parle, ils parlent se disent pareil (/paʁl/). · 发音：je parle / tu parles / il parle / ils parlent 读音相同（/paʁl/）。"]};
+TIPS.loisirs={"Dire ce qu'on aime · 表达喜好":["J'aime + nom (J'aime la musique) ou + verbe (J'aime danser). Négation : je n'aime pas. · J'aime + 名词或动词原形；否定：je n'aime pas。"]};
+TIPS.nombres2={"Cent et les centaines · 百":["cent prend un « s » seulement s'il n'y a rien après : deux cents, mais deux cent trois. · cent 后面没有其他数字时才加 s：deux cents；但 deux cent trois 不加。"],"Les milliers · 千与百万":["mille ne change jamais : deux mille, dix mille. · mille 永远不变：deux mille、dix mille。"]};
 (function(){for(const id of Object.keys(GROUPS)){const c=CATS.find(x=>x.id===id);if(!c)continue;const by=new Map(c.items.map(i=>[i[0],i])),out=[];
   GROUPS[id].forEach(([t,keys])=>keys.forEach(k=>{const it=by.get(k);if(it){it[5]=t;out.push(it);by.delete(k)}}));
   by.forEach(it=>{it[5]="Autres · 其他";out.push(it)});c.items=out}})();

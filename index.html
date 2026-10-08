@@ -90,10 +90,10 @@ select{font:inherit;padding:4px;border-radius:8px}
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<script src="data-fr.js?v=202610081330"></script>
-<script src="data-fr2.js?v=202610081330"></script>
-<script src="data-fr3.js?v=202610081330"></script>
-<script src="audio-fr/map.js?v=202610081330"></script>
+<script src="data-fr.js?v=202610081350"></script>
+<script src="data-fr2.js?v=202610081350"></script>
+<script src="data-fr3.js?v=202610081350"></script>
+<script src="audio-fr/map.js?v=202610081350"></script>
 <script>
 const $=document.getElementById("app");
 const MODS={phr:{id:"m:phr",mod:true,name:"Phrases utiles · 常用句子",icon:"🧩",color:"#3a6ea5",n:20,items:{length:20}}};
@@ -124,8 +124,9 @@ const lvOf=x=>Math.floor(Math.sqrt(x/40))+1;
 function touchStreak(){const t=tdy();if(S.last===t)return;S.streak=(S.last===addD(-1))?(S.streak||0)+1:1;S.last=t}
 function addXp(n){const a=lvOf(S.xp);S.xp+=n;touchStreak();save();head();const b=lvOf(S.xp);if(b>a){fanfare();burst(innerWidth/2,innerHeight/3,50);toast("⬆️ Niveau "+b+" atteint ! · 升级到 "+b+" 级！")}}
 /* ---- maîtrise, stats, ETA ---- */
-const mastery=c=>{if(c.mod)return Math.min(100,(S.phr||0)/c.n*100);const v=[(S.known[c.id]||[]).length/c.items.length*100];if(S.best[c.id])v.push(S.best[c.id]);if(S.test[c.id]!=null)v.push(S.test[c.id]);return v.reduce((a,b)=>a+b)/v.length};
-const estF=c=>c.mod?mastery(c)/100:Math.max((S.known[c.id]||[]).length/c.items.length,S.test[c.id]!=null?S.test[c.id]/100:0);
+const knownN=c=>{const s=new Set(c.items.map(i=>i[0]));return (S.known[c.id]||[]).filter(x=>s.has(x)).length};
+const mastery=c=>{if(c.mod)return Math.min(100,(S.phr||0)/c.n*100);const v=[Math.min(100,knownN(c)/c.items.length*100)];if(S.best[c.id])v.push(S.best[c.id]);if(S.test[c.id]!=null)v.push(S.test[c.id]);return v.reduce((a,b)=>a+b)/v.length};
+const estF=c=>c.mod?mastery(c)/100:Math.max(Math.min(1,knownN(c)/c.items.length),S.test[c.id]!=null?S.test[c.id]/100:0);
 function stats(){const rows=ALL().map(c=>({c,m:mastery(c),rem:c.items.length*(1-estF(c))}));const tot=rows.reduce((n,r)=>n+r.c.items.length,0),rem=rows.reduce((n,r)=>n+r.rem,0);return{all:rows.reduce((n,r)=>n+r.m,0)/rows.length,tot,rem,done:rows.filter(r=>r.m>=85).length,n:rows.length,rows}}
 const goalDay=()=>{if(!inWindow())return Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));const st=stats(),c=courseInfo();return Math.min(60,Math.max(1,Math.ceil(st.rem*1.25/c.left)))};
 /* ---- 15 janvier – 7 mars : vacances (pas de cours). Le chronomètre ne concerne que la Classe 2026 ; les autres élèves ont un rythme personnel. ---- */
