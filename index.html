@@ -127,7 +127,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .avc.rar{position:relative;overflow:hidden;border-color:var(--rc);box-shadow:0 0 0 1px var(--rc) inset}.avc.rar.r-s{box-shadow:0 0 8px var(--rc),0 0 0 1px var(--rc) inset}.avc.rar.r-e{background:linear-gradient(135deg,#fff4d6,#ffe2a0);box-shadow:0 0 12px var(--rc),0 0 0 2px var(--rc) inset;animation:epic 2s ease-in-out infinite}@keyframes epic{50%{box-shadow:0 0 20px var(--rc),0 0 0 2px #fff inset}}.avc.rar small{color:var(--rc);font-weight:800}.avc.lk svg{filter:grayscale(1) brightness(.55);opacity:.7}.avc.lk{background:#e9edf5}.lkb{position:absolute;top:4px;right:6px;font-size:1rem}.gcoll{grid-column:1/-1;background:#fff8e6;border:2px solid #c9a24a;border-radius:10px;padding:6px 10px;font-size:.8rem;margin-bottom:8px;color:#7a5a12;font-weight:600}
 .hm-t .hm-bar{height:12px;background:#cfd8ea;border-radius:7px;box-shadow:inset 0 1px 3px #0003}.hm-t .hm-bar i{background:linear-gradient(90deg,var(--c),color-mix(in srgb,var(--c) 60%,#fff));border-radius:7px;min-width:0}.hm-t.done .hm-bar i{background:var(--ok)}.hm-t .meta span{font-size:.85rem;font-weight:800;color:#2b3a55;min-width:38px}.hm-t.done .meta span{color:var(--ok)}.hm-card .hm-bar{height:12px;background:#cfd8ea;box-shadow:inset 0 1px 3px #0003}.hm-card .hm-bar i{background:linear-gradient(90deg,#2bb673,#7be0a8)}.hm-t .meta{margin-top:6px}
 </style></head><body>
-<header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette · 我说法棍</h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
+<header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette <small style="font-weight:600;opacity:.85;margin-left:6px">我说法棍</small></h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
 <nav id="bnav"><button data-k="home" onclick="home()"><i>🏠</i><small>Parcours · 路径</small></button><button data-k="rev" onclick="revStart()"><i>🔁</i><small>Réviser · 复习</small></button><button data-k="rank" onclick="rankPage()"><i>🏆</i><small>Classement · 排行</small></button><button data-k="me" onclick="profClick()"><i>👤</i><small>Profil · 我</small></button></nav>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
@@ -539,9 +539,9 @@ async function admRecovery(id){try{const r=await fetch(API+"?admin=1&k="+CODE+AP
   prompt(locText("Code de récupération (valable 3 jours, une seule utilisation). Donne-le à l'élève. · 找回代码（3天内有效，仅限一次）。请把它交给学生。"),j.code)}catch(e){toast("Impossible de créer le code · 无法生成代码")}}
 /* ---------- avatar personnalisable (DiceBear, styles libres CC0) ---------- */
 const DBS=["lorelei","avataaars","openPeeps"],DBN=["Lorelei · 优雅","Avataaars · 经典","Open Peeps · 手绘"];
-const DBP={lorelei:[["hair"],["hairColor","c"],["head"],["eyes"],["eyebrows"],["mouth"],["nose"],["glasses","o"],["beard","o"],["earrings","o"],["freckles","o"],["hairAccessories","o"],["skinColor","c"]],
- avataaars:[["top","o"],["hairColor","c"],["hatColor","c"],["eyes"],["eyebrows"],["mouth"],["facialHair","o"],["facialHairColor","c"],["accessories","o"],["clothing"],["clothingGraphic"],["clothesColor","c"],["skinColor","c"]],
- openPeeps:[["head"],["headContrastColor","c"],["face"],["facialHair","o"],["accessories","o"],["mask","o"],["skinColor","c"],["clothingColor","c"]]};
+const DBP={lorelei:[["hair"],["hairColor","c"],["head"],["eyes"],["eyebrows"],["mouth"],["nose"],["glasses","k"],["beard","o"],["earrings","k"],["freckles","o"],["hairAccessories","k"],["skinColor","c"]],
+ avataaars:[["top","o"],["hairColor","c"],["hatColor","c"],["eyes"],["eyebrows"],["mouth"],["facialHair","o"],["facialHairColor","c"],["accessories","k"],["clothing"],["clothingGraphic"],["clothesColor","c"],["skinColor","c"]],
+ openPeeps:[["head"],["headContrastColor","c"],["face"],["facialHair","o"],["accessories","k"],["mask","o"],["skinColor","c"],["clothingColor","c"]]};
 const DBL={hair:"Cheveux · 发型",hairColor:"Couleur des cheveux · 发色",head:"Tête · 脸型",eyes:"Yeux · 眼睛",eyebrows:"Sourcils · 眉毛",mouth:"Bouche · 嘴巴",nose:"Nez · 鼻子",glasses:"Lunettes · 眼镜",beard:"Barbe · 胡子",earrings:"Boucles d'oreilles · 耳环",freckles:"Taches de rousseur · 雀斑",hairAccessories:"Accessoire cheveux · 发饰",skinColor:"Peau · 肤色",top:"Coiffure / chapeau · 发型/帽子",hatColor:"Couleur du chapeau · 帽子颜色",facialHair:"Barbe · 胡子",facialHairColor:"Couleur de la barbe · 胡子颜色",accessories:"Accessoire · 配饰",clothing:"Habit · 衣服",clothingGraphic:"Motif · 图案",clothesColor:"Couleur de l'habit · 衣服颜色",face:"Expression · 表情",mask:"Masque · 口罩",headContrastColor:"Couleur des cheveux · 发色",clothingColor:"Couleur de l'habit · 衣服颜色"};
 const DBI={hair:"💇",hairColor:"🎨",head:"🗣️",eyes:"👁️",eyebrows:"🤨",mouth:"👄",nose:"👃",glasses:"👓",beard:"🧔",earrings:"💎",freckles:"✨",hairAccessories:"🎀",skinColor:"🧑",top:"🎩",hatColor:"🎨",facialHair:"🧔",facialHairColor:"🎨",accessories:"👓",clothing:"👕",clothingGraphic:"🖼️",clothesColor:"🎽",face:"😀",mask:"😷",headContrastColor:"🎨",clothingColor:"🎽"};
 const DBK=i=>"p"+String.fromCharCode(97+i);
@@ -552,14 +552,14 @@ const dbDefCols=(st,n)=>(dbSch(st,n).default||[]).map(c=>"#"+String(c).replace("
 const DBC={};
 function dbOpts(a){const st=dbStyle(a),o={randomizeIds:true,seed:"fr"};DBP[st].forEach(([n,t],i)=>{const v=a[DBK(i)];
   if(t==="c"){const d=dbDefCols(st,n);const c=/^#[0-9a-f]{6}$/i.test(v||"")?v:d[(v|0)%(d.length||1)]||d[0];if(c)o[n]=[c.replace("#","")]}
-  else{const en=dbEnum(st,n);if(!en.length)return;if(t==="o"){if(!(v>0)){o[n+"Probability"]=0}else{o[n+"Probability"]=100;o[n]=[en[(v-1)%en.length]]}}else o[n]=[en[(v|0)%en.length]]}});return o}
+  else{const en=dbEnum(st,n);if(!en.length)return;if(t==="o"||t==="k"){if(!(v>0)){o[n+"Probability"]=0}else{o[n+"Probability"]=100;o[n]=[en[(v-1)%en.length]]}}else o[n]=[en[(v|0)%en.length]]}});return o}
 function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+px;if(DBC[key])return DBC[key];
   let s;try{s=window.DB.createAvatar(window.DB.styles[dbStyle(a)],Object.assign({size:px},o)).toString()}catch(e){s=""}
   if(Object.keys(DBC).length>600)Object.keys(DBC).slice(0,200).forEach(k=>delete DBC[k]);return DBC[key]=s}
 /* cadeaux quotidiens : accessoires à collectionner (options facultatives du style choisi) */
 const RAR={c:["Commun · 普通","#2bb673"],r:["Rare · 稀有","#2f7fe0"],s:["Super rare · 超稀有","#8e44e0"],e:["Épique · 史诗","#ff9f1a"]};
 const rarHash=(st,n,i)=>{let x=0;(st+n).split("").forEach(c=>x=(x*31+c.charCodeAt(0))%1009);const v=(x*7+i*37)%100;return v<52?"c":v<80?"r":v<94?"s":"e"};
-function dbLocks(st){const L=[];DBP[st].forEach(([n,t],i)=>{if(t==="o")dbEnum(st,n).forEach((_,j)=>L.push([n,i,j+1,rarHash(st,n,j+1)]))});return L}
+function dbLocks(st){const L=[];DBP[st].forEach(([n,t],i)=>{if(t==="k")dbEnum(st,n).forEach((_,j)=>L.push([n,i,j+1,rarHash(st,n,j+1)]))});return L}
 const owned=(st,n,i)=>(S.unl||[]).includes(st+":"+n+":"+i);
 function giftDraw(){const st=dbStyle(S.av||{}),un=dbLocks(st).filter(l=>!owned(st,l[0],l[2]));if(!un.length)return null;
   const W={c:60,r:25,s:11,e:4},av=[...new Set(un.map(u=>u[3]))],tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
@@ -574,7 +574,7 @@ function giftClose(){const d=document.getElementById("gift");if(d)d.remove()}
 function giftEquip(i,v){const a=avGet();a[DBK(i)]=v;S.av=a;save();giftClose();head();if(cur)cur();toast("✨ Équipé ! · 已穿上")}
 const avGet=()=>Object.assign({sty:1},S.av||{});
 function avStart(sty){const a={sty},st=DBS[sty],W={eyes:["default","happy"],eyebrows:["default","defaultNatural"],mouth:["smile","happy01","happy02"],top:["shortFlat","shortWaved","shortRound"],clothing:["hoodie","shirtCrewNeck","graphicShirt"],face:["smile","calm","cheeky"],head:["short1","short2"],hair:["variant01","variant02"]};
-  DBP[st].forEach(([n,t],i)=>{if(t==="c"){a[DBK(i)]=0}else if(t==="o"){a[DBK(i)]=n==="top"?(dbEnum(st,n).indexOf("shortFlat")+1||1):0}else{const en=dbEnum(st,n),w=(W[n]||[]).map(x=>en.indexOf(x)).filter(x=>x>=0);a[DBK(i)]=w.length?w[0]:0}});return a}
+  DBP[st].forEach(([n,t],i)=>{if(t==="c"){a[DBK(i)]=0}else if(t==="o"||t==="k"){a[DBK(i)]=n==="top"?(dbEnum(st,n).indexOf("shortFlat")+1||1):0}else{const en=dbEnum(st,n),w=(W[n]||[]).map(x=>en.indexOf(x)).filter(x=>x>=0);a[DBK(i)]=w.length?w[0]:0}});return a}
 function avOpen(){if(!S.av||S.av.sty===undefined){S.av=avStart(1);save()}AVT="sty";avDraw();document.getElementById("avp").classList.add("on")}
 function avClose(){document.getElementById("avp").classList.remove("on");mePrev();head();if(cur)cur()}
 function avSet(i,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[i==="sty"?"sty":DBK(i)]=v;S.av=a;save();avDraw()}
@@ -582,7 +582,7 @@ function avCol(i,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[DBK(i)]
 function avNone(){S.av=null;save();document.getElementById("avp").classList.remove("on");mePrev();head()}
 function avUndo(){const p=AVH.pop();if(!p)return toast("Rien à annuler");S.av=JSON.parse(p);save();avDraw()}
 let AVH=[],AVT="sty";
-function avRand(){const a={sty:avGet().sty},st=dbStyle(a);AVH.push(JSON.stringify(S.av||{}));DBP[st].forEach(([n,t],i)=>{if(t==="c"){const d=dbDefCols(st,n);a[DBK(i)]=d[Math.random()*d.length|0]||"#000000"}else if(t==="o"){const m=[0,...dbEnum(st,n).map((_,j)=>j+1).filter(j=>owned(st,n,j))];a[DBK(i)]=m[Math.random()*m.length|0]}else a[DBK(i)]=Math.random()*dbEnum(st,n).length|0});S.av=a;save();avDraw()}
+function avRand(){const a={sty:avGet().sty},st=dbStyle(a);AVH.push(JSON.stringify(S.av||{}));DBP[st].forEach(([n,t],i)=>{if(t==="c"){const d=dbDefCols(st,n);a[DBK(i)]=d[Math.random()*d.length|0]||"#000000"}else if(t==="o"||t==="k"){const m=[0,...dbEnum(st,n).map((_,j)=>j+1).filter(j=>t==="o"||owned(st,n,j))];a[DBK(i)]=m[Math.random()*m.length|0]}else a[DBK(i)]=Math.random()*dbEnum(st,n).length|0});S.av=a;save();avDraw()}
 function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avSVG(avGet(),150)}
 function avPrevItem(a,k,v){const b=Object.assign({},a);b[DBK(k)]=v;return avSVG(b,64)}
 function avDraw(){const a=avGet(),st=dbStyle(a);avPrev();
@@ -593,9 +593,9 @@ function avDraw(){const a=avGet(),st=dbStyle(a);avPrev();
   else{const[n,t]=DBP[st][k];
     if(t==="c"){const d=dbDefCols(st,n),cur=/^#[0-9a-f]{6}$/i.test(a[DBK(k)]||"")?a[DBK(k)]:d[(a[DBK(k)]|0)%d.length]||d[0];
       h=`<div class="avsw2">${d.map(c=>`<button type="button" style="background:${c}" aria-pressed="${c.toLowerCase()===String(cur).toLowerCase()}" onclick="avSet(${k},'${c}')"></button>`).join("")}</div><label class="avcu"><span>🎨 Couleur personnalisée · 自定义颜色</span><input type="color" value="${cur}" oninput="avCol(${k},this.value)"></label>`}
-    else{const en=dbEnum(st,n),cur=a[DBK(k)]|0,opt=t==="o",lk=opt?dbLocks(st):[];
+    else{const en=dbEnum(st,n),cur=a[DBK(k)]|0,opt=t==="o"||t==="k",lk=t==="k"?dbLocks(st):[];
       const items=(opt?[0]:[]).concat(en.map((_,j)=>opt?j+1:j));
-      h=(opt?`<div class="gcoll">🎁 Collection · 收藏 : ${lk.filter(l=>owned(st,l[0],l[2])).length}/${lk.length} — connecte-toi chaque jour pour gagner un accessoire ! · 每天登录可获得一件配饰！</div>`:"")+`<div class="avgrid">${items.map(v=>{const r=opt&&v>0?rarHash(st,n,v):"",ok=!r||owned(st,n,v);
+      h=(t==="k"?`<div class="gcoll">🎁 Collection · 收藏 : ${lk.filter(l=>owned(st,l[0],l[2])).length}/${lk.length} — connecte-toi chaque jour pour gagner un accessoire ! · 每天登录可获得一件配饰！</div>`:"")+`<div class="avgrid">${items.map(v=>{const r=t==="k"&&v>0?rarHash(st,n,v):"",ok=!r||owned(st,n,v);
         return `<div role="button" class="avc${cur===v?" on":""}${r?" rar r-"+r:""}${ok?"":" lk"}" ${r?`style="--rc:${RAR[r][1]}"`:""} onclick="${ok?`avSet(${k},${v})`:`toast('🔒 À gagner avec le cadeau du jour · 通过每日礼物获得')`}">${avPrevItem(a,k,v)}${ok?"":"<span class=lkb>🔒</span>"}<small>${v===0&&opt?"Aucun · 无":ok?"#"+(opt?v:v+1):RAR[r][0]}</small></div>`}).join("")}</div>`}}
   document.getElementById("avrows").innerHTML=h}
 
