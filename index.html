@@ -189,7 +189,7 @@ function stats(){const rows=STEPS.map((s,i)=>{const b=chB(i);return{i,key:s[2],t
 /* objectif du jour (entraînement aux mots) : rythme personnel */
 
 /* ---- quêtes du jour : petites missions avec récompense (+20 XP) ---- */
-const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","⚔️","#e63946"],["w",5,"Valider 5 mots · 掌握5个词","🧙","#7b4fd1"],["q",1,"Passer un quiz de chapitre · 参加1次章节测验","🐉","#f4a300"]];
+const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","⚔️","#e63946"],["w",5,"Valider 5 mots · 掌握5个词","🧙","#7b4fd1"]];
 function dq(){if(!S.dq||S.dq.d!==tdy())S.dq={d:tdy(),a:0,w:0,q:0,done:{}};return S.dq}
 function dqAdd(k,n){const d=dq();d[k]=(d[k]||0)+(n||1);QUESTS.forEach(([key,goal,lab,ic])=>{if(key===k&&d[k]>=goal&&!d.done[key]){d.done[key]=1;setTimeout(()=>{celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20)},400)}});save()}
 function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">📜 Quêtes du jour · 今日任务 ${all?"— 🏆 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic,co])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow" style="--qc:${co}"><span class="qi">${d.done[k]?"✅":ic}</span><div class="qm"><div class="qt"><span>${lab}</span><span class="qv">${v}/${g}</span></div><div class="qb"><i style="width:${v/g*100}%"></i></div></div><span class="qx">+20 XP</span></div>`}).join("")}</div>`}
