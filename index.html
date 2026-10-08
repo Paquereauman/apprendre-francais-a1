@@ -133,6 +133,12 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .avsub{display:flex;gap:6px;overflow-x:auto;padding:8px 2px 2px}.avsub .avt{flex:0 0 auto;min-width:0;padding:7px 12px;border-radius:99px;font-size:.78rem;white-space:nowrap}.avsub .avt.on{background:#fff;color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
 .fxshiny{animation:shn 1.6s ease-in-out infinite}@keyframes shn{0%,100%{filter:drop-shadow(0 0 3px #ffe27a) brightness(1)}50%{filter:drop-shadow(0 0 12px #fff2a0) brightness(1.4)}}
 .avgrid.big2{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}.avgrid.big2 .avc svg{width:86px;height:86px}
+.atlbox{max-width:760px;width:100%;height:96vh;max-height:96vh;display:flex;flex-direction:column;padding:10px 12px;overflow:hidden}.atlhead{display:flex;justify-content:space-between;align-items:center;flex:none;margin-bottom:4px}.atlhead button{border:0;background:#eef2fa;border-radius:50%;width:38px;height:38px;font-size:1.1rem;cursor:pointer}#atlbody{flex:1;overflow-y:auto;min-height:0;padding:0 2px 8px}
+.atlprev{position:sticky;top:0;z-index:3;height:min(260px,36vh);display:grid;place-items:center;background:linear-gradient(#eaf1ff,#fff);border-radius:18px;box-shadow:0 4px 10px #0001;margin-bottom:8px}.atlprev svg{height:100%;width:auto;max-width:100%}
+.atlrow{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.atlrow button,.atlrow select{padding:8px 12px;border:2px solid #cfd9ee;border-radius:12px;background:#fff;font-weight:700;font-size:.85rem;cursor:pointer;min-height:40px}.atlrow button.on{background:var(--blue);color:#fff;border-color:var(--blue)}.atlrow button.warn{border-color:#e63946;color:#e63946}
+.atlctl{background:#f3f8ff;border-radius:14px;padding:8px;margin:6px 0}.atls{display:flex;align-items:center;gap:4px;margin:5px 0}.atls span{width:78px;flex:none;font-size:.78rem;font-weight:800}.atls input{flex:1;min-width:0}.atls button{width:34px;height:34px;border:0;border-radius:9px;background:#dfe9fb;font-weight:800;cursor:pointer;flex:none}.atls b{width:46px;text-align:right;font-size:.85rem;flex:none}
+.atlh{font-size:.78rem;font-weight:800;color:var(--mut);margin:10px 0 4px}.atlgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px}.atli{position:relative;border:2px solid transparent;border-radius:12px;background:#f4f6fb;text-align:center;padding:4px 2px;cursor:pointer}.atli.on{border-color:var(--blue);background:#e3edff}.atli.mod::after{content:"●";position:absolute;right:6px;bottom:20px;color:#f4a300;font-size:.7rem}.atli small{display:block;font-size:.62rem;line-height:1.1;font-weight:700;color:var(--mut)}.atlck{position:absolute;left:4px;top:2px;z-index:2}.atlck input{width:20px;height:20px}
+.atlmass{border-top:2px dashed #cfd9ee;margin-top:10px;padding-top:4px}.atlrow.rel label{display:flex;flex-direction:column;font-size:.7rem;font-weight:800;gap:2px}.atlrow.rel input{width:64px;padding:6px;border:2px solid #cfd9ee;border-radius:8px}
 .accp{margin-top:10px;padding:10px;border:2px dashed var(--blue);border-radius:14px;background:#f3f8ff}.accr{display:flex;align-items:center;gap:8px;font-size:.8rem;font-weight:700;margin:6px 0}.accr span{width:84px;flex:none}.accr input{flex:1;min-width:0}.accr b{width:40px;text-align:right}
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette <small style="font-weight:600;opacity:.85;margin-left:6px">我说法棍</small></h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
@@ -150,9 +156,10 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <input id="rn" placeholder="Nom de compte / 用户名" autocomplete="username"><input id="rc" placeholder="Code (xxxx-xxxx-xxxx) / 找回代码" autocomplete="off"><input id="rp" type="password" placeholder="Nouveau mot de passe (6 min.) / 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
 <div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
 <div class="modal" id="avp" onclick="if(event.target===this)avClose()"><div class="box avbox">
- <div class="avtop"><div id="avprev"></div><div class="avtools"><button class="alt" onclick="avRand()">🎲 Au hasard · 随机</button><button class="alt" onclick="avUndo()">↩️ Annuler · 撤销</button><button class="alt" onclick="avReset()">🔄 Réinitialiser · 重置</button><button class="alt" onclick="avNone()">🙂 Emoji · 表情</button></div></div>
+ <div class="avtop"><div id="avprev"></div><div class="avtools"><button class="alt" onclick="avRand()">🎲 Au hasard · 随机</button><button class="alt" onclick="avUndo()">↩️ Annuler · 撤销</button><button class="alt" onclick="avReset()">🔄 Réinitialiser · 重置</button><button class="alt" onclick="avNone()">🙂 Emoji · 表情</button><button class="alt" id="atlbtn" style="display:none;grid-column:1/-1;background:#2f5fa8" onclick="atlOpen()">🛠️ Atelier admin (positions) · 管理员工坊</button></div></div>
  <div id="avtabs" class="avtabs"></div><div id="avrows"></div>
  <div class="avbar"><button class="alt" onclick="avNav(-1)" aria-label="Précédent">◀</button><button class="ok" onclick="avClose()">✔ Terminer · 完成</button><button class="alt" onclick="avNav(1)" aria-label="Suivant">▶</button></div></div></div>
+<div class="modal" id="atl"><div class="box atlbox"><div class="atlhead"><b>🛠️ Atelier admin · 管理员工坊</b><button onclick="atlClose()" aria-label="Fermer">✕</button></div><div id="atlbody"></div><div class="avbar"><button class="alt" onclick="atlClose()">Fermer</button><button class="ok" onclick="accSave()">💾 Enregistrer pour tous · 保存</button></div></div></div>
 <div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
 <div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
@@ -586,7 +593,7 @@ function giftEquip(n,i,v){const a=avGet();setIt(a,n,i,v);S.av=a;save();giftClose
 const avGet=()=>Object.assign({sty:0},S.av||{});
 function avStart(sty){const a={sty},st=DBS[sty],W={eyes:["default","happy"],eyebrows:["default","defaultNatural"],mouth:["smile","happy01","happy02"],top:["shortFlat","shortWaved","shortRound"],clothing:["hoodie","shirtCrewNeck","graphicShirt"],face:["smile","calm","cheeky"],head:["short1","short2"],hair:["variant01","variant02"]};
   DBP[st].forEach(([n,t],i)=>{if(t==="c"){a[DBK(i)]=0}else if(t==="o"||t==="k"){a[DBK(i)]=n==="top"?(dbEnum(st,n).indexOf("shortFlat")+1||1):0}else{const en=dbEnum(st,n),w=(W[n]||[]).map(x=>en.indexOf(x)).filter(x=>x>=0);a[DBK(i)]=w.length?w[0]:0}});return a}
-function avOpen(){if(!S.av||S.av.sty===undefined){S.av=avStart(0);save()}AVT=avDone(S.av)?"skinColor":(S.av.eth===undefined?"eth":"gen");avDraw();document.getElementById("avp").classList.add("on")}
+function avOpen(){if(!S.av||S.av.sty===undefined){S.av=avStart(0);save()}AVT=avDone(S.av)?"skinColor":(S.av.eth===undefined?"eth":"gen");avDraw();document.getElementById("atlbtn").style.display=(typeof ADM!=="undefined"&&ADM&&ADM.admin)?"":"none";document.getElementById("avp").classList.add("on")}
 function avClose(){document.getElementById("avp").classList.remove("on");mePrev();head();if(cur)cur()}
 function avSet(i,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[typeof i==="string"?i:DBK(i)]=v;S.av=a;save();avDraw()}
 function avCol(i,v){const a=avGet();AVH.push(JSON.stringify(S.av||{}));a[DBK(i)]=v;S.av=a;save();avPrev()}
@@ -646,6 +653,43 @@ function fxApply(s,a){a=a||{};if(!s)return s;const w=WNG[a.wng-1],u=AUR[a.aur-1]
   return s.replace(/^(<svg[^>]*>)/,"$1"+back).replace(/<\/svg>\s*$/,front+"</svg>")}
 
 const VIRT=["hat","obj","wng","aur"];
+/* ---- atelier admin : réglage des accessoires (grand aperçu, modifications en masse) ---- */
+let ATL={cat:"hat",cur:1,gen:0,multi:false,sel:{},hair:"",clip:null};
+const ATLC={hat:["🎩","Chapeaux · 帽子"],obj:["🥖","Objets · 道具"],wng:["🪽","Ailes · 翅膀"],aur:["✨","Auras · 光环"]};
+const atlList=c=>c==="hat"?HATS.map((e,i)=>[e,HATN[i]]):c==="obj"?OBJ.map(o=>[o[0],o[1]]):(c==="wng"?WNG:AUR).map(o=>["",o[0]]);
+const atlKey=(c,i,g)=>c==="hat"?"hat:"+i+":"+(g===undefined?ATL.gen:g):c+":"+i;
+const atlGet=k=>Object.assign({x:0,y:0,s:1,r:0},ACC[k]||{});
+function atlAv(c,i){const a=avStart(0);a.eth=0;a.gen=ATL.gen;const ti=DBP.avataaars.findIndex(p=>p[0]==="top"),en=dbEnum("avataaars","top"),hn=ATL.hair||(ATL.gen===1?"longButNotTooLong":"shortFlat");a[DBK(ti)]=en.indexOf(hn)+1;a[c]=i;return a}
+function atlOpen(){if(!(typeof ADM!=="undefined"&&ADM&&ADM.admin))return;document.getElementById("atl").classList.add("on");atlDraw()}
+function atlClose(){document.getElementById("atl").classList.remove("on");avDraw();avPrev();head()}
+function atlDraw(){const c=ATL.cat,L=atlList(c);if(ATL.cur>L.length)ATL.cur=1;const k=atlKey(c,ATL.cur),v=atlGet(k),nSel=Object.keys(ATL.sel).filter(x=>ATL.sel[x]).length;
+  const tops=["shortFlat","shortRound","sides","bob","longButNotTooLong","straight01"].filter(x=>dbEnum("avataaars","top").includes(x));
+  document.getElementById("atlbody").innerHTML=`<div class="atlprev">${avSVG(atlAv(c,ATL.cur),280)}</div>
+  <div class="atlrow"><button class="${ATL.gen===0?"on":""}" onclick="ATL.gen=0;ATL.hair='';atlDraw()">👦 Garçon</button><button class="${ATL.gen===1?"on":""}" onclick="ATL.gen=1;ATL.hair='';atlDraw()">👧 Fille</button><select onchange="ATL.hair=this.value;atlDraw()">${["",...tops].map(t=>`<option value="${t}" ${ATL.hair===t?"selected":""}>${t||"Coiffure : auto"}</option>`).join("")}</select></div>
+  <div class="atlrow">${Object.entries(ATLC).map(([x,l])=>`<button class="${c===x?"on":""}" onclick="ATL.cat='${x}';ATL.cur=1;ATL.sel={};atlDraw()">${l[0]} ${l[1]}</button>`).join("")}</div>
+  <div class="atlctl">
+   ${[["x","← →",-150,150,1,5],["y","↑ ↓",-150,150,1,5],["s","Taille · 大小",.3,3,.02,.1],["r","Rotation · 旋转",-180,180,1,5]].map(([f,l,mn,mx,st,big])=>`<div class="atls"><span>${l}</span><button onclick="atlNudge('${f}',-${big})">−−</button><button onclick="atlNudge('${f}',-${st})">−</button><input type="range" min="${mn}" max="${mx}" step="${st}" value="${v[f]}" oninput="atlSet('${f}',this.value)"><button onclick="atlNudge('${f}',${st})">+</button><button onclick="atlNudge('${f}',${big})">++</button><b id="atv_${f}">${(+v[f]).toFixed(f==="s"?2:0)}</b></div>`).join("")}
+   <div class="atlrow"><button onclick="atlRes()">↺ Défaut</button><button onclick="ATL.clip=Object.assign({},atlGet(atlKey(ATL.cat,ATL.cur)));toast('📋 Réglage copié')">📋 Copier</button><button onclick="atlPaste()">📥 Coller sur cet élément</button></div></div>
+  <div class="atlh">Éléments (${L.length}) — clique pour voir · coche pour modifier en masse</div>
+  <div class="atlgrid">${L.map((it,i)=>{const id=i+1,kk=atlKey(c,id),mod=!!ACC[kk];return `<div class="atli${ATL.cur===id?" on":""}${mod?" mod":""}"><label class="atlck"><input type="checkbox" ${ATL.sel[id]?"checked":""} onchange="ATL.sel[${id}]=this.checked;atlDraw()"></label><div onclick="ATL.cur=${id};atlDraw()">${avSVG(atlAv(c,id),70)}<small>${it[0]} ${String(it[1]).split(" · ")[0]}</small></div></div>`}).join("")}</div>
+  <div class="atlmass"><div class="atlh">🧰 Modifications en masse (${nSel} coché${nSel>1?"s":""})</div>
+   <div class="atlrow"><button onclick="atlAll(true)">☑ Tout cocher</button><button onclick="atlAll(false)">☐ Tout décocher</button><button onclick="atlApply()">➡ Appliquer le réglage affiché aux cochés</button></div>
+   <div class="atlh">Décalage relatif (ajouté à chaque élément ${nSel?"coché":"de la catégorie"}) :</div>
+   <div class="atlrow rel"><label>x<input id="rdx" type="number" value="0" step="1"></label><label>y<input id="rdy" type="number" value="0" step="1"></label><label>×taille<input id="rds" type="number" value="1" step="0.05"></label><label>rot<input id="rdr" type="number" value="0" step="1"></label><button onclick="atlRel()">Appliquer</button></div>
+   ${c==="hat"?`<div class="atlrow"><button onclick="atlCopyGen(0,1)">👦→👧 copier garçons vers filles</button><button onclick="atlCopyGen(1,0)">👧→👦 filles vers garçons</button></div>`:""}
+   <div class="atlrow"><button class="warn" onclick="atlResAll()">↺ Tout remettre par défaut (catégorie)</button></div></div>`}
+function atlSet(f,x){const k=atlKey(ATL.cat,ATL.cur),c=ACC[k]=atlGet(k);c[f]=+x;const e=document.getElementById("atv_"+f);if(e)e.textContent=(+x).toFixed(f==="s"?2:0);document.querySelector(".atlprev").innerHTML=avSVG(atlAv(ATL.cat,ATL.cur),280)}
+function atlNudge(f,d){const k=atlKey(ATL.cat,ATL.cur),c=atlGet(k);let n=+c[f]+d;if(f==="s")n=Math.max(.3,Math.min(3,Math.round(n*100)/100));ACC[k]=Object.assign(c,{[f]:n});atlDraw()}
+function atlRes(){delete ACC[atlKey(ATL.cat,ATL.cur)];atlDraw()}
+function atlPaste(){if(!ATL.clip)return toast("Rien à coller");ACC[atlKey(ATL.cat,ATL.cur)]=Object.assign({},ATL.clip);atlDraw()}
+function atlAll(v){const L=atlList(ATL.cat);ATL.sel={};if(v)L.forEach((_,i)=>ATL.sel[i+1]=true);atlDraw()}
+const atlTargets=()=>{const L=atlList(ATL.cat),ids=L.map((_,i)=>i+1),sel=ids.filter(i=>ATL.sel[i]);return sel.length?sel:ids};
+function atlApply(){const src=atlGet(atlKey(ATL.cat,ATL.cur));const t=Object.keys(ATL.sel).filter(i=>ATL.sel[i]);if(!t.length)return toast("Coche d'abord des éléments");t.forEach(i=>ACC[atlKey(ATL.cat,+i)]=Object.assign({},src));toast("✅ Appliqué à "+t.length);atlDraw()}
+function atlRel(){const dx=+document.getElementById("rdx").value||0,dy=+document.getElementById("rdy").value||0,ds=+document.getElementById("rds").value||1,dr=+document.getElementById("rdr").value||0;
+  atlTargets().forEach(i=>{const k=atlKey(ATL.cat,i),c=atlGet(k);ACC[k]={x:c.x+dx,y:c.y+dy,s:Math.max(.3,Math.min(3,Math.round(c.s*ds*100)/100)),r:c.r+dr}});toast("✅ Décalage appliqué");atlDraw()}
+function atlCopyGen(a,b){HATS.forEach((_,i)=>{const s=ACC["hat:"+(i+1)+":"+a];if(s)ACC["hat:"+(i+1)+":"+b]=Object.assign({},s)});toast("✅ Copié");atlDraw()}
+function atlResAll(){if(!confirm("Remettre toute la catégorie par défaut ?"))return;atlList(ATL.cat).forEach((_,i)=>{delete ACC[atlKey(ATL.cat,i+1,0)];delete ACC[atlKey(ATL.cat,i+1,1)]});atlDraw()}
+
 let ACC={};
 const accKey=(a,k)=>k==="hat"?"hat:"+(a.hat|0)+":"+genOf(a):k+":"+(a[k]|0);
 function accT(a,k){const c=ACC[accKey(a,k)];if(!c)return "";return `transform="translate(${+c.x||0} ${+c.y||0}) rotate(${+c.r||0} 140 140) translate(140 140) scale(${+c.s||1}) translate(-140 -140)"`}
