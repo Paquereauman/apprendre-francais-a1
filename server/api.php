@@ -175,7 +175,7 @@ function admin_main($k, $base, $app) {
     elseif ($act === "setperiod") {
       $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $df = (string)($b["from"] ?? ""); $dt = (string)($b["to"] ?? ""); $de = (string)($b["end"] ?? "");
       $okd = function ($d) { return $d === "" || (bool)preg_match("/^\d{4}-\d{2}-\d{2}$/", $d); };
-      if (!class_exists_in($base, $cid) || !$okd($df) || !$okd($dt) || !$okd($de) || (($df === "") !== ($dt === "")) || ($df !== "" && $dt < $df)) { http_response_code(400); echo "{\"error\":\"bad period\"}"; return; }
+      if (!class_exists_in($base, $cid) || !$okd($df) || !$okd($dt) || !$okd($de) || (($df === "") !== ($dt === "")) || ($df !== "" && $dt < $df) || ($de !== "" && $dt !== "" && $de < $dt)) { http_response_code(400); echo "{\"error\":\"bad period\"}"; return; }
       foreach ($cls as $i => $c) { if ($c["id"] === $cid) { if ($df === "") { unset($cls[$i]["from"], $cls[$i]["to"]); } else { $cls[$i]["from"] = $df; $cls[$i]["to"] = $dt; } if ($de === "") { unset($cls[$i]["end"]); } else { $cls[$i]["end"] = $de; } } }
       classes_save($base, $cls);
     }
