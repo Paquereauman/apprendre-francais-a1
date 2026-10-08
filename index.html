@@ -131,6 +131,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .avbar{flex:none;display:flex;gap:8px;padding-top:8px;border-top:1px solid #e3e9f5}.avbar button{min-height:50px;border:0;border-radius:14px;color:#fff;font-weight:800;font-size:1.05rem;cursor:pointer}.avbar .alt{width:64px;background:#8d99ae}.avbar .ok{flex:1;background:var(--ok);box-shadow:0 3px 0 #1d8a56}
 #avtabs.avtabs{display:block;overflow:visible;padding:4px 0;margin:6px 0 2px}.avgroups{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}.avgp{display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border-radius:12px;background:#eef2fa;font-size:.62rem;font-weight:800;color:var(--mut);text-align:center;line-height:1.15;cursor:pointer;user-select:none}.avgp span{font-size:1.35rem}.avgp.on{background:var(--blue);color:#fff;box-shadow:0 2px 0 #1f457f}
 .avsub{display:flex;gap:6px;overflow-x:auto;padding:8px 2px 2px}.avsub .avt{flex:0 0 auto;min-width:0;padding:7px 12px;border-radius:99px;font-size:.78rem;white-space:nowrap}.avsub .avt.on{background:#fff;color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+.avgrid.big2{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}.avgrid.big2 .avc svg{width:86px;height:86px}
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette <small style="font-weight:600;opacity:.85;margin-left:6px">我说法棍</small></h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
@@ -556,27 +557,28 @@ const DBC={};
 function dbOpts(a){const st=dbStyle(a),o={randomizeIds:true,seed:"fr"};DBP[st].forEach(([n,t],i)=>{const v=a[DBK(i)];
   if(t==="c"){const d=dbDefCols(st,n);const c=/^#[0-9a-f]{6}$/i.test(v||"")?v:d[(v|0)%(d.length||1)]||d[0];if(c)o[n]=[c.replace("#","")]}
   else{const en=dbEnum(st,n);if(!en.length)return;if(t==="o"||t==="k"){if(!(v>0)){o[n+"Probability"]=0}else{o[n+"Probability"]=100;o[n]=[en[(v-1)%en.length]]}}else o[n]=[en[(v|0)%en.length]]}});return o}
-function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+(a.obj|0)+"h"+(a.hat|0)+px;if(DBC[key])return DBC[key];
+function avSVG(a,px){a=a||{};if(!window.DB)return "";const o=dbOpts(a),key=dbStyle(a)+JSON.stringify(o)+(a.obj|0)+"h"+(a.hat|0)+"w"+(a.wng|0)+"u"+(a.aur|0)+px;if(DBC[key])return DBC[key];
   let s;try{s=window.DB.createAvatar(window.DB.styles[dbStyle(a)],Object.assign({size:px},o)).toString()}catch(e){s=""}
-  if(a.hat>0&&HATS[a.hat-1]&&s){const m=s.match(/viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+)/),W=m?+m[1]:280;s=s.replace(/<\/svg>\s*$/,`<text fill="#000" text-anchor="middle" x="${W*.5}" y="${W*.4}" font-size="${W*.46}" style="font-family:'Segoe UI Emoji','Noto Color Emoji','Apple Color Emoji',sans-serif">${HATS[a.hat-1]}</text></svg>`)}
-  if(a.obj>0&&OBJ[a.obj-1]&&s){const m=s.match(/viewBox="[\d.\-]+ [\d.\-]+ ([\d.]+)/),W=m?+m[1]:280;s=s.replace(/<\/svg>\s*$/,`<text fill="#000" x="${W*.6}" y="${W*.9}" font-size="${W*.34}" style="font-family:'Segoe UI Emoji','Noto Color Emoji','Apple Color Emoji',sans-serif">${OBJ[a.obj-1][0]}</text></svg>`)}
+  if(s&&a.obj>0&&OBJ[a.obj-1])s=s.replace(/<\/svg>\s*$/,fxObj(OBJ[a.obj-1],dbSkin(a))+"</svg>");
+  if(s&&a.hat>0&&HATS[a.hat-1])s=s.replace(/<\/svg>\s*$/,fxT(HATS[a.hat-1],140,92,118)+"</svg>");
+  s=fxApply(s,a);
   if(Object.keys(DBC).length>600)Object.keys(DBC).slice(0,200).forEach(k=>delete DBC[k]);return DBC[key]=s}
 /* cadeaux quotidiens : accessoires à collectionner (options facultatives du style choisi) */
 const RAR={c:["Commun · 普通","#2bb673"],r:["Rare · 稀有","#2f7fe0"],s:["Super rare · 超稀有","#8e44e0"],e:["Épique · 史诗","#ff9f1a"]};
 const rarHash=(st,n,i)=>{let x=0;(st+n).split("").forEach(c=>x=(x*31+c.charCodeAt(0))%1009);const v=(x*7+i*37)%100;return v<52?"c":v<80?"r":v<94?"s":"e"};
-function dbLocks(st){const L=[];if(st==="avataaars")HATS.forEach((_,j)=>L.push(["hat",-1,j+1,HATR[j]]));OBJ.forEach((o,j)=>L.push(["obj",-2,j+1,o[2]]));DBP[st].forEach(([n,t],i)=>{if(t==="k")dbEnum(st,n).forEach((_,j)=>L.push([n,i,j+1,rarHash(st,n,j+1)]))});return L}
-const owned=(st,n,i)=>(typeof ADM!=="undefined"&&ADM&&ADM.admin)||(S.unl||[]).includes((n==="obj"?"all":st)+":"+n+":"+i);
+function dbLocks(st){const L=[];if(st==="avataaars")HATS.forEach((_,j)=>L.push(["hat",-1,j+1,HATR[j]]));OBJ.forEach((o,j)=>L.push(["obj",-2,j+1,o[2]]));WNG.forEach((w,j)=>L.push(["wng",-3,j+1,w[1]]));AUR.forEach((w,j)=>L.push(["aur",-4,j+1,w[1]]));DBP[st].forEach(([n,t],i)=>{if(t==="k")dbEnum(st,n).forEach((_,j)=>L.push([n,i,j+1,rarHash(st,n,j+1)]))});return L}
+const owned=(st,n,i)=>(typeof ADM!=="undefined"&&ADM&&ADM.admin)||(S.unl||[]).includes((VIRT.includes(n)&&n!=="hat"?"all":st)+":"+n+":"+i);
 function giftDraw(){const st=dbStyle(S.av||{}),un=dbLocks(st).filter(l=>!owned(st,l[0],l[2]));if(!un.length)return null;
   const W={c:60,r:25,s:11,e:4},av=[...new Set(un.map(u=>u[3]))],tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
   const pool=un.filter(u=>u[3]===rr);return pool[Math.random()*pool.length|0]}
 function giftCheck(){if(!window.DB||(typeof ADM!=="undefined"&&ADM&&ADM.admin)||document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
   S.unl=S.unl||[];S.lgd=t;const g=giftDraw(),st=dbStyle(S.av||{});if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
-  S.unl.push((g[0]==="obj"?"all":st)+":"+g[0]+":"+g[2]);save();giftShow(g)}
+  S.unl.push((VIRT.includes(g[0])&&g[0]!=="hat"?"all":st)+":"+g[0]+":"+g[2]);save();giftShow(g)}
 function giftShow(g){const[n,i,v,r]=g,R=RAR[r],a=Object.assign({sty:0},S.av||{}),st=dbStyle(a),lk=dbLocks(st),tot=lk.length,mine=lk.filter(l=>owned(st,l[0],l[2])).length,d=document.createElement("div");d.id="gift";
-  setIt(a,n,i,v);d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">🎁 Cadeau du jour · 每日礼物</div><div class="gav shiny">${avSVG(a,150)}</div><div class="gr">${R[0]}</div><div class="gn">${n==="obj"?OBJ[v-1][0]+" "+OBJ[v-1][1]:n==="hat"?HATN[v-1]:DBL[n]}</div><div class="gc">Collection : ${mine}/${tot} · 收藏</div><div class="ga"><button onclick="giftEquip('${n}',${i},${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
+  setIt(a,n,i,v);d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">🎁 Cadeau du jour · 每日礼物</div><div class="gav shiny">${avSVG(a,150)}</div><div class="gr">${R[0]}</div><div class="gn">${n==="obj"?OBJ[v-1][0]+" "+OBJ[v-1][1]:n==="hat"?HATS[v-1]+" "+HATN[v-1]:n==="wng"?"🪽 "+WNG[v-1][0]:n==="aur"?"✨ "+AUR[v-1][0]:DBL[n]}</div><div class="gc">Collection : ${mine}/${tot} · 收藏</div><div class="ga"><button onclick="giftEquip('${n}',${i},${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
   document.body.appendChild(d);loc(d);fanfare();burst(innerWidth/2,innerHeight/2,r==="e"?120:r==="s"?80:50);if(navigator.vibrate)try{navigator.vibrate(r==="e"?[60,40,60,40,120]:[60])}catch(e){}}
 function giftClose(){const d=document.getElementById("gift");if(d)d.remove()}
-function setIt(a,n,i,v){if(n==="hat"||n==="obj")a[n]=v;else a[DBK(i)]=v}
+function setIt(a,n,i,v){if(VIRT.includes(n))a[n]=v;else a[DBK(i)]=v}
 function giftEquip(n,i,v){const a=avGet();setIt(a,n,i,v);S.av=a;save();giftClose();head();if(cur)cur();toast("✨ Équipé ! · 已穿上")}
 const avGet=()=>Object.assign({sty:0},S.av||{});
 function avStart(sty){const a={sty},st=DBS[sty],W={eyes:["default","happy"],eyebrows:["default","defaultNatural"],mouth:["smile","happy01","happy02"],top:["shortFlat","shortWaved","shortRound"],clothing:["hoodie","shirtCrewNeck","graphicShirt"],face:["smile","calm","cheeky"],head:["short1","short2"],hair:["variant01","variant02"]};
@@ -590,14 +592,62 @@ function avUndo(){const p=AVH.pop();if(!p)return toast("Rien à annuler");S.av=J
 let AVH=[],AVT="sty";
 function avRand(){const a={sty:avGet().sty,gen:avGet().gen,eth:avGet().eth},st=dbStyle(a);AVH.push(JSON.stringify(S.av||{}));DBP[st].forEach(([n,t],i)=>{if(t==="c"){const d=dbDefCols(st,n);a[DBK(i)]=d[Math.random()*d.length|0]||"#000000"}else if(t==="o"||t==="k"){const m=[0,...dbEnum(st,n).map((_,j)=>j+1).filter(j=>t==="o"||owned(st,n,j))];a[DBK(i)]=m[Math.random()*m.length|0]}else a[DBK(i)]=Math.random()*dbEnum(st,n).length|0});if(a.eth===undefined)a.eth=Math.random()*ETHS.length|0;if(a.gen===undefined)a.gen=Math.random()<.5?0:1;{const s=DBP[st].findIndex(p=>p[0]==="skinColor"),hc=DBP[st].findIndex(p=>p[0]==="hairColor");a[DBK(s)]=ETHS[a.eth][1];if(hc>=0&&Math.random()<.6)a[DBK(hc)]=ETHS[a.eth][2]}
   {const ti=DBP[st].findIndex(p=>p[0]==="top"),en=dbEnum(st,"top"),ok=en.map((x,j)=>[x,j+1]).filter(x=>genOk(st,"top",x[0],a.gen));if(ti>=0&&ok.length)a[DBK(ti)]=ok[Math.random()*ok.length|0][1];const f=DBP[st].findIndex(p=>p[0]==="facialHair");if(a.gen===1&&f>=0)a[DBK(f)]=0}
-const hs=[0,...HATS.map((_,j)=>j+1).filter(j=>owned(st,"hat",j))];if(st==="avataaars")a.hat=hs[Math.random()*hs.length|0];const os=[0,...OBJ.map((_,j)=>j+1).filter(j=>owned(st,"obj",j))];a.obj=os[Math.random()*os.length|0];S.av=a;save();avDraw()}
+const hs=[0,...HATS.map((_,j)=>j+1).filter(j=>owned(st,"hat",j))];if(st==="avataaars")a.hat=hs[Math.random()*hs.length|0];const ws=[0,...WNG.map((_,j)=>j+1).filter(j=>owned(st,"wng",j))];a.wng=ws[Math.random()*ws.length|0];const us=[0,...AUR.map((_,j)=>j+1).filter(j=>owned(st,"aur",j))];a.aur=us[Math.random()*us.length|0];const os=[0,...OBJ.map((_,j)=>j+1).filter(j=>owned(st,"obj",j))];a.obj=os[Math.random()*os.length|0];S.av=a;save();avDraw()}
 function avPrev(){const e=document.getElementById("avprev");if(e)e.innerHTML=avDone(S.av)?avSVG(avGet(),150):`<div style="height:100%;display:grid;place-items:center;font-size:4.5rem;color:#9aa8c4;font-weight:800">?</div>`}
 function avPrevItem(a,k,v){const b=Object.assign({},a);b[DBK(k)]=v;return avSVG(b,64)}
 const HIDE=["hat","hijab","turban","winterHat1","winterHat02","winterHat03","winterHat04"],HATS=["🎩","🧢","👒","🎓","👑","🪖"],HATN=["Haut-de-forme · 礼帽","Casquette · 鸭舌帽","Chapeau de paille · 草帽","Toque de diplômé · 学士帽","Couronne · 皇冠","Casque · 头盔"],HATR=["r","c","c","r","e","s"];
-const OBJ=[["☕","Mug · 马克杯","c"],["🥐","Pain au chocolat · 巧克力面包","c"],["🥖","Baguette · 法棍","c"],["🍎","Pomme · 苹果","c"],["📚","Livres · 书","c"],["🎈","Ballon · 气球","c"],["🧀","Fromage · 奶酪","r"],["🎸","Guitare · 吉他","r"],["🏆","Trophée · 奖杯","r"],["🎧","Casque · 耳机","r"],["🍷","Verre de vin · 红酒","r"],["🪄","Sceptre magique · 魔杖","s"],["🔱","Trident · 三叉戟","s"],["⚔️","Épée · 剑","s"],["🛡️","Bouclier · 盾牌","s"],["🗼","Tour Eiffel · 埃菲尔铁塔","s"],["🐉","Dragon · 龙","e"],["💎","Diamant · 钻石","e"],["🦄","Licorne · 独角兽","e"],["🔥","Torche · 火炬","e"]];
+/* ---- effets animés (ailes + auras), style "MU Online" : plus c'est rare, plus c'est spectaculaire ---- */
+const FXF="font-family:'Segoe UI Emoji','Noto Color Emoji','Apple Color Emoji',sans-serif";
+const fxT=(ch,x,y,s,an)=>`<text fill="#000" text-anchor="middle" x="${x}" y="${y}" font-size="${s}" style="${FXF}">${ch}${an||""}</text>`;
+const fxA=(attr,vals,dur,begin)=>`<animate attributeName="${attr}" values="${vals}" dur="${dur}s" begin="${begin||0}s" repeatCount="indefinite"/>`;
+const fxRot=(inner,dur,cx,cy,dir)=>`<g><animateTransform attributeName="transform" type="rotate" from="0 ${cx} ${cy}" to="${dir||360} ${cx} ${cy}" dur="${dur}s" repeatCount="indefinite"/>${inner}</g>`;
+const fxGlow=(c1,c2,id,r)=>`<defs><radialGradient id="${id}"><stop offset="0" stop-color="${c1}" stop-opacity=".95"/><stop offset=".55" stop-color="${c2}" stop-opacity=".5"/><stop offset="1" stop-color="${c2}" stop-opacity="0"/></radialGradient></defs><circle cx="140" cy="165" r="${r||120}" fill="url(#${id})">${fxA("r",(r||120)-12+";"+((r||120)+14)+";"+((r||120)-12),2.4)}${fxA("opacity",".7;1;.7",2.4)}</circle>`;
+const fxRays=(c,n)=>fxRot(Array.from({length:n},(_,i)=>`<path d="M140 150 L${140-14} -20 L${140+14} -20 Z" fill="${c}" opacity=".32" transform="rotate(${i*360/n} 140 150)"/>`).join(""),10,140,150);
+const fxStars=(chs,n,rad,dur,cy)=>fxRot(Array.from({length:n},(_,i)=>{const a=i*2*Math.PI/n;return fxT(chs[i%chs.length],140+Math.cos(a)*rad,(cy||150)+Math.sin(a)*rad*.8,34)}).join(""),dur,140,cy||150);
+const fxTwinkle=(chs,pts)=>pts.map((p,i)=>fxT(chs[i%chs.length],p[0],p[1],p[2]||34,fxA("opacity","0;1;0",1.8+i%3*.4,i*.35))).join("");
+const fxRise=(ch,n)=>Array.from({length:n},(_,i)=>{const x=40+i*(200/Math.max(1,n-1));return fxT(ch,x,260,30,fxA("y","270;20",3.6+i%3*.7,i*.6)+fxA("opacity","0;1;1;0",3.6+i%3*.7,i*.6))}).join("");
+const wingPath="M128 205C98 130 42 92 -14 66C6 100 18 124 44 142C18 138 2 152 -8 178C28 172 54 176 76 190C54 196 44 212 40 234C82 218 106 218 128 232Z";
+const fxWing=(fill,stroke,extra,flap)=>{const one=`<path d="${wingPath}" fill="${fill}" stroke="${stroke}" stroke-width="3" stroke-linejoin="round"/>${extra||""}`,an=`<animateTransform attributeName="transform" type="rotate" values="0 128 205;${flap||-9} 128 205;0 128 205" dur="1.5s" repeatCount="indefinite"/>`;
+  return `<g>${an}${one}</g><g transform="translate(280 0) scale(-1 1)"><g>${an}${one}</g></g>`};
+const WNG=[
+ ["Ailes de papillon · 蝴蝶翅膀","c",()=>fxWing("#ffb3d9","#ff6fb5",`<circle cx="40" cy="120" r="12" fill="#fff" opacity=".7"/>`)],
+ ["Ailes d'ange · 天使翅膀","r",()=>fxWing("#ffffff","#b9c7e6")],
+ ["Ailes de plumes noires · 黑羽翼","r",()=>fxWing("#2b2b3a","#6b6b8a")],
+ ["Ailes de chauve-souris · 蝙蝠翅膀","s",()=>fxWing("#4a1a5e","#b04fd6",`<path d="M128 205L40 234M128 205L-8 178M128 205L44 142" stroke="#b04fd6" stroke-width="3" fill="none"/>`,-12)],
+ ["Ailes de cristal · 水晶翅膀","s",()=>fxWing("rgba(120,235,255,.75)","#e8ffff",`<path d="M128 205L76 190M128 205L44 142" stroke="#fff" stroke-width="2" opacity=".8"/>`)+fxTwinkle(["✨"],[[10,100],[270,100],[0,170]])],
+ ["Ailes de dragon · 龙翼","e",()=>fxWing("#c0261d","#ff9a3c",`<path d="M128 205L40 234M128 205L-8 178M128 205L44 142" stroke="#ff9a3c" stroke-width="3" fill="none"/>`,-14)+fxTwinkle(["🔥"],[[0,70,30],[280,70,30]])],
+ ["Ailes dorées du phénix · 凤凰金翼","e",()=>fxWing("#ffd54f","#ff8f00",`<circle cx="60" cy="150" r="6" fill="#fff" opacity=".8"/>`,-10)+fxTwinkle(["✨","🔥"],[[8,90],[272,90],[20,200],[260,200]])]
+];
+const AUR=[
+ ["Aura verte · 绿光","c",()=>[fxGlow("#b9ffcf","#2bd66b","fxg1"),""]],
+ ["Aura bleue · 蓝光","r",()=>[fxGlow("#bfe2ff","#2f7fe0","fxg2"),""]],
+ ["Étincelles · 火花","r",()=>["",fxTwinkle(["✨","⭐","✨"],[[40,70],[240,90],[60,200],[230,210],[140,20],[20,140]])]],
+ ["Cœurs flottants · 飘浮爱心","r",()=>["",fxRise("💖",6)]],
+ ["Neige · 飘雪","r",()=>["",fxRise("❄️",7)]],
+ ["Aura violette · 紫光","s",()=>[fxGlow("#ecc9ff","#9b3be0","fxg3",130),fxTwinkle(["✨"],[[30,60],[250,60],[140,12]])]],
+ ["Éclairs · 闪电","s",()=>[fxGlow("#fff6a8","#ffd400","fxg4"),fxTwinkle(["⚡"],[[30,90,44],[250,100,44],[60,220,36],[225,225,36]])]],
+ ["Flammes · 火焰","s",()=>[fxGlow("#ffd29a","#ff4d00","fxg5",125),fxTwinkle(["🔥"],[[24,230,52],[256,230,52],[60,190,36],[220,190,36]])]],
+ ["Anneaux orbitaux · 轨道","s",()=>["",fxStars(["⭐","🌙","✨"],6,125,7,150)]],
+ ["Aura dorée · 金光","e",()=>[fxRays("#ffe27a",12)+fxGlow("#fff3b0","#ffb300","fxg6",135),fxTwinkle(["✨"],[[30,60],[250,60],[140,10],[20,200],[262,200]])]],
+ ["Galaxie · 银河","e",()=>[fxGlow("#d6c8ff","#4b2bd6","fxg7",138)+fxRot(fxGlow("#9ff0ff","#7a3bff","fxg8",60).replace('cx="140" cy="165"','cx="215" cy="120"'),9,140,165),fxStars(["⭐","✨","🌟","💫"],8,130,9,150)]],
+ ["Couronne d'arc-en-ciel · 彩虹圈","e",()=>[`<defs><linearGradient id="fxr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3d6e"/><stop offset=".25" stop-color="#ffd23f"/><stop offset=".5" stop-color="#3dffa1"/><stop offset=".75" stop-color="#3da5ff"/><stop offset="1" stop-color="#b13dff"/></linearGradient></defs>`+fxRot(`<circle cx="140" cy="150" r="128" fill="none" stroke="url(#fxr)" stroke-width="12" stroke-dasharray="40 14"/>`,8,140,150),fxTwinkle(["🌈","✨"],[[30,40,40],[250,40,40],[140,8,30]])]]
+];
+function fxApply(s,a){if(!s)return s;const w=WNG[a.wng-1],u=AUR[a.aur-1];if(!w&&!u)return s;let back="",front="";if(u){const r=u[2]();back+=r[0];front+=r[1]}if(w)back=(back||"")+w[2]();
+  if(w)s=s.replace(/viewBox="0 0 280 280"/,'viewBox="-70 -50 420 420"');
+  return s.replace(/^(<svg[^>]*>)/,"$1"+back).replace(/<\/svg>\s*$/,front+"</svg>")}
+
+const VIRT=["hat","obj","wng","aur"];
+const OBJ=[["☕","Mug · 马克杯","c","eat"],["🥐","Pain au chocolat · 巧克力面包","c","eat"],["🥖","Baguette · 法棍","c","eat"],["🍎","Pomme · 苹果","c","eat"],["📚","Livres · 书","c","front"],["🎈","Ballon · 气球","c","hold"],["🧀","Fromage · 奶酪","r","eat"],["🎸","Guitare · 吉他","r","front"],["🏆","Trophée · 奖杯","r","front"],["🎧","Casque audio · 耳机","r","front"],["🍷","Verre de vin · 红酒","r","eat"],["🪄","Sceptre magique · 魔杖","s","hold"],["🔱","Trident · 三叉戟","s","hold"],["⚔️","Épée · 剑","s","hold"],["🛡️","Bouclier · 盾牌","s","front"],["🗼","Tour Eiffel · 埃菲尔铁塔","s","front"],["🐉","Dragon · 龙","e","pet"],["💎","Diamant · 钻石","e","front"],["🦄","Licorne · 独角兽","e","pet"],["🔥","Torche · 火炬","e","hold"]];
+const dbSkin=a=>{const st=dbStyle(a),i=DBP[st].findIndex(p=>p[0]==="skinColor"),v=a[DBK(i)];return /^#[0-9a-f]{6}$/i.test(v||"")?v:"#ffdbb4"};
+function fxHand(x,y,sk,r){return `<circle cx="${x}" cy="${y}" r="${r||17}" fill="${sk}" stroke="rgba(0,0,0,.28)" stroke-width="3"/>`}
+function fxObj(o,sk){const[e,,,m]=o;
+  if(m==="eat")return `<g>${fxA("opacity","1;1;1;1",3.2)}<g><animateTransform attributeName="transform" type="translate" values="0 0;0 0;0 -62;0 -62;0 0" keyTimes="0;.15;.45;.6;1" dur="3.2s" repeatCount="indefinite"/>${fxT(e,140,262,84,`<animateTransform attributeName="transform" type="scale" additive="sum" values="1;1;1;.78;1" keyTimes="0;.4;.5;.6;1" dur="3.2s" repeatCount="indefinite"/>`)}${fxHand(98,262,sk)}${fxHand(182,262,sk)}</g></g>`;
+  if(m==="hold")return `<g><animateTransform attributeName="transform" type="rotate" values="-4 222 240;5 222 240;-4 222 240" dur="2.6s" repeatCount="indefinite"/>${fxT(e,226,206,100)}${fxHand(212,244,sk,18)}</g>`;
+  if(m==="pet")return `<g><animateTransform attributeName="transform" type="translate" values="0 0;0 -10;0 0" dur="1.8s" repeatCount="indefinite"/>${fxT(e,232,250,96)}</g>`;
+  return `<g>${fxT(e,140,268,86)}${fxHand(96,262,sk)}${fxHand(184,262,sk)}</g>`}
 const SKINS=["#fdebdc","#ffdbb4","#f6cfa3","#f1c27d","#e0ac69","#d08b5b","#ae5d29","#8d5524","#614335","#3b2418"];
 const DBO={lorelei:["gen","skinColor","hair","hairColor","head","eyes","eyebrows","mouth","nose","glasses","beard","earrings","freckles","hairAccessories","obj","sty"],
- avataaars:["eth","gen","skinColor","top","hairColor","eyes","eyebrows","mouth","facialHair","facialHairColor","clothing","clothingGraphic","clothesColor","accessories","hat","obj"],
+ avataaars:["eth","gen","skinColor","top","hairColor","eyes","eyebrows","mouth","facialHair","facialHairColor","clothing","clothingGraphic","clothesColor","accessories","hat","obj","wng","aur"],
  openPeeps:["gen","skinColor","head","headContrastColor","face","facialHair","accessories","mask","clothingColor","obj","sty"]};
 const ETHS=[["Européen · 欧洲人","#ffdbb4","#724133"],["Asiatique · 亚洲人","#f1c27d","#2c1b18"],["Africain · 非洲人","#614335","#2c1b18"],["Latino · 拉美人","#d08b5b","#4a312c"],["Moyen-Orient · 中东人","#e0ac69","#2c1b18"],["Métis · 混血","#ae5d29","#4a312c"]];
 const GEN_F=["bob","bun","curly","curvy","frida","longButNotTooLong","miaWallace","straight01","straight02","straightAndStrand","bigHair","dreads","froBand","hijab"],
@@ -610,7 +660,7 @@ function avEth(e){let a=avGet();if(!avDone(a)){const g=a.gen===0||a.gen===1?a.ge
 function avReset(){AVH.push(JSON.stringify(S.av||{}));S.av=avStart(0);save();AVT="eth";avDraw();toast("🔄 Visage réinitialisé · 已重置（可撤销）")}
 function avNav(d){const a=avGet(),st=dbStyle(a),list=avList(st,a),i=Math.max(0,list.indexOf(AVT)),j=(i+d+list.length)%list.length;AVT=list[j];avDraw()}
 const AVG=[["🌍","Moi · 我",["eth","gen","skinColor"]],["💇","Cheveux · 头发",["top","hairColor","facialHair","facialHairColor"]],["😀","Visage · 脸",["eyes","eyebrows","mouth"]],["👕","Tenue · 服装",["clothing","clothingGraphic","clothesColor"]],["🎁","Accessoires · 配饰",["accessories","hat","hatColor","obj"]]];
-const AVL={top:"Coiffure · 发型",hairColor:"Couleur · 发色",facialHair:"Barbe · 胡子",facialHairColor:"Couleur barbe · 胡子色",eyes:"Yeux · 眼睛",eyebrows:"Sourcils · 眉毛",mouth:"Bouche · 嘴巴",clothing:"Habit · 衣服",clothingGraphic:"Motif · 图案",clothesColor:"Couleur · 颜色",accessories:"Lunettes · 眼镜",hat:"Chapeau · 帽子",hatColor:"Couleur chapeau · 帽色",obj:"Objet · 道具",eth:"Origine · 出身",gen:"Sexe · 性别",skinColor:"Peau · 肤色"};
+const AVL={top:"Coiffure · 发型",hairColor:"Couleur · 发色",facialHair:"Barbe · 胡子",facialHairColor:"Couleur barbe · 胡子色",eyes:"Yeux · 眼睛",eyebrows:"Sourcils · 眉毛",mouth:"Bouche · 嘴巴",clothing:"Habit · 衣服",clothingGraphic:"Motif · 图案",clothesColor:"Couleur · 颜色",accessories:"Lunettes · 眼镜",hat:"Chapeau · 帽子",wng:"Ailes · 翅膀",aur:"Aura · 光环",hatColor:"Couleur chapeau · 帽色",obj:"Objet · 道具",eth:"Origine · 出身",gen:"Sexe · 性别",skinColor:"Peau · 肤色"};
 function avList(st,a){const flat=st==="avataaars"?AVG.flatMap(g=>g[2]):DBO[st];return flat.filter(n=>!(n==="facialHair"&&genOf(a)===1&&st==="avataaars")&&!(n==="facialHairColor"&&genOf(a)===1))}
 function avDraw(){const a=avGet(),st=dbStyle(a);avPrev();
   const list=avList(st,a);if(!list.includes(AVT))AVT=list[0];const k=AVT,idx=n=>DBP[st].findIndex(p=>p[0]===n);
@@ -621,8 +671,8 @@ function avDraw(){const a=avGet(),st=dbStyle(a);avPrev();
   if(k==="eth")h=`<div class="avgrid">${ETHS.map((e,i)=>{const sI=DBP[st].findIndex(p=>p[0]==="skinColor"),hI=DBP[st].findIndex(p=>p[0]==="hairColor"),b=Object.assign(avStart(0),{});b[DBK(sI)]=e[1];b[DBK(hI)]=e[2];return `<div role="button" class="avc${a.eth===i?" on":""}" onclick="avEth(${i})">${avSVG(b,72)}<small>${e[0]}</small></div>`}).join("")}</div>`;
   else if(k==="gen")h=`<div class="avgrid g3">${[["👦","Garçon · 男孩",0],["👧","Fille · 女孩",1]].map(([e,l,g])=>`<div role="button" class="avc big${genOf(a)===g?" on":""}" onclick="avGen(${g})"><span style="font-size:2.2rem">${e}</span><small>${l}</small></div>`).join("")}</div>`;
   else if(k==="sty")h=`<div class="avgrid">${DBS.map((s,i)=>`<div role="button" class="avc${a.sty===i?" on":""}" onclick="avSet('sty',${i})">${avSVG({sty:i},64)}<small>${DBN[i]}</small></div>`).join("")}</div>`;
-  else if(k==="hat"||k==="obj"){const L=k==="hat"?HATS.map((_,j)=>[HATN[j],HATR[j]]):OBJ.map(o=>[o[0]+" "+o[1],o[2]]),cur=a[k]|0,lk=dbLocks(st).filter(l=>l[0]===k);
-    h=`<div class="gcoll">🎁 ${k==="hat"?"Chapeaux":"Objets"} gagnés : ${lk.filter(l=>owned(st,k,l[2])).length}/${lk.length} — un cadeau par jour ! · 每天一件礼物！</div><div class="avgrid">`+[["Aucun · 无","",0]].concat(L.map((x,j)=>[x[0],x[1],j+1])).map(([nm,r,v])=>{const ok=!r||owned(st,k,v),pv=avSVG(Object.assign({},a,{[k]:v}),64);
+  else if(VIRT.includes(k)){const L=k==="hat"?HATS.map((_,j)=>[HATS[j]+" "+HATN[j],HATR[j]]):k==="obj"?OBJ.map(o=>[o[0]+" "+o[1],o[2]]):(k==="wng"?WNG:AUR).map(o=>[o[0],o[1]]),cur=a[k]|0,lk=dbLocks(st).filter(l=>l[0]===k);
+    h=`<div class="gcoll">🎁 ${{hat:"Chapeaux",obj:"Objets",wng:"Ailes",aur:"Auras"}[k]} gagné(e)s : ${lk.filter(l=>owned(st,k,l[2])).length}/${lk.length} — un cadeau par jour ! · 每天一件礼物！</div><div class="avgrid big2">`+[["Aucun · 无","",0]].concat(L.map((x,j)=>[x[0],x[1],j+1])).map(([nm,r,v])=>{const ok=!r||owned(st,k,v),pv=avSVG(Object.assign({},a,{[k]:v}),86);
       return `<div role="button" class="avc${cur===v?" on":""}${r?" rar r-"+r:""}${ok?"":" lk"}" ${r?`style="--rc:${RAR[r][1]}"`:""} onclick="${ok?`avSet('${k}',${v})`:`toast('🔒 À gagner avec le cadeau du jour · 通过每日礼物获得')`}">${pv}${ok?"":"<span class=lkb>🔒</span>"}<small>${ok?nm:RAR[r][0]}</small></div>`}).join("")+"</div>"}
   else{const i=idx(k),t=DBP[st][i][1];
     if(t==="c"){const d=dbDefCols(st,k),cur=/^#[0-9a-f]{6}$/i.test(a[DBK(i)]||"")?a[DBK(i)]:d[(a[DBK(i)]|0)%d.length]||d[0];
