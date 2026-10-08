@@ -24,4 +24,4 @@ Menu au choix : Français, 中文 ou Français + 中文 (bouton 🌐).
 - `server/api.php` + `server/vocab-fr.json` : API (à déployer ensemble sur le serveur). Espace de noms `?app=fr` ; l'appli chinoise n'est pas affectée.
 
 ## Crédits
-Visages : [DiceBear](https://www.dicebear.com) (MIT) avec les styles Lorelei (CC0, Lisa Wischofsky), Open Peeps (CC0, Pablo Stanley) et Avataaars (Pablo Stanley, usage libre).
+Visages : [DiceBear](https://www.dicebear.com) (MIT) avec le style Avataaars (Pablo Stanley, usage libre).
