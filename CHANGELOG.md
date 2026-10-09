@@ -14,6 +14,10 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.1 — 2026-10-09 — Quêtes en objets, avatars animés dans le classement
+- **Les quêtes du jour récompensent par un objet à collectionner** (même rareté que le cadeau du jour) au lieu de +20 XP ; +20 XP seulement si tout est déjà débloqué.
+- **Classement** : avatars animés (aura, ailes, objet en main) dans un cadre complet de 58 px qui ne déborde plus ; les très petites icônes (en-tête, barre du bas) restent sans effets.
+
 ## v6.0 — 2026-10-09 — Refonte de la personnalisation du personnage
 Le personnage est maintenant construit par **emplacements** et une **pile de couches unique** : plus d'objets qui passent « au-dessus » ou « en dessous » sans logique.
 - **Éditeur par emplacements** : Moi · Cheveux · Visage · Barbe (garçons) · Lunettes · Tête · Tenue · Main · Dos · Aura. Chaque emplacement montre des **vignettes recadrées sur la zone concernée** (on voit enfin ce que fait chaque choix), avec des **noms lisibles en français et en chinois** (plus de « #12 »).

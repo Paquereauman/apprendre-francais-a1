@@ -143,7 +143,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .podium2{display:flex;align-items:flex-end;gap:6px;margin:6px 0 10px;padding-top:12px}.pc{flex:1;min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center}.pc-av{position:relative;display:flex;justify-content:center;margin-bottom:2px;filter:drop-shadow(0 4px 5px #0003)}.pc-crown{position:absolute;top:-22px;font-size:1.9rem;animation:bob 1.6s ease-in-out infinite;z-index:2}@keyframes bob{50%{transform:translateY(-5px)}}
 .pc .pod-n{max-width:100%;font-size:.9rem}.pc-step{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:6px;border-radius:12px 12px 0 0;color:#fff;font-weight:900;margin-top:4px}.pc-step span{font-size:1.5rem;line-height:1}.pc-step b{font-size:1.5rem;opacity:.9;text-shadow:0 2px 0 #0003}
 .pc1 .pc-step{height:96px;background:linear-gradient(#ffd54f,#f4a300);box-shadow:0 0 18px #ffd54f88}.pc2 .pc-step{height:70px;background:linear-gradient(#dfe6ee,#9aa7b8)}.pc3 .pc-step{height:50px;background:linear-gradient(#e0a070,#b06a3a)}.pc.mine .pod-n{color:var(--blue);text-decoration:underline}
-.lb-av .av.svgav{width:44px!important;height:44px!important}
+
 #bnav i{min-height:1.45rem}#bnav i .svgav svg{display:block;width:28px;height:28px}#bnav i{display:flex;align-items:center;justify-content:center;height:1.6rem}
 
 /* ===== éditeur d'avatar par emplacements ===== */
@@ -187,6 +187,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
  #avrows{grid-area:rows;min-height:0;overflow-y:auto}
  .avbar{grid-area:bar;padding-top:4px}.avbar button{min-height:38px;font-size:.9rem}
 }
+#prfb .svgav,#bnav .svgav{overflow:hidden!important;border-radius:10px!important}#prfb .svgav svg,#bnav .svgav svg{overflow:hidden!important}.lb-av{width:58px;height:58px;flex:none}.lb-av .svgav{overflow:hidden!important;border-radius:12px!important}.lb-av .svgav svg{overflow:hidden!important}
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette <small style="font-weight:600;opacity:.85;margin-left:6px">我说法棍</small></h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
@@ -263,11 +264,14 @@ function stats(){const rows=STEPS.map((s,i)=>{const b=chB(i);return{i,key:s[2],t
   return{all:rows.reduce((a,r)=>a+r.m,0)/n,tot:n,rem:rows.reduce((a,r)=>a+r.rem,0),done:rows.filter(r=>r.m>=80).length,n,rows}}
 /* objectif du jour (entraînement aux mots) : rythme personnel */
 
-/* ---- quêtes du jour : petites missions avec récompense (+20 XP) ---- */
+/* ---- quêtes du jour : petites missions, récompense = un objet à collectionner ---- */
 const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","⚔️","#e63946"],["w",5,"Valider 5 mots · 掌握5个词","🧙","#7b4fd1"]];
 function dq(){if(!S.dq||S.dq.d!==tdy())S.dq={d:tdy(),a:0,w:0,q:0,done:{}};return S.dq}
-function dqAdd(k,n){const d=dq();d[k]=(d[k]||0)+(n||1);QUESTS.forEach(([key,goal,lab,ic])=>{if(key===k&&d[k]>=goal&&!d.done[key]){d.done[key]=1;setTimeout(()=>{celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20)},400)}});save()}
-function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">📜 Quêtes du jour · 今日任务 ${all?"— 🏆 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic,co])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow" style="--qc:${co}"><span class="qi">${d.done[k]?"✅":ic}</span><div class="qm"><div class="qt"><span>${lab}</span><span class="qv">${v}/${g}</span></div><div class="qb"><i style="width:${v/g*100}%"></i></div></div><span class="qx">+20 XP</span></div>`}).join("")}</div>`}
+function dqAdd(k,n){const d=dq();d[k]=(d[k]||0)+(n||1);QUESTS.forEach(([key,goal,lab,ic])=>{if(key===k&&d[k]>=goal&&!d.done[key]){d.done[key]=1;setTimeout(()=>questReward(ic),400)}});save()}
+function questReward(ic){if(typeof giftDraw!=="function"||!window.DB||isAdmin()){celebrate("🎉 Quête réussie · 任务完成 : "+ic);return}
+  avGrandfather();S.unl=S.unl||[];const g=giftDraw();if(!g){celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20);return}
+  S.unl.push(ownKey(g[0],g[1]));save();giftShow(g,"🎯 Quête réussie · 任务完成")}
+function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">📜 Quêtes du jour · 今日任务 ${all?"— 🏆 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic,co])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow" style="--qc:${co}"><span class="qi">${d.done[k]?"✅":ic}</span><div class="qm"><div class="qt"><span>${lab}</span><span class="qv">${v}/${g}</span></div><div class="qb"><i style="width:${v/g*100}%"></i></div></div><span class="qx">🎁 objet</span></div>`}).join("")}</div>`}
 const stars=p=>p>=90?"⭐⭐⭐":p>=80?"⭐⭐☆":p>=50?"⭐☆☆":"☆☆☆";
 const goalDay=()=>Math.max(1,Math.round(S.unit==="week"?S.pace/7:S.pace));
 /* ---- Chronomètre de classe : date de fin du parcours ; PAUSE pendant les vacances (jours non comptés) ; seulement pour les élèves d'une classe ---- */
@@ -300,7 +304,7 @@ function goBack(){if(document.body.classList.contains("inquiz")){clearTimeout(Q&
   if(cat&&(cur===list||cur===cards||cur===poster))menu();else home()}
 window.addEventListener("popstate",()=>{IN_POP=true;try{if(document.body.classList.contains("inquiz")||(cur&&cur!==home))goBack()}finally{IN_POP=false}});
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
-  document.getElementById("prfb").innerHTML=PNAME?(avDone(S.av)?`<span class="svgav" style="display:inline-block;vertical-align:middle;width:22px;height:22px">${avSVG(S.av,44,{vb:AVCROP.icon})}</span>`:escH(S.emo||"🙂"))+" "+escH(dispName().slice(0,12)):"👤 Connexion · 登录";{const bi=document.querySelector('#bnav button[data-k="me"] i');if(bi)bi.innerHTML=avDone(S.av)?`<span class="svgav" style="display:inline-block;width:28px;height:28px">${avSVG(S.av,56,{vb:AVCROP.icon})}</span>`:"👤"}document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck));document.getElementById("backb").style.display=(document.body.classList.contains("inquiz")||(cur&&cur!==home))?"":"none"}
+  document.getElementById("prfb").innerHTML=PNAME?(avDone(S.av)?`<span class="svgav" style="display:inline-block;vertical-align:middle;width:22px;height:22px">${avSVG(S.av,44,{vb:AVCROP.icon,lite:1})}</span>`:escH(S.emo||"🙂"))+" "+escH(dispName().slice(0,12)):"👤 Connexion · 登录";{const bi=document.querySelector('#bnav button[data-k="me"] i');if(bi)bi.innerHTML=avDone(S.av)?`<span class="svgav" style="display:inline-block;width:28px;height:28px">${avSVG(S.av,56,{vb:AVCROP.icon,lite:1})}</span>`:"👤"}document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck));document.getElementById("backb").style.display=(document.body.classList.contains("inquiz")||(cur&&cur!==home))?"":"none"}
 function crumb(p){document.body.classList.remove("inquiz");if(p.length&&!IN_POP){try{history.pushState({p:1},"")}catch(e){}}const c=document.getElementById("crumb");c.innerHTML=p.map(([t,f])=>f?`<a onclick="${f}()">${t}</a>`:`<b>${t}</b>`).join(" › ");window.scrollTo(0,0)}
 const bar=p=>`<div class="hm-bar"><i style="width:${Math.max(0,Math.min(100,p))}%"></i></div>`;
 function tile(id){const c=unit(id),m=mastery(c),ok=m>=85;return`<div class="hm-t${ok?" done":""}" style="--c:${c.color}" onclick="openAny('${id}')"><div class="ic">${c.icon}</div><div><b>${c.name}</b><div class="meta">${bar(m)}<span>${ok?"✓":Math.round(m)+"%"}</span></div></div></div>`}
@@ -509,7 +513,7 @@ const FRMS=["Aucun · 无","Or · 金","Argent · 银","Néon · 霓虹","Arc-en
 const TITLES=[["Débutant · 初学者",0],["Curieux · 好奇宝宝",1],["Explorateur · 探索者",3],["Bavard · 小话痨",6],["Voyageur · 旅行家",10],["Francophone · 法语达人",15],["Maître du français · 法语大师",17]];
 const chDone=()=>STEPS.filter((s,i)=>chB(i)>=80).length;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v|0));
-function avHtml(u,sz){if(u&&u.me&&avDone(S.av))u=Object.assign({},u,{av:S.av});const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;if(avDone(u.av))return `<span class="av f${f} svgav" style="width:${z}px;height:${z}px">${avSVG(u.av,z,z<=48?{vb:AVCROP.icon}:null)}</span>`;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
+function avHtml(u,sz){if(u&&u.me&&avDone(S.av))u=Object.assign({},u,{av:S.av});const c=COLS[clamp(u.col,0,9)],f=clamp(u.frm,0,4),z=sz||40;if(avDone(u.av))return `<span class="av f${f} svgav" style="width:${z}px;height:${z}px">${avSVG(u.av,z,z<=32?{vb:AVCROP.icon,lite:1}:null)}</span>`;return `<span class="av f${f}" style="background:${c};width:${z}px;height:${z}px;font-size:${z*.6}px">${escH(u.emo||"🙂")}</span>`}
 const titleOf=u=>{const k=clamp(u.ttl,0,6);return k>0?TITLES[k][0]:""};
 let MEEMO="";
 function profClick(){PNAME?meOpen():profOpen()}
@@ -787,20 +791,20 @@ async function accSave(){try{const r=await fetch(API+"?accpos=1&k="+CODE+APPQ,{m
 /* ======================== assemblage des couches ======================== */
 const DBC={};
 const shn=x=>(x==="s"||x==="e")?' class="fxshiny"':"";
-function avLayers(r){const back=[],mid=[],front=[],top=[];
-  if(r.aur>0&&AUR[r.aur-1]){const u=AUR[r.aur-1],t=u[2](),tr=accT(r,"aur");back.push(`<g ${tr}>${t[0]}</g>`);top.push(`<g ${tr}>${t[1]}</g>`)}
-  if(r.wng>0&&WNG[r.wng-1]){const w=WNG[r.wng-1],tr=accT(r,"wng");back.push(`<g ${tr}>${w[2]()}</g>`);if(w[3])mid.push(`<g ${tr}>${w[3]()}</g>`)}
+function avLayers(r,lite){const back=[],mid=[],front=[],top=[];
+  if(!lite&&r.aur>0&&AUR[r.aur-1]){const u=AUR[r.aur-1],t=u[2](),tr=accT(r,"aur");back.push(`<g ${tr}>${t[0]}</g>`);top.push(`<g ${tr}>${t[1]}</g>`)}
+  if(!lite&&r.wng>0&&WNG[r.wng-1]){const w=WNG[r.wng-1],tr=accT(r,"wng");back.push(`<g ${tr}>${w[2]()}</g>`);if(w[3])mid.push(`<g ${tr}>${w[3]()}</g>`)}
   if(r.tnf>0&&TNF[r.tnf-1]){const o=TNF[r.tnf-1];mid.push(`<g ${accT(r,"tnf")}${shn(o[1])}>${o[2]()}</g>`)}
   if(facialName(r)==="stubble"&&r.gen!==1)mid.push(avStubble(colorOf(r,"facialHairColor")));
   if(r.gls>0&&GLS[r.gls-1]){const o=GLS[r.gls-1];front.push(`<g ${accT(r,"gls")}${shn(o[1])}>${o[2]()}</g>`)}
   if(r.hat>0&&HATSVG[r.hat-1])front.push(`<g${shn(HATR[r.hat-1])}><g ${accT(r,"hat")}>${HATSVG[r.hat-1]()}</g></g>`);
   else if(r.hac>0&&HAC[r.hac-1]){const o=HAC[r.hac-1];front.push(`<g ${accT(r,"hac")}${shn(o[1])}>${o[2]()}</g>`)}
-  if(r.obj>0&&OBJ[r.obj-1])front.push(`<g ${accT(r,"obj")}>${fxObj(OBJ[r.obj-1],dbSkin(r))}</g>`);
+  if(!lite&&r.obj>0&&OBJ[r.obj-1])front.push(`<g ${accT(r,"obj")}>${fxObj(OBJ[r.obj-1],dbSkin(r))}</g>`);
   return {back:back.join(""),mid:mid.join(""),front:front.join("")+top.join("")}}
 function avFrame(s,w,vb){const p=vb.split(" ").map(Number),h=Math.round(w*p[3]/p[2]);return s.replace(/^<svg[^>]*>/,m=>m.replace(/viewBox="[^"]*"/,'viewBox="'+vb+'"').replace(/width="[^"]*"/,'width="'+w+'"').replace(/height="[^"]*"/,'height="'+h+'"'))}
-function avSVG(a,px,opt){a=a||{};if(!window.DB)return "";const r=avResolve(a),vb=(opt&&opt.vb)||AV_VB,key=JSON.stringify([r,vb,px,accSig(r)]);if(DBC[key])return DBC[key];
+function avSVG(a,px,opt){a=a||{};if(!window.DB)return "";const r=avResolve(a),vb=(opt&&opt.vb)||AV_VB,lite=!!(opt&&opt.lite),key=JSON.stringify([r,vb,px,accSig(r),lite]);if(DBC[key])return DBC[key];
   let s;try{s=window.DB.createAvatar(window.DB.styles[AVST],Object.assign({size:px},dbOpts(r))).toString()}catch(e){return ""}
-  const L=avLayers(r);s=avFrame(s,px,vb);
+  const L=avLayers(r,lite);s=avFrame(s,px,vb);
   s=s.replace(/^<svg[^>]*>/,m=>m+L.back);
   s=s.replace('<g transform="translate(78 134)">',()=>(L.mid?`<g transform="translate(-8)">${L.mid}</g>`:"")+'<g transform="translate(78 134)">');
   s=s.replace(/<\/svg>\s*$/,()=>L.front+"</svg>");
@@ -827,8 +831,8 @@ function giftDraw(){const un=lockables().filter(x=>!isOwned(x[0],x[1]));if(!un.l
 function giftCheck(){if(!window.DB||isAdmin()||document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
   avGrandfather();S.unl=S.unl||[];S.lgd=t;const g=giftDraw();if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
   S.unl.push(ownKey(g[0],g[1]));save();giftShow(g)}
-function giftShow(g){const[n,v,r]=g,R=RAR[r],lk=lockables(),mine=lk.filter(l=>isOwned(l[0],l[1])).length,a=avGet();avPut(a,n,v);const d=document.createElement("div");d.id="gift";
-  d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">🎁 Cadeau du jour · 每日礼物</div><div class="gav shiny">${avDone(a)?avSVG(a,160):"🎁"}</div><div class="gr">${R[0]}</div><div class="gn">${itemName(n,v)}</div><div class="gc">Collection : ${mine}/${lk.length} · 收藏</div><div class="ga"><button onclick="giftEquip('${n}',${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
+function giftShow(g,title){const[n,v,r]=g,R=RAR[r],lk=lockables(),mine=lk.filter(l=>isOwned(l[0],l[1])).length,a=avGet();avPut(a,n,v);const d=document.createElement("div");d.id="gift";
+  d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">${title||"🎁 Cadeau du jour · 每日礼物"}</div><div class="gav shiny">${avDone(a)?avSVG(a,160):"🎁"}</div><div class="gr">${R[0]}</div><div class="gn">${itemName(n,v)}</div><div class="gc">Collection : ${mine}/${lk.length} · 收藏</div><div class="ga"><button onclick="giftEquip('${n}',${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
   document.body.appendChild(d);loc(d);fanfare();burst(innerWidth/2,innerHeight/2,r==="e"?120:r==="s"?80:50);if(navigator.vibrate)try{navigator.vibrate(r==="e"?[60,40,60,40,120]:[60])}catch(e){}}
 function giftClose(){const d=document.getElementById("gift");if(d)d.remove()}
 function giftEquip(n,v){const a=avGet(),m=avPut(a,n,v);S.av=a;save();giftClose();head();if(cur)cur();toast("✨ Équipé ! · 已穿上"+(m?" — "+m:""))}
@@ -1055,7 +1059,7 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
     else if(pos===0)coach="👑 Tu es n°1"+(shown[1]?" ! Ton avance : "+(kv-key(shown[1]))+" pts sur "+escH(shown[1].name)+". · 你是第1名！领先 "+(kv-key(shown[1]))+" 分。":" ! · 你是第1名！");
     else{const nx=shown[pos-1],gap=key(nx)-kv+1;coach="🔥 Plus que "+gap+" pt(s) pour dépasser "+escH(nx.name)+" (n°"+pos+") ! · 再得 "+gap+" 分即可超过 "+escH(nx.name)+"（第"+pos+"名）！"}
     coach=`<div class="coach">${coach}<div class="nav" style="margin:8px 0 0;justify-content:flex-start"><button onclick="goNext()">▶ Gagner des points · 去赢分</button></div></div>`}
-  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${key(u)>0||!month?medal(i):"·"}</div><div class="lb-av">${avHtml(u,38)}</div><div class="lb-nm">${escH(u.name)}${titleOf(u)?` <small class="ttl">${titleOf(u)}</small>`:""}${u.me?" <small>(toi · 你)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub">${u.motto?`<i>« ${escH(u.motto)} »</i><br>`:""}<span>🏁 ${u.ch} chapitre(s) validé(s) · ${u.ch}章</span> &nbsp; <span>🔥 ${u.streak} j · ${u.streak}天</span></div></div><div class="lb-xp">🏆 ${key(u)}<small> pts · 分</small></div></div>`).join("");
+  const rows=shown.map((u,i)=>`<div class="lb${u.me?" me":""}"><div class="lb-n">${key(u)>0||!month?medal(i):"·"}</div><div class="lb-av">${avHtml(u,58)}</div><div class="lb-nm">${escH(u.name)}${titleOf(u)?` <small class="ttl">${titleOf(u)}</small>`:""}${u.me?" <small>(toi · 你)</small>":""}${u.cls?` <small style="color:var(--mut)">🏫 ${escH(cn(u.cls))}</small>`:""}<div class="lb-sub">${u.motto?`<i>« ${escH(u.motto)} »</i><br>`:""}<span>🏁 ${u.ch} chapitre(s) validé(s) · ${u.ch}章</span> &nbsp; <span>🔥 ${u.streak} j · ${u.streak}天</span></div></div><div class="lb-xp">🏆 ${key(u)}<small> pts · 分</small></div></div>`).join("");
   $.innerHTML=`<div class="hm"><div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap">${H}<small style="color:var(--mut)">${shown.length} participant${shown.length>1?"s":""} · ${shown.length} 位参与者</small></div>${prize}${coach}${podium}<div style="display:flex;gap:6px;flex-wrap:wrap">${tabs}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${chips}</div>${info}`+
     (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+how+`</div>`}
 try{speechSynthesis.getVoices()}catch(e){}
