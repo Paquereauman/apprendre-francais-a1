@@ -18,6 +18,14 @@ Menu au choix : Français, 中文 ou Français + 中文 (bouton 🌐).
 ## Administration (🛡️ Admin)
 Élèves (résultat du quiz de chaque chapitre, code de récupération, changement de classe, admins), Chapitres, **Mois** (gagnants), Classes (vacances en pause, date de fin).
 
+## Personnage (avatar)
+- Éditeur **par emplacements** (Moi, Cheveux, Visage, Barbe, Lunettes, Tête, Tenue, Main, Dos, Aura). Origine et sexe d'abord ; tout est libre sauf les **accessoires**, à débloquer avec le **cadeau du jour** (commun, rare, super rare, épique). Un administrateur a tout débloqué.
+- **Empilement des couches** (du fond vers l'avant) : aura · ailes/cape · corps (DiceBear) · tenue fantaisie et barbe de 2 jours (insérées juste avant la bouche : sous le visage, la barbe et les cheveux) · lunettes fantaisie · chapeau **ou** accessoire de cheveux · objet en main · effets devant. Les exclusivités (une seule chose par emplacement) sont dans `avPut()` / `avResolve()`.
+- Positions des accessoires : **Atelier admin** (réglage, modifications en masse), enregistrées pour tous par le serveur (`?accpos=1`). Nouveau chapeau : dessiner son bord inférieur vers y≈90 (repère 280) pour profiter du réglage par défaut.
+
+## Versions
+Historique détaillé dans [`CHANGELOG.md`](CHANGELOG.md). Chaque version est une étiquette Git (`v1.0` … ) et une Release GitHub ; rien n'est jamais réécrit (`git checkout v5.1` pour relire une ancienne version).
+
 ## Fichiers
 - `index.html` : l'application ; `data-fr.js`, `data-fr2.js`, `data-fr3.js` : vocabulaire, chapitres, sous-catégories et aides ; `audio-fr/` : sons ; `img-fr/` : affiches.
 - `gen-audio-fr.py` : génère les sons (edge-tts). `export-vocab.js` : génère `server/vocab-fr.json` (**à relancer et à déployer après toute modification du vocabulaire**, le serveur s'en sert pour corriger les quiz).
