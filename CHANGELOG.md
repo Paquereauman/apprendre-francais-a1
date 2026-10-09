@@ -14,6 +14,11 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.6 — 2026-10-09 — Raretés selon l'origine
+- Cadeau du jour : 88 % commun, 11 % rare, 1 % super rare.
+- Quêtes : surtout rare (70 %), 22 % commun, 8 % super rare.
+- Épique : réservé au gagnant du mois (une fois par mois).
+
 ## v6.5 — 2026-10-09 — Quiz : plus d'emoji dans les réponses
 - Les choix de réponse des quiz n'affichent plus l'emoji du mot (il donnait la réponse) ; l'emoji reste dans la question.
 

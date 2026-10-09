@@ -290,7 +290,7 @@ const QUESTS=[["a",15,"Réussir 15 bonnes réponses · 答对15题","⚔️","#e
 function dq(){if(!S.dq||S.dq.d!==tdy())S.dq={d:tdy(),a:0,w:0,q:0,done:{}};return S.dq}
 function dqAdd(k,n){const d=dq();d[k]=(d[k]||0)+(n||1);QUESTS.forEach(([key,goal,lab,ic])=>{if(key===k&&d[k]>=goal&&!d.done[key]){d.done[key]=1;setTimeout(()=>questReward(ic),400)}});save()}
 function questReward(ic){if(typeof giftDraw!=="function"||!window.DB||isAdmin()){celebrate("🎉 Quête réussie · 任务完成 : "+ic);return}
-  avGrandfather();S.unl=S.unl||[];const g=giftDraw();if(!g){celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20);return}
+  avGrandfather();S.unl=S.unl||[];const g=giftDraw("quest");if(!g){celebrate("🎉 Quête réussie · 任务完成 : "+ic+" +20 XP");addXp(20);return}
   S.unl.push(ownKey(g[0],g[1]));save();giftShow(g,"🎯 Quête réussie · 任务完成")}
 function questHtml(){const d=dq(),all=QUESTS.every(q=>d.done[q[0]]);return `<div class="hm-card quest"><div class="hm-lab">📜 Quêtes du jour · 今日任务 ${all?"— 🏆 全部完成 !":""}</div>${QUESTS.map(([k,g,lab,ic,co])=>{const v=Math.min(g,d[k]||0);return `<div class="qrow" style="--qc:${co}"><span class="qi">${d.done[k]?"✅":ic}</span><div class="qm"><div class="qt"><span>${lab}</span><span class="qv">${v}/${g}</span></div><div class="qb"><i style="width:${v/g*100}%"></i></div></div><span class="qx">🎁 objet</span></div>`}).join("")}</div>`}
 const stars=p=>p>=90?"⭐⭐⭐":p>=80?"⭐⭐☆":p>=50?"⭐☆☆":"☆☆☆";
@@ -857,8 +857,10 @@ function lockables(){const L=[];HATS.forEach((_,j)=>L.push(["hat",j+1,HATR[j]]))
   avEN("accessories").forEach((nm,j)=>{if(ACCR[nm])L.push(["acc",j+1,ACCR[nm]])});TNF.forEach((x,j)=>L.push(["tnf",j+1,x[1]]));avEN("clothing").forEach((nm,j)=>{if(CLR[nm])L.push(["clo",j,CLR[nm]])});
   OBJ.forEach((x,j)=>L.push(["obj",j+1,x[2]]));WNG.forEach((x,j)=>L.push(["wng",j+1,x[1]]));AUR.forEach((x,j)=>L.push(["aur",j+1,x[1]]));return L}
 function itemName(n,v){switch(n){case "hat":return HATS[v-1]+" "+HATN[v-1];case "hac":return "🎀 "+HAC[v-1][0];case "gls":return "🕶️ "+GLS[v-1][0];case "tnf":return "🥋 "+TNF[v-1][0];case "obj":return OBJ[v-1][0]+" "+OBJ[v-1][1];case "wng":return "🪽 "+WNG[v-1][0];case "aur":return "✨ "+AUR[v-1][0];case "acc":return "👓 "+avNm("accessories",avEN("accessories")[v-1]);case "clo":return "👕 "+avNm("clothing",avEN("clothing")[v]);default:return n}}
-function giftDraw(){const un=lockables().filter(x=>!isOwned(x[0],x[1]));if(!un.length)return null;
-  const W={c:60,r:25,s:11,e:4},av=[...new Set(un.map(u=>u[2]))],tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
+/* Raretés selon l'origine : cadeau du jour = surtout commun (vert), un peu de rare (bleu), très peu de super rare ; quêtes = surtout rare (bleu) ; gagnant du mois = épique (1er) */
+const GW={day:{c:88,r:11,s:1,e:0},quest:{c:22,r:70,s:8,e:0},win:{c:0,r:0,s:0,e:1}};
+function giftDraw(kind){const un=lockables().filter(x=>!isOwned(x[0],x[1]));if(!un.length)return null;
+  let W=GW[kind||"day"],av=[...new Set(un.map(u=>u[2]))].filter(r=>W[r]>0);if(!av.length){if(kind==="win")return null;W={c:1,r:1,s:1,e:1};av=[...new Set(un.map(u=>u[2]))]}const tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
   const pool=un.filter(u=>u[2]===rr);return pool[Math.random()*pool.length|0]}
 function giftCheck(){if(!window.DB||isAdmin()||document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
   avGrandfather();S.unl=S.unl||[];S.lgd=t;const g=giftDraw();if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
@@ -1085,7 +1087,10 @@ function sideHtml(R){if(!R||R.app!=="fr")return `<div class="side-box" onclick="
   const me=pos>=0?`<span>🎯 n°${pos+1}/${all.length} · 第${pos+1}名</span>`:"";
   return `<div class="side-box" onclick="rankPage()"><div class="side-top"><b>🏆 Classement du mois · 本月排行</b><span class="side-compact">${me} <span>🎁 ${dl} j · ${dl}天</span></span></div>
   <div class="side-full"><div class="lb-sub" style="margin:2px 0 6px">🎁 Le 1er du mois gagne une petite surprise · 每月第一名有小惊喜 — ${dl} j · ${dl}天</div>${top||'<div class="lb-sub">Personne pour l\'instant · 暂无</div>'}<div class="lb-sub" style="margin-top:6px">${me}</div><div class="lb-leave" style="margin-top:6px">Voir tout · 查看全部 ›</div></div></div>`}
-async function fetchRank(){try{const r=await fetch(API+"?rank=1"+(PNAME?"&k="+CODE:"")+APPQ,{cache:"no-store"});if(r.ok)RKC=await r.json()}catch(e){}return RKC}
+async function fetchRank(){try{const r=await fetch(API+"?rank=1"+(PNAME?"&k="+CODE:"")+APPQ,{cache:"no-store"});if(r.ok){RKC=await r.json();monthPrize(RKC)}}catch(e){}return RKC}
+/* le gagnant du mois précédent reçoit un objet épique (une seule fois par mois) */
+function monthPrize(R){try{const w=R&&R.winner;if(!w||!PNAME||isAdmin()||S.wonYm===w.ym)return;const me=(R.list||[]).find(u=>u.me);if(!me||me.name!==w.name)return;
+  avGrandfather();S.unl=S.unl||[];S.wonYm=w.ym;const g=giftDraw("win")||giftDraw("quest");if(!g){save();return}S.unl.push(ownKey(g[0],g[1]));save();giftShow(g,"👑 Gagnant du mois ! · 本月冠军！")}catch(e){}}
 function monthList(R){const f=S.cls||"*";return (R&&R.list||[]).filter(u=>f==="*"||u.cls===f).slice().sort((a,b)=>b.m-a.m||(a.mt||9e15)-(b.mt||9e15)||b.pts-a.pts)}
 function myPos(){const l=monthList(RKC),i=l.findIndex(u=>u.me);return i>=0?{pos:i+1,n:l.length,m:l[i].m}:null}
 async function loadSide(){await fetchRank();const e=document.getElementById("side");if(e&&cur===home){e.innerHTML=sideHtml(RKC);loc(e)}}
