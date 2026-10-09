@@ -372,7 +372,7 @@ function phrases(){cur=phrases;cat=MODS.phr;crumb([["🏠 Parcours · 路径","h
 function revStart(){const d=dueItems().slice(0,15);if(!d.length){toast("✅ Rien à réviser · 没有需要复习的");return}cat=null;cur=null;Q={qs:d.map(({it,c})=>mkQ(it,c.items,typesFor()[Math.random()*5|0],c)),i:0,s:0,mode:"rev",nw:0};qShow()}
 function testStart(k){cat=null;cur=null;const qs=[];words().forEach(c=>shuffle(c.items).slice(0,k||1).forEach(it=>{const a=shuffle(typesFor());qs.push(mkQ(it,c.items,a[0],c),mkQ(it,c.items,a[1],c))}));
   Q={qs:[...shuffle(qs),mkPhrase("z"),mkPhrase("z"),mkPhrase("o"),mkPhrase("o")],i:0,s:0,mode:"test",nw:0};qShow()}
-const lab=(q,x)=>q.t==="a"||q.t==="c"?`${x[4]} ${x[2]}<small>${x[3]}</small>`:q.t==="b"||q.t==="d"?`${x[4]} ${x[0]}<small>/${x[1]}/</small>`:x;
+const lab=(q,x)=>q.t==="a"||q.t==="c"?`${x[2]}<small>${x[3]}</small>`:q.t==="b"||q.t==="d"?`${x[0]}<small>/${x[1]}/</small>`:x;
 function qShow(){if(Q.i>=Q.qs.length)return qEnd();if(!document.body.classList.contains("inquiz")){document.body.classList.add("inquiz");try{history.pushState({q:1},"")}catch(e){}}head();Q.lock=0;clearTimeout(Q.tm);const q=Q.qs[Q.i],t=q.t,it=q.it;let p="",o="";
   const spk=(Q.srv&&!q.say)?"":`<button class="speak" onclick="say(Q.qs[Q.i].say)">🔊 Écouter · 听</button>`;
   if(t==="a")p=`<div class="emo">${it[4]}</div><div class="fw">${it[0]}</div><div class="ipa">/${it[1]}/</div>${spk}<p>Que signifie ce mot ? · 这个词是什么意思？</p>`;

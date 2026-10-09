@@ -14,6 +14,9 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.5 — 2026-10-09 — Quiz : plus d'emoji dans les réponses
+- Les choix de réponse des quiz n'affichent plus l'emoji du mot (il donnait la réponse) ; l'emoji reste dans la question.
+
 ## v6.4 — 2026-10-09 — Inventaire, coupe Mao, retraits
 - **Page « Mon inventaire »** (Profil et éditeur) : toute la collection par catégorie, compteurs, filtres par rareté, objets non gagnés grisés 🔒, clic pour porter un objet possédé.
 - **Coupe Mao** rangée dans Cheveux → Coupes spéciales (remplace la coiffure de base).
