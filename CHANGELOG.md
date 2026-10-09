@@ -14,6 +14,10 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.2 — 2026-10-09 — Tenues alignées, podium corrigé
+- **Tenues fantaisie** : toutes épousent exactement la silhouette du buste (épaules, côtés, col) ; plus de décalage ni de vêtement de base qui dépasse.
+- **Podium** : médaille et numéro restent dans la marche (plus de débordement en bas).
+
 ## v6.1 — 2026-10-09 — Quêtes en objets, avatars animés dans le classement
 - **Les quêtes du jour récompensent par un objet à collectionner** (même rareté que le cadeau du jour) au lieu de +20 XP ; +20 XP seulement si tout est déjà débloqué.
 - **Classement** : avatars animés (aura, ailes, objet en main) dans un cadre complet de 58 px qui ne déborde plus ; les très petites icônes (en-tête, barre du bas) restent sans effets.
