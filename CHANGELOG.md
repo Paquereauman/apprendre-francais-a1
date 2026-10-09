@@ -14,6 +14,11 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.4 — 2026-10-09 — Inventaire, coupe Mao, retraits
+- **Page « Mon inventaire »** (Profil et éditeur) : toute la collection par catégorie, compteurs, filtres par rareté, objets non gagnés grisés 🔒, clic pour porter un objet possédé.
+- **Coupe Mao** rangée dans Cheveux → Coupes spéciales (remplace la coiffure de base).
+- Cornes de diable remplacées par une **couronne de laurier** ; bouche « Malade » retirée.
+
 ## v6.3 — 2026-10-09 — Pleine page, atelier facile, nouveaux objets
 - **Profil et éditeur du personnage en pleine page** ; grand avatar dans le profil.
 - **Atelier admin** pleine page : aperçu agrandi, glisser pour déplacer, molette pour la taille, flèches du clavier pour affiner.

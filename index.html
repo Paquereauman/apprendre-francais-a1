@@ -201,6 +201,13 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .atlprev{touch-action:none;cursor:grab;height:min(300px,38vh)}.atlprev:active{cursor:grabbing}.atlhelp{font-size:.72rem;color:var(--mut);font-weight:700;margin:4px 0}
 .atlgrid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
 @media(min-width:900px){#atlbody{display:grid;grid-template-columns:minmax(380px,46%) minmax(0,1fr);gap:18px;overflow:hidden}.atlL,.atlR{overflow-y:auto;min-height:0;padding:0 4px 10px}.atlprev{position:relative;height:min(480px,52vh)}.atlgrid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}}
+
+/* inventaire */
+#inv{padding:0}#inv .box.invbox{max-width:none;width:100%;height:100%;max-height:100%;border-radius:0;box-shadow:none;display:flex;flex-direction:column;padding:10px max(12px,calc((100% - 1000px)/2))}
+#invbody{flex:1;min-height:0;overflow-y:auto;padding-bottom:16px}
+.invtop{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0 8px}.invbar{flex:1 1 200px;height:16px;border-radius:9px;background:#dfe6f3;overflow:hidden}.invbar i{display:block;height:100%;background:linear-gradient(90deg,#2bb673,#ffd23f)}
+.invch{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 8px}.invch button{border:2px solid var(--rc,#cfd9ee);background:#fff;border-radius:999px;padding:6px 12px;font-weight:800;font-size:.78rem;cursor:pointer;min-height:36px}.invch button.on{background:var(--rc,var(--blue));color:#fff;border-color:var(--rc,var(--blue))}
+.invbox .tg{grid-template-columns:repeat(auto-fill,minmax(112px,1fr))}.tl.nw::before{content:"NEW";position:absolute;left:4px;top:4px;z-index:2;background:#e63946;color:#fff;font-size:.55rem;font-weight:800;border-radius:6px;padding:1px 4px}
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette <small style="font-weight:600;opacity:.85;margin-left:6px">我说法棍</small></h1><span id="xp"></span><span id="streak"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
@@ -210,16 +217,17 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <div class="modal" id="me"><div class="box"><h3>🙂 Mon profil · 我的资料</h3><div id="mlogin" class="evd"></div>
 <div class="evd" style="margin-top:6px">Ma classe · 我的班级</div><select id="mcls" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div class="evd">Tu peux en changer à tout moment. · 你可以随时更换班级。</div>
 <div style="text-align:center" id="mprev">🙂</div>
-<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="nav" style="margin:6px 0"><button onclick="avOpen()">🧑 Créer mon visage (cheveux, lunettes, yeux…) · 设计我的头像</button></div><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
+<input id="nk" placeholder="Pseudo / 昵称" maxlength="20"><div class="nav" style="margin:6px 0"><button onclick="avOpen()">🧑 Créer mon visage (cheveux, lunettes, yeux…) · 设计我的头像</button></div><div class="nav" style="margin:6px 0"><button style="background:#7b4fd1" onclick="invOpen()">🎒 Mon inventaire · 我的收藏</button></div><div class="evd">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40"><div class="evd">Titre (se débloque avec tes chapitres validés) · 称号（通过章节后解锁）</div><select id="tsel" style="width:100%;padding:9px;border-radius:10px;font-size:1rem;margin:4px 0"></select><div id="mmsg" class="evd"></div>
 <div class="nav"><button onclick="meSave()">Enregistrer · 保存</button><button class="alt" onclick="meClose()">Fermer · 关闭</button></div>
 <div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
 <input id="rn" placeholder="Nom de compte / 用户名" autocomplete="username"><input id="rc" placeholder="Code (xxxx-xxxx-xxxx) / 找回代码" autocomplete="off"><input id="rp" type="password" placeholder="Nouveau mot de passe (6 min.) / 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
 <div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
 <div class="modal" id="avp" onclick="if(event.target===this)avClose()"><div class="box avbox">
- <div class="avtop"><div id="avprev"></div><div class="avtools"><button class="alt" onclick="avRand()" aria-label="Au hasard"><b>🎲</b><span>Hasard · 随机</span></button><button class="alt" onclick="avUndo()" aria-label="Annuler"><b>↩️</b><span>Annuler · 撤销</span></button><button class="alt" onclick="avReset()" aria-label="Réinitialiser"><b>🔄</b><span>Reset · 重置</span></button><button class="alt" onclick="avNone()" aria-label="Utiliser un emoji"><b>🙂</b><span>Emoji · 表情</span></button><button class="alt" id="atlbtn" style="display:none;grid-column:1/-1;background:#2f5fa8" onclick="atlOpen()"><b>🛠️</b><span>Atelier admin · 工坊</span></button></div></div>
+ <div class="avtop"><div id="avprev"></div><div class="avtools"><button class="alt" onclick="avRand()" aria-label="Au hasard"><b>🎲</b><span>Hasard · 随机</span></button><button class="alt" onclick="avUndo()" aria-label="Annuler"><b>↩️</b><span>Annuler · 撤销</span></button><button class="alt" onclick="avReset()" aria-label="Réinitialiser"><b>🔄</b><span>Reset · 重置</span></button><button class="alt" onclick="avNone()" aria-label="Utiliser un emoji"><b>🙂</b><span>Emoji · 表情</span></button><button class="alt" onclick="invOpen()" style="grid-column:1/-1">🎒 Mon inventaire · 我的收藏</button><button class="alt" id="atlbtn" style="display:none;grid-column:1/-1;background:#2f5fa8" onclick="atlOpen()"><b>🛠️</b><span>Atelier admin · 工坊</span></button></div></div>
  <div id="avslots" class="slots"></div><div id="avrows"></div>
  <div class="avbar"><button class="alt" onclick="avNav(-1)" aria-label="Précédent">◀</button><button class="ok" onclick="avClose()">✔ Terminer · 完成</button><button class="alt" onclick="avNav(1)" aria-label="Suivant">▶</button></div></div></div>
+<div class="modal" id="inv" onclick="if(event.target===this)invClose()"><div class="box invbox"><div class="atlhead"><b>🎒 Mon inventaire · 我的收藏</b><button onclick="invClose()" aria-label="Fermer">✕</button></div><div id="invbody"></div></div></div>
 <div class="modal" id="atl"><div class="box atlbox"><div class="atlhead"><b>🛠️ Atelier admin · 管理员工坊</b><button onclick="atlClose()" aria-label="Fermer">✕</button></div><div id="atlbody"></div><div class="avbar"><button class="alt" onclick="atlStep(-1)" aria-label="Précédent">◀</button><button class="alt" style="width:auto;padding:0 12px" onclick="atlClose()">✕ Fermer</button><button class="ok" onclick="accSave()">💾 Enregistrer · 保存</button><button class="alt" onclick="atlStep(1)" aria-label="Suivant">▶</button></div></div></div>
 <div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
 <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
@@ -731,7 +739,7 @@ const HAC=[
  ["Oreilles de lapin · 兔耳","r",()=>`<g><ellipse cx="112" cy="14" rx="15" ry="46" fill="#fff" stroke="#d6d6d6" stroke-width="3" transform="rotate(-10 112 60)"/><ellipse cx="168" cy="14" rx="15" ry="46" fill="#fff" stroke="#d6d6d6" stroke-width="3" transform="rotate(10 168 60)"/><ellipse cx="112" cy="18" rx="7" ry="32" fill="#ffb7c5" transform="rotate(-10 112 60)"/><ellipse cx="168" cy="18" rx="7" ry="32" fill="#ffb7c5" transform="rotate(10 168 60)"/></g>`],
  ["Couronne de fleurs · 花冠","s",()=>`<g>${[[88,96],[100,72],[118,58],[140,52],[162,58],[180,72],[192,96]].map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="11" fill="${["#ff8fab","#ffd23f","#9be564","#b388ff"][i%4]}" stroke="#fff" stroke-width="3"/>`).join("")}</g>`],
  ["Bandana pirate · 海盗头巾","s",()=>`<g><path d="M82 96C84 40 196 40 198 96Q140 80 82 96Z" fill="#c1121f"/><g fill="#fff">${[[110,70],[140,62],[170,70],[125,84],[155,84]].map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="3.2"/>`).join("")}</g><path d="M198 92L230 80L226 106Z" fill="#c1121f"/></g>`],
- ["Cornes de diable · 恶魔角","s",()=>`<g><path d="M96 70C80 40 92 22 104 18C100 36 112 52 124 60Z M184 70C200 40 188 22 176 18C180 36 168 52 156 60Z" fill="#e63946" stroke="#7a0a12" stroke-width="3"/></g>`],
+ ["Couronne de laurier · 桂冠","s",()=>`<g>${[0,1,2,3,4,5,6].map(k=>{const t=(190+k*13)*Math.PI/180,x=140+62*Math.cos(t),y=104+62*Math.sin(t),rot=(190+k*13)+90,f=(cx,r)=>`<ellipse cx="${cx.toFixed(1)}" cy="${y.toFixed(1)}" rx="6" ry="12" transform="rotate(${r.toFixed(0)} ${cx.toFixed(1)} ${y.toFixed(1)})" fill="#3f9d4a" stroke="#256b2e" stroke-width="2"/>`;return f(x,rot-20)+f(280-x,-(rot-20))}).join("")}</g>`],
  ["Auréole · 光环","e",()=>`<g><g><animateTransform attributeName="transform" type="translate" values="0 0;0 -8;0 0" dur="2s" repeatCount="indefinite"/><ellipse cx="140" cy="26" rx="46" ry="12" fill="none" stroke="#ffd23f" stroke-width="8"/><ellipse cx="140" cy="26" rx="46" ry="12" fill="none" stroke="#fff6a8" stroke-width="3" opacity=".9"/></g></g>`],
  ["Coupe Mao · 毛式发型","r",()=>`<g><path d="M84 104C76 44 108 22 142 22C178 22 204 44 196 104C192 80 182 62 168 54C150 44 112 46 98 64C90 74 86 88 84 104Z" fill="#17171f" stroke="#000" stroke-opacity=".35" stroke-width="2" stroke-linejoin="round"/><path d="M104 56C128 42 160 44 180 60" fill="none" stroke="#3a3a48" stroke-width="3" stroke-linecap="round"/></g>`]
 ];
@@ -785,7 +793,7 @@ function avStart(){const a={sty:0},g=n=>avEN(n);
   a[AVK.facialHair]=0;a[AVK.facialHairColor]=AVHAIR[2];a[AVK.accessories]=0;a[AVK.clothing]=g("clothing").indexOf("hoodie");a[AVK.clothingGraphic]=0;a[AVK.clothesColor]=AVCLO[0];a[AVK.skinColor]=SKINS[1];
   a.hat=0;a.hac=0;a.gls=0;a.tnf=0;a.obj=0;a.wng=0;a.aur=0;return a}
 /* RÈGLES — appliquées à l'affichage ; les setters (avPut) les respectent déjà, ceci est la ceinture de sécurité */
-function avResolve(a){const r=Object.assign({},a);r.gen=r.gen===1?1:0;["hat","hac","gls","tnf","obj","wng","aur"].forEach(k=>{r[k]=r[k]|0});
+function avResolve(a){const r=Object.assign({},a);if(avEN("mouth")[r[AVK.mouth]]==="vomit")r[AVK.mouth]=avEN("mouth").indexOf("smile");r.gen=r.gen===1?1:0;["hat","hac","gls","tnf","obj","wng","aur"].forEach(k=>{r[k]=r[k]|0});
   if(r.hat>0)r.hac=0;                           /* une seule chose sur la tête */
   if(r.gls>0)r[AVK.accessories]=0;              /* une seule paire de lunettes */
   if(r.gen===1)r[AVK.facialHair]=0;             /* pas de barbe pour les filles */
@@ -844,6 +852,7 @@ function avGrandfather(){const a=S.av;if(!a||isAdmin()||!window.DB)return;S.unl=
   [["hat",a.hat|0],["hac",a.hac|0],["gls",a.gls|0],["tnf",a.tnf|0],["obj",a.obj|0],["wng",a.wng|0],["aur",a.aur|0],["acc",a[AVK.accessories]|0]].forEach(([n,v])=>{if(v>0&&rarOf(n,v)&&!S.unl.includes(ownKey(n,v))){S.unl.push(ownKey(n,v));ch=true}});
   const ci=a[AVK.clothing]|0;if(!(a.tnf>0)&&rarOf("clo",ci)&&!S.unl.includes(ownKey("clo",ci))){S.unl.push(ownKey("clo",ci));ch=true}
   if(ch)save()}
+const MAOH=()=>HAC.findIndex(x=>x[0].indexOf("Coupe Mao")===0)+1;
 function lockables(){const L=[];HATS.forEach((_,j)=>L.push(["hat",j+1,HATR[j]]));HAC.forEach((x,j)=>L.push(["hac",j+1,x[1]]));GLS.forEach((x,j)=>L.push(["gls",j+1,x[1]]));
   avEN("accessories").forEach((nm,j)=>{if(ACCR[nm])L.push(["acc",j+1,ACCR[nm]])});TNF.forEach((x,j)=>L.push(["tnf",j+1,x[1]]));avEN("clothing").forEach((nm,j)=>{if(CLR[nm])L.push(["clo",j,CLR[nm]])});
   OBJ.forEach((x,j)=>L.push(["obj",j+1,x[2]]));WNG.forEach((x,j)=>L.push(["wng",j+1,x[1]]));AUR.forEach((x,j)=>L.push(["aur",j+1,x[1]]));return L}
@@ -863,14 +872,14 @@ function giftEquip(n,v){const a=avGet(),m=avPut(a,n,v);S.av=a;save();giftClose()
 /* ======================== modifications (une seule porte d'entrée : avPut) ======================== */
 let AVH=[],AVT="me",AVF={hide:false};
 function avPut(a,n,v){let msg="";switch(n){
-  case "top":case "facialHair":case "eyes":case "eyebrows":case "mouth":a[AVK[n]]=v;break;
+  case "top":case "facialHair":case "eyes":case "eyebrows":case "mouth":a[AVK[n]]=v;if(n==="top"&&v>0&&MAOH()&&a.hac===MAOH()){a.hac=0;msg="💈 Coupe Mao retirée · 已取下毛式发型"}break;
   case "gfx":a[AVK.clothingGraphic]=v;break;
   case "acc":a[AVK.accessories]=v;if(v>0&&a.gls>0){a.gls=0;msg="🕶️ Lunettes fantaisie retirées · 已取下花式眼镜"}break;
   case "gls":a.gls=v;if(v>0&&a[AVK.accessories]>0){a[AVK.accessories]=0;msg="👓 Lunettes de base retirées · 已取下普通眼镜"}break;
   case "gnone":a.gls=0;a[AVK.accessories]=0;break;
   case "clo":a[AVK.clothing]=v;if(a.tnf>0){a.tnf=0;msg="🥋 Tenue fantaisie retirée · 已取下花式服装"}break;
   case "hat":a.hat=v;if(v>0&&a.hac>0){a.hac=0;msg="🎀 Accessoire de cheveux retiré · 已取下发饰"}break;
-  case "hac":a.hac=v;if(v>0&&a.hat>0){a.hat=0;msg="🎩 Chapeau retiré · 已取下帽子"}break;
+  case "hac":a.hac=v;if(v>0&&v===MAOH())a[AVK.top]=0;if(v>0&&a.hat>0){a.hat=0;msg="🎩 Chapeau retiré · 已取下帽子"}break;
   case "hnone":a.hat=0;a.hac=0;break;
   default:a[n]=v}return msg}
 function avPick(n,v){if(!isOwned(n,v))return avLocked();const a=avGet();AVH.push(JSON.stringify(S.av||{}));const m=avPut(a,n,v);S.av=a;save();if(m)toast(m);avDraw()}
@@ -922,9 +931,10 @@ AVPANEL.me=a=>{const done=avDone(a),eth=ETHS.map((e,i)=>avT({label:e[0],svg:avSV
 AVPANEL.hair=a=>{const g=genOf(a),en=avEN("top");let first=true,h="";
   TOP_GROUPS.forEach(([t,names])=>{const items=names.filter(n=>en.includes(n)&&genOk(n,g));if(!items.length)return;let inner=first?avItem(a,"top",0,"Chauve · 光头",{[AVK.top]:0},"hair"):"";first=false;
     inner+=items.map(n=>avItem(a,"top",en.indexOf(n)+1,AVNM.top[n]||n,{[AVK.top]:en.indexOf(n)+1},"hair")).join("");h+=avSec(t,inner)});
+  if(MAOH()){const M=MAOH();h+=avSec("Coupes spéciales · 特色发型",avItem(a,"hac",M,HAC[M-1][0],{hac:M,hat:0,[AVK.top]:0},"hair"))}
   const note=a.hat>0?`<div class="hint sm">🎩 Sous un chapeau, une coiffure volumineuse s'aplatit · 戴帽子时，蓬松发型会压平</div>`:"";
   return note+h+avColors("Couleur des cheveux · 发色","hairColor",AVHAIR,a)};
-AVPANEL.face=a=>{const sec=(t,n)=>avSec(t,avEN(n).map((x,j)=>avItem(a,n,j,AVNM[n][x]||x,{[AVK[n]]:j},"face")).join(""));return sec("Yeux · 眼睛","eyes")+sec("Sourcils · 眉毛","eyebrows")+sec("Bouche · 嘴巴","mouth")};
+AVPANEL.face=a=>{const sec=(t,n)=>avSec(t,avEN(n).map((x,j)=>x==="vomit"?"":avItem(a,n,j,AVNM[n][x]||x,{[AVK[n]]:j},"face")).join(""));return sec("Yeux · 眼睛","eyes")+sec("Sourcils · 眉毛","eyebrows")+sec("Bouche · 嘴巴","mouth")};
 AVPANEL.beard=a=>{const en=avEN("facialHair"),order=["stubble","beardLight","beardMedium","beardMajestic","moustacheFancy","moustacheMagnum"];
   const inner=avNone2(a,(a[AVK.facialHair]|0)===0,"avPick('facialHair',0)",{[AVK.facialHair]:0},"beard","Rasé · 刮净")+order.map(n=>avItem(a,"facialHair",en.indexOf(n)+1,AVNM.facialHair[n],{[AVK.facialHair]:en.indexOf(n)+1},"beard")).join("");
   return avSec("Barbe · 胡子",inner)+avColors("Couleur de la barbe · 胡须颜色","facialHairColor",AVHAIR,a)};
@@ -935,7 +945,7 @@ AVPANEL.glasses=a=>{const r=avResolve(a),en=avEN("accessories"),idx=n=>en.indexO
   const lk=[...["kurt","sunglasses","wayfarers","eyepatch"].map(n=>["acc",idx(n)]),...GLS.map((_,j)=>["gls",j+1])];
   return lockLine()+avSec("De base · 基础款",none+base,"wide")+avSec("Spéciales · 特别款",spec.join(""),"wide")+avSec("Fantaisie · 花式款",fancy.join(""),"wide",cntOf(lk))};
 AVPANEL.head=a=>{const r=avResolve(a),none=avNone2(a,!(r.hat>0)&&!(r.hac>0),"avPick('hnone',0)",{hat:0,hac:0},"head","Rien · 无");
-  const hats=HATS.map((e,j)=>avItem(a,"hat",j+1,e+" "+HATN[j],{hat:j+1},"head")).join(""),hacs=HAC.map((x,j)=>avItem(a,"hac",j+1,x[0],{hac:j+1,hat:0},"head")).join("");
+  const hats=HATS.map((e,j)=>avItem(a,"hat",j+1,e+" "+HATN[j],{hat:j+1},"head")).join(""),hacs=HAC.map((x,j)=>j+1===MAOH()?"":avItem(a,"hac",j+1,x[0],{hac:j+1,hat:0},"head")).join("");
   const lk=[...HATS.map((_,j)=>["hat",j+1]),...HAC.map((_,j)=>["hac",j+1])];
   return lockLine()+`<div class="hint sm">☝️ Une seule chose sur la tête : choisir l'une retire l'autre · 头上只能戴一样，选新的会取下旧的</div>`+avSec("Chapeaux · 帽子",none+hats,"wide",cntOf(lk.filter(x=>x[0]==="hat")))+avSec("Accessoires de cheveux · 发饰",hacs,"wide",cntOf(lk.filter(x=>x[0]==="hac")))};
 AVPANEL.outfit=a=>{const r=avResolve(a),en=avEN("clothing"),ix=n=>en.indexOf(n);
@@ -1014,6 +1024,22 @@ document.addEventListener("pointerup",()=>{if(d){d=null;atlDraw()}});
 document.addEventListener("wheel",e=>{if(!e.target.closest||!e.target.closest(".atlprev"))return;e.preventDefault();atlNudge("s",e.deltaY<0?.05:-.05)},{passive:false});
 document.addEventListener("keydown",e=>{if(!document.getElementById("atl").classList.contains("on")||/INPUT|SELECT|TEXTAREA/.test((e.target||{}).tagName||""))return;const m={ArrowLeft:["x",-1],ArrowRight:["x",1],ArrowUp:["y",-1],ArrowDown:["y",1]}[e.key];if(m){e.preventDefault();atlNudge(m[0],m[1]*(e.shiftKey?5:1))}else if(e.key==="PageDown"){atlStep(1)}else if(e.key==="PageUp"){atlStep(-1)}});
 })();
+
+/* ======================== inventaire : toute la collection ======================== */
+const INVC=[["hat","🎩 Chapeaux · 帽子","head"],["hac","🎀 Cheveux · 发饰","head"],["gls","🕶️ Lunettes fantaisie · 花式眼镜","glasses"],["acc","👓 Lunettes spéciales · 特别眼镜","glasses"],["tnf","🥋 Tenues fantaisie · 花式服装","outfit"],["clo","👕 Habits habillés · 礼服","outfit"],["wng","🪽 Dos · 背部","back"],["aur","✨ Auras · 光环","aura"],["obj","🥖 Objets · 道具","hand"]];
+let INVF={r:"",own:false};
+function invOpen(){INVF={r:"",own:false};const m=document.getElementById("inv");m.classList.add("on");invDraw()}
+function invClose(){document.getElementById("inv").classList.remove("on")}
+function invPick(n,v){if(!isOwned(n,v))return toast("🔒 Pas encore débloqué · 尚未解锁");invClose();const p=document.getElementById("avp");if(p&&p.classList.contains("on"))avClose();giftEquip(n,v)}
+function invDraw(){const L=lockables(),own=L.filter(x=>isOwned(x[0],x[1])).length,base=avDone(S.av)?avGet():avStart(),pct=Math.round(own/L.length*100);
+  const chip=(k,t,c)=>`<button class="${INVF.r===k?"on":""}" style="${c?"--rc:"+c:""}" onclick="INVF.r='${k}';invDraw()">${t}</button>`;
+  let h=`<div class="invtop"><b style="font-size:1.1rem">${own}/${L.length} 🔓 (${pct}%)</b><div class="invbar"><i style="width:${pct}%"></i></div></div>
+   <div class="invch">${chip("","Tout · 全部")}${Object.entries(RAR).map(([k,R])=>chip(k,R[0]+" "+L.filter(x=>x[2]===k&&isOwned(x[0],x[1])).length+"/"+L.filter(x=>x[2]===k).length,R[1])).join("")}<button class="${INVF.own?"on":""}" onclick="INVF.own=!INVF.own;invDraw()">✅ Que ce que j'ai · 只看已有</button></div>
+   <div class="hint hi">Touche un objet que tu possèdes pour le porter. Les objets grisés 🔒 se gagnent avec le cadeau du jour et les quêtes. · 点击已拥有的物品即可穿上；灰色 🔒 物品可通过每日礼物和任务获得。</div>`;
+  INVC.forEach(([n,t,crop])=>{let l=L.filter(x=>x[0]===n);if(!l.length)return;const cnt=cntOf(l);l=l.filter(x=>(!INVF.r||x[2]===INVF.r)&&(!INVF.own||isOwned(x[0],x[1])));if(!l.length)return;
+    h+=avSec(t,l.map(([nn,v,r])=>{const a=Object.assign({},base);["hat","hac","gls","tnf","obj","wng","aur"].forEach(k=>a[k]=0);a[AVK.accessories]=0;avPut(a,nn,v);const ok=isOwned(nn,v),nm=itemName(nn,v).split(" ").slice(1).join(" ");
+      return avT({svg:avSVG(a,120,{vb:AVCROP[crop]||AV_VB}),label:nm,rar:r,lk:!ok,act:`invPick('${nn}',${v})`})}).join(""),"",cnt)});
+  const b=document.getElementById("invbody");b.innerHTML=h;loc(b)}
 /* ---- classement (réservé aux comptes, inscription volontaire) ---- */
 const medal=i=>["🥇","🥈","🥉"][i]||String(i+1);
 const escH=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
