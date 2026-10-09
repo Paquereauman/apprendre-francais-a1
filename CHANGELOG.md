@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.3 — 2026-10-09 — Pleine page, atelier facile, nouveaux objets
+- **Profil et éditeur du personnage en pleine page** ; grand avatar dans le profil.
+- **Atelier admin** pleine page : aperçu agrandi, glisser pour déplacer, molette pour la taille, flèches du clavier pour affiner.
+- **Combinaison d'astronaute** : le cou passe dans le col (une partie du col derrière le cou).
+- **Nouveautés** : coupe Mao, costume col Mao, drapeau chinois (en main), petit livre rouge, badge du Parti.
+
 ## v6.2 — 2026-10-09 — Tenues alignées, podium corrigé
 - **Tenues fantaisie** : toutes épousent exactement la silhouette du buste (épaules, côtés, col) ; plus de décalage ni de vêtement de base qui dépasse.
 - **Podium** : médaille et numéro restent dans la marche (plus de débordement en bas).
