@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.8 — 2026-10-11 — Équipement façon RPG, raretés, NEW
+- Nouvelle vue **⚔️ Équipement** : personnage en grand, 9 emplacements, objets possédés par emplacement, port/retrait en un clic.
+- Raretés : cadeau du jour jamais super rare ; série de 7 jours = rare (2 % super rare) ; série de 30 jours = super rare ; podium du mois : 1er épique, 2e super rare, 3e super rare/rare, puis rare/commun.
+- Pastille **NEW** sur les objets gagnés jamais portés.
+- Test local : `?unlock=1` (uniquement sur localhost) débloque tout.
+
 ## v6.7 — 2026-10-11 — Quiz : pas de mots non vus
 - Les fausses réponses ne viennent plus que du chapitre courant et des précédents (plus de « mon / ma » dans le premier quiz).
 - `server/api.php` : même règle pour les quiz de fin de chapitre (à déployer sur le VPS).
