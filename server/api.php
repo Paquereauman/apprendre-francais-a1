@@ -348,7 +348,8 @@ function quiz_build($key) {
   foreach ($V["steps"] as $s) { if ((string)$s["key"] === $key) { $step = $s; } }
   if (!$step) { return null; }
   $units = []; $hasPhr = false; $all = [];
-  foreach ($V["units"] as $u) { foreach ($u["items"] as $x) { $all[] = $x; } }
+  /* distracteurs : seulement le vocabulaire déjà vu (ce chapitre et les précédents) */
+  foreach ($V["steps"] as $s) { foreach ($s["units"] as $uid) { if (isset($V["units"][$uid])) { foreach ($V["units"][$uid]["items"] as $x) { $all[] = $x; } } } if ($s === $step) { break; } }
   foreach ($step["units"] as $uid) { if ($uid === "m:phr") { $hasPhr = true; } elseif (isset($V["units"][$uid])) { $units[$uid] = $V["units"][$uid]["items"]; } }
   $nu = count($units); if ($nu === 0 && !$hasPhr) { return null; }
   $total = max(12, min(24, $nu * 6)); $nphr = ($hasPhr && count($V["phrases"]) > 0) ? 6 : 0; $nw = $total - $nphr;

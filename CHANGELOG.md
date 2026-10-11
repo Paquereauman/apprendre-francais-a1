@@ -14,6 +14,10 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.7 — 2026-10-11 — Quiz : pas de mots non vus
+- Les fausses réponses ne viennent plus que du chapitre courant et des précédents (plus de « mon / ma » dans le premier quiz).
+- `server/api.php` : même règle pour les quiz de fin de chapitre (à déployer sur le VPS).
+
 ## v6.6 — 2026-10-09 — Raretés selon l'origine
 - Cadeau du jour : 88 % commun, 11 % rare, 1 % super rare.
 - Quêtes : surtout rare (70 %), 22 % commun, 8 % super rare.

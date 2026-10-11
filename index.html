@@ -359,8 +359,10 @@ function cards(){cur=cards;crumb([["🏠 Parcours · 路径","home"],[cat.icon+"
 
 /* ---- questions ---- */
 const typesFor=mode=>mode==="listen"?["c","d"]:["a","b","c","d","p"];
+/* distracteurs de repli : seulement les chapitres déjà vus */
+function seenWords(c){const W=words(),i=W.findIndex(k=>c&&k.id===c.id);return i<0?W:W.slice(0,i+1)}
 function mkQ(it,pool,t,c){if(t==="p"&&(it[0].length>24||/[…?!(,]/.test(it[0])))t="b";if(t==="p")return{it,c,t,right:-1,say:it[0]};
-  let w=shuffle(pool.filter(x=>x[0]!==it[0]&&x[2]!==it[2]));if(w.length<3)w=w.concat(shuffle(words().flatMap(k=>k.items).filter(x=>x[0]!==it[0]&&x[2]!==it[2]&&!w.includes(x))));
+  let w=shuffle(pool.filter(x=>x[0]!==it[0]&&x[2]!==it[2]));if(w.length<3)w=w.concat(shuffle(seenWords(c).flatMap(k=>k.items).filter(x=>x[0]!==it[0]&&x[2]!==it[2]&&!w.includes(x))));
   const opts=shuffle([it,...w.slice(0,3)]);return{it,c,t,opts,right:opts.indexOf(it),say:it[0]}}
 function mkPhrase(t){const e=PH[Math.random()*PH.length|0],w=e[0].split("/");
   if(t==="o")return{t,w,full:w.join(" "),ipa:e[1],zh:e[2],pick:[],bank:shuffle(w.map((x,i)=>({x,i}))),right:-1,say:w.join(" ")};
