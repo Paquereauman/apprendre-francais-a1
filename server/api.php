@@ -7,6 +7,15 @@ header("Cache-Control: no-store");
 $app = preg_match("/^[a-z]{2,8}$/", $_GET["app"] ?? "") ? $_GET["app"] : "";
 $base = "/var/lib/chinois" . ($app ? "/$app" : "");
 if ($app && !is_dir("$base/bak")) { @mkdir("$base/bak", 0700, true); }
+/* anti-aspiration : au plus 240 requêtes par minute et par adresse IP (le salon interroge ~40 fois/min) */
+(function () {
+  $ip = $_SERVER["REMOTE_ADDR"] ?? "0"; $dir = "/var/lib/chinois/rl"; if (!is_dir($dir)) { @mkdir($dir, 0700, true); }
+  $f = "$dir/" . md5($ip) . ".json"; $now = time(); $win = intdiv($now, 60); $st = is_file($f) ? json_decode(@file_get_contents($f), true) : null;
+  if (!is_array($st) || ($st["w"] ?? 0) !== $win) { $st = ["w" => $win, "n" => 0]; }
+  $st["n"]++; @file_put_contents($f, json_encode($st), LOCK_EX);
+  if ($st["n"] > 240) { http_response_code(429); header("Retry-After: 60"); echo "{\"error\":\"rate\"}"; exit; }
+  if (mt_rand(1, 400) === 1) { foreach (glob("$dir/*.json") ?: [] as $o) { if ($now - filemtime($o) > 600) { @unlink($o); } } }
+})();
 $k = $_GET["k"] ?? "";
 if (isset($_GET["rank"])) { rank_main($k, $base, $app); exit; }
 if (isset($_GET["admin"])) { admin_main($k, $base, $app); exit; }
@@ -105,12 +114,13 @@ function rank_main($k, $base, $app) {
     list($mpts, $mts) = $qr ? month_pts($qr["hist"], $ym) : [0, 0];
     list($ppts, $pts2) = $qr ? month_pts($qr["hist"], $ymp) : [0, 0];
     $isme = ($id === $h); if ($isme) $me = true;
-    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "adm" => (in_array($id, $adminsR, true) && ($S["admshow"] ?? true) !== false), "emo" => clean_emo($S["emo"] ?? ""), "col" => max(0, min(9, (int)($S["col"] ?? 0))), "frm" => max(0, min(4, (int)($S["frm"] ?? 0))), "ttl" => title_ok((int)($S["ttl"] ?? 0), $chp), "motto" => clean_motto($S["motto"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
+    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "login" => $rname, "adm" => (in_array($id, $adminsR, true) && ($S["admshow"] ?? true) !== false), "emo" => clean_emo($S["emo"] ?? ""), "col" => max(0, min(9, (int)($S["col"] ?? 0))), "frm" => max(0, min(4, (int)($S["frm"] ?? 0))), "ttl" => title_ok((int)($S["ttl"] ?? 0), $chp), "motto" => clean_motto($S["motto"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
   }
   $byPts = ($app !== "");
   usort($out, function ($a, $b) use ($byPts) { return $byPts ? [-$a["pts"], $a["lts"] ?: PHP_INT_MAX] <=> [-$b["pts"], $b["lts"] ?: PHP_INT_MAX] : [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
   $win = null;
   if ($app !== "") { $c = array_filter($out, function ($u) { return $u["pm"] > 0; }); usort($c, function ($a, $b) { return [$b["pm"], $a["pmt"]] <=> [$a["pm"], $b["pmt"]]; }); if ($c) { $w = array_values($c)[0]; $win = ["ym" => $ymp, "name" => $w["name"], "emo" => $w["emo"], "pts" => $w["pm"]]; } }
+  if ($app !== "" && !(preg_match("/^[a-z0-9]{8,40}$/", $k) && is_file("$base/users/" . hash("sha256", $k) . ".json"))) { $out = []; $win = null; $me = false; }   /* pas de compte : aucune donnée personnelle */
   echo json_encode(["app" => $app, "ym" => $ym, "winner" => $win, "classes" => ($app !== "" ? classes_load($base) : []), "list" => array_slice($out, 0, 300), "me" => $me, "total" => count($out)], JSON_UNESCAPED_UNICODE);
 }
 
@@ -197,19 +207,19 @@ function room_main($k, $base) {
   if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $b = json_decode(file_get_contents("php://input", false, null, 0, 1001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
     $P = is_file($mine) ? (json_decode(@file_get_contents($mine), true) ?: []) : [];
-    if (isset($b["x"], $b["y"])) { $P["x"] = max(0, min(11, (int)$b["x"])); $P["y"] = max(0, min(7, (int)$b["y"])); }
+    if (isset($b["x"], $b["y"])) { $P["x"] = max(0, min(15, (int)$b["x"])); $P["y"] = max(0, min(9, (int)$b["y"])); $P["sit"] = !empty($b["sit"]) ? 1 : 0; }
     if (isset($b["say"])) { $say = mb_substr(trim(preg_replace('/[\x00-\x1f<>]/u', " ", (string)$b["say"])), 0, 70); if ($say !== "") { $P["say"] = $say; $P["st"] = $now; } }
-    $P["x"] = $P["x"] ?? 5; $P["y"] = $P["y"] ?? 4; $P["t"] = $now;
+    $P["x"] = $P["x"] ?? 7; $P["y"] = $P["y"] ?? 6; $P["t"] = $now;
     file_put_contents($mine, json_encode($P, JSON_UNESCAPED_UNICODE), LOCK_EX); echo "{\"ok\":true}"; return;
   }
-  $users = [];
+  $users = []; $adminsRm = admin_load($base);
   foreach (glob("$dir/*.json") ?: [] as $f) {
     $age = $now - filemtime($f);
     if ($age > 25) { if ($age > 3600) { @unlink($f); } continue; }
     $id = basename($f, ".json"); $P = json_decode(@file_get_contents($f), true); if (!is_array($P) || $now - (int)($P["t"] ?? 0) > 25) continue;
     $card = msg_card($base, $id); $S = is_file("$base/$id.json") ? json_decode(@file_get_contents("$base/$id.json"), true) : null;
     $av = []; foreach ((is_array($S) ? ($S["av"] ?? []) : []) as $ak => $v) { if (!is_string($ak) || !preg_match("/^[a-zA-Z]{2,8}$/", $ak) || count($av) >= 30) continue; if (is_int($v) && $v >= 0 && $v < 100) $av[$ak] = $v; elseif (is_string($v) && preg_match("/^#[0-9a-fA-F]{6}$/", $v)) $av[$ak] = $v; }
-    $users[] = ["me" => $id === $h, "name" => $card["name"], "nick" => $card["nick"], "emo" => $card["emo"], "av" => $av, "x" => (int)$P["x"], "y" => (int)$P["y"], "say" => (isset($P["st"]) && $now - (int)$P["st"] < 8) ? (string)$P["say"] : "", "st" => (int)($P["st"] ?? 0)];
+    $users[] = ["me" => $id === $h, "name" => $card["name"], "nick" => $card["nick"], "emo" => $card["emo"], "av" => $av, "adm" => (in_array($id, $adminsRm, true) && (!is_array($S) || ($S["admshow"] ?? true) !== false)), "x" => (int)$P["x"], "y" => (int)$P["y"], "sit" => !empty($P["sit"]), "say" => (isset($P["st"]) && $now - (int)$P["st"] < 8) ? (string)$P["say"] : "", "st" => (int)($P["st"] ?? 0)];
     if (count($users) >= 40) break;
   }
   echo json_encode(["users" => $users, "now" => $now], JSON_UNESCAPED_UNICODE);

@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.12 — 2026-10-14 — Salon 3D, protection contre l'aspiration
+- **Salon** isométrique : plein écran, chat (Entrée), s'asseoir (canapé, tapis), personnages en vraie 3D à 8 directions qui suivent la souris (tête, vêtements, ailes, aura animée en lumière, objets tenus, badge du Parti).
+- Messages : pastille de notification, icône ✉️ dans le classement ; profil : couleur de l'habit, calendrier du cadeau du jour, badge ADMIN.
+- **Anti-aspiration** : pages en `noindex`, `robots.txt` ; serveur : classement visible seulement avec un compte, limite de 240 requêtes/min par adresse IP.
+- `server/api.php` : salon (assis, admin, grande pièce), nom de connexion dans le classement, limitation de débit.
+
 ## v6.11 — 2026-10-14 — Salon, messagerie, Mon personnage
 - **Salon** : pièce vue du dessus, avatars pixelisés qui marchent et parlent (bulles), entrée depuis l'accueil.
 - **Messages** (barre du bas, à la place de « Réviser ») : conversations entre usagers, blocage, signalement.
