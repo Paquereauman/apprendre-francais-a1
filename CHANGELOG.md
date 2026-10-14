@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.9 — 2026-10-14 — Page Prononciation, inscription, admin
+- Nouvelle page **Prononciation** (bouton 🗣️ « Sons » dans la barre du bas) : cours, bouches, exercices, voix Denise en fichiers statiques (`prononciation/`), aux couleurs de l'appli ; admin = tous les niveaux débloqués.
+- Inscription : question obligatoire « Es-tu élève de Baptiste ? » (classe si oui ; sinon utilisateur libre ou demande de droits admin, validée dans Admin → Élèves).
+- Profil admin : case « ligne dorée dans le classement » ; les administrateurs ont une ligne dorée au classement.
+- `server/api.php` : demandes de droits admin (`reqadmin`/`denyreq`), indicateur admin dans le classement.
+
 ## v6.8 — 2026-10-11 — Équipement façon RPG, raretés, NEW
 - Nouvelle vue **⚔️ Équipement** : personnage en grand, 9 emplacements, objets possédés par emplacement, port/retrait en un clic.
 - Raretés : cadeau du jour jamais super rare ; série de 7 jours = rare (2 % super rare) ; série de 30 jours = super rare ; podium du mois : 1er épique, 2e super rare, 3e super rare/rare, puis rare/commun.

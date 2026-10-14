@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 150">
+  <!-- baguette -->
+  <line x1="78" y1="78" x2="6" y2="34" stroke="#8a6a4f" stroke-width="4" stroke-linecap="round"/>
+  <!-- corps -->
+  <path d="M92 150 V112 Q92 92 118 92 Q144 92 144 112 V150 Z" fill="#6b9fe0"/>
+  <!-- bras qui pointe -->
+  <path d="M100 104 Q88 96 80 82" fill="none" stroke="#6b9fe0" stroke-width="13" stroke-linecap="round"/>
+  <circle cx="79" cy="79" r="7.5" fill="#efa895"/>
+  <!-- bras avec livre -->
+  <path d="M138 108 Q146 118 136 128" fill="none" stroke="#6b9fe0" stroke-width="12" stroke-linecap="round"/>
+  <rect x="112" y="118" width="26" height="19" rx="2" fill="#3b2f26"/>
+  <rect x="112" y="118" width="26" height="4" rx="2" fill="#fffaf4"/>
+  <!-- col -->
+  <path d="M108 93 L118 103 L128 93" fill="none" stroke="#2a416d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- tête -->
+  <circle cx="118" cy="62" r="26" fill="#efa895"/>
+  <circle cx="92" cy="64" r="5" fill="#efa895"/>
+  <circle cx="144" cy="64" r="5" fill="#efa895"/>
+  <!-- cheveux -->
+  <path d="M92 58 Q90 32 118 32 Q148 32 144 60 Q138 46 124 46 Q108 52 98 46 Q94 50 92 58 Z" fill="#2a416d"/>
+  <!-- visage -->
+  <circle cx="109" cy="64" r="2.8" fill="#2a416d"/>
+  <circle cx="128" cy="64" r="2.8" fill="#2a416d"/>
+  <circle cx="102" cy="72" r="4" fill="#f08a7a" opacity="0.55"/>
+  <circle cx="135" cy="72" r="4" fill="#f08a7a" opacity="0.55"/>
+  <path d="M110 73 Q118.500 82 127 73 Z" fill="#2a416d"/>
+</svg>

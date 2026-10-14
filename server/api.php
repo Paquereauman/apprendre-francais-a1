@@ -77,7 +77,7 @@ function rank_main($k, $base, $app) {
     echo "{\"ok\":true}"; exit;
   }
   $out = []; $me = false; $yday = date("Y-m-d", time() - 86400); $ym = cur_ym(); $ymp = cur_ym(-1);
-  $src = [];
+  $src = []; $adminsR = admin_load($base);
   if ($app !== "") {
     foreach (array_slice(glob("$base/users/*.json") ?: [], 0, 500) as $uf) {
       $uid = basename($uf, ".json"); if (!preg_match("/^[a-f0-9]{64}$/", $uid) || is_file("$base/rankout/$uid")) continue;
@@ -102,7 +102,7 @@ function rank_main($k, $base, $app) {
     list($mpts, $mts) = $qr ? month_pts($qr["hist"], $ym) : [0, 0];
     list($ppts, $pts2) = $qr ? month_pts($qr["hist"], $ymp) : [0, 0];
     $isme = ($id === $h); if ($isme) $me = true;
-    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "emo" => clean_emo($S["emo"] ?? ""), "col" => max(0, min(9, (int)($S["col"] ?? 0))), "frm" => max(0, min(4, (int)($S["frm"] ?? 0))), "ttl" => title_ok((int)($S["ttl"] ?? 0), $chp), "motto" => clean_motto($S["motto"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
+    $out[] = ["name" => (($nk = clean_name($S["nick"] ?? "", 20)) !== "" ? $nk : $rname), "cls" => $rcls, "adm" => (in_array($id, $adminsR, true) && ($S["admshow"] ?? true) !== false), "emo" => clean_emo($S["emo"] ?? ""), "col" => max(0, min(9, (int)($S["col"] ?? 0))), "frm" => max(0, min(4, (int)($S["frm"] ?? 0))), "ttl" => title_ok((int)($S["ttl"] ?? 0), $chp), "motto" => clean_motto($S["motto"] ?? ""), "pts" => $pts, "ch" => $chp, "lts" => $lts, "m" => $mpts, "mt" => $mts, "pm" => $ppts, "pmt" => $pts2, "xp" => (int)($S["xp"] ?? 0), "words" => $words, "streak" => $streak, "av" => $av, "me" => $isme];
   }
   $byPts = ($app !== "");
   usort($out, function ($a, $b) use ($byPts) { return $byPts ? [-$a["pts"], $a["lts"] ?: PHP_INT_MAX] <=> [-$b["pts"], $b["lts"] ?: PHP_INT_MAX] : [$b["xp"], $b["words"]] <=> [$a["xp"], $a["words"]]; });
@@ -144,11 +144,17 @@ function admin_main($k, $base, $app) {
       if (!$claimable || !hash_equals(trim((string)@file_get_contents($tokf)), hash("sha256", $tok))) { sleep(1); http_response_code(403); echo "{\"error\":\"denied\"}"; return; }
       admin_save($base, [$h]); @unlink($tokf); echo "{\"ok\":true}"; return;
     }
+    if ($act === "reqadmin") {   /* un enseignant demande les droits admin : l'administrateur valide dans sa fenêtre Gestion */
+      if (!is_file("$base/$h.json")) { http_response_code(400); echo "{\"error\":\"no profile\"}"; return; }
+      $rq = "$base/adminreq"; if (!is_dir($rq)) { @mkdir($rq, 0700, true); }
+      file_put_contents("$rq/$h", "1", LOCK_EX); echo "{\"ok\":true}"; return;
+    }
     if (!$isAdmin) { http_response_code(403); echo "{\"error\":\"denied\"}"; return; }
     $id = (string)($b["id"] ?? "");
-    if (in_array($act, ["promote", "demote", "kick", "setclass", "recovery"], true) && !preg_match("/^[a-f0-9]{64}$/", $id)) { http_response_code(400); echo "{\"error\":\"bad id\"}"; return; }
+    if (in_array($act, ["promote", "demote", "kick", "setclass", "recovery", "denyreq"], true) && !preg_match("/^[a-f0-9]{64}$/", $id)) { http_response_code(400); echo "{\"error\":\"bad id\"}"; return; }
     $cls = classes_load($base);
-    if ($act === "promote") { $admins[] = $id; admin_save($base, $admins); }
+    if ($act === "promote") { $admins[] = $id; admin_save($base, $admins); @unlink("$base/adminreq/$id"); }
+    elseif ($act === "denyreq") { @unlink("$base/adminreq/$id"); }
     elseif ($act === "demote") {
       if (count($admins) <= 1 && $id === $admins[0]) { http_response_code(400); echo "{\"error\":\"last admin\"}"; return; }
       admin_save($base, array_diff($admins, [$id]));
@@ -215,7 +221,7 @@ function admin_main($k, $base, $app) {
       foreach ($months as $ym2) { list($pp, $tt) = month_pts($qr["hist"], $ym2); if ($pp > 0) { $mt[$ym2][] = ["name" => $nm, "pts" => $pp, "ts" => $tt]; } }
       $users[] = ["id" => $id, "res" => (object)$qr["res"], "name" => (string)($u["name"] ?? "?"), "cls" => (string)($u["cls"] ?? ""), "nick" => clean_name($S["nick"] ?? "", 20), "emo" => clean_emo($S["emo"] ?? ""), "seen" => (int)($u["ts"] ?? 0), "xp" => (int)($S["xp"] ?? 0), "words" => $words,
         "known" => $kn, "best" => $best, "test" => $test, "phr" => (int)($S["phr"] ?? 0), "streak" => (int)($S["streak"] ?? 0),
-        "admin" => in_array($id, $admins, true), "rank" => ($app !== "" ? !is_file("$base/rankout/$id") : is_file("$base/rank/$id.json")), "me" => $id === $h];
+        "admin" => in_array($id, $admins, true), "areq" => is_file("$base/adminreq/$id"), "rank" => ($app !== "" ? !is_file("$base/rankout/$id") : is_file("$base/rank/$id.json")), "me" => $id === $h];
     }
     usort($users, function ($a, $b) { return $b["seen"] <=> $a["seen"]; });
     $win = [];
