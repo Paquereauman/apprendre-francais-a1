@@ -14,6 +14,11 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.10 — 2026-10-14 — Signaler une erreur
+- Bouton « ⚑ Signaler » dans les quiz et les cartes : l'élève connecté signale un mot ou un élément à corriger (note facultative, 10 par jour max).
+- Admin : nouvel onglet « Signalements » avec bouton « Traité ».
+- `server/api.php` : stockage des signalements (`report`, `reportdone`).
+
 ## v6.9 — 2026-10-14 — Page Prononciation, inscription, admin
 - Nouvelle page **Prononciation** (bouton 🗣️ « Sons » dans la barre du bas) : cours, bouches, exercices, voix Denise en fichiers statiques (`prononciation/`), aux couleurs de l'appli ; admin = tous les niveaux débloqués.
 - Inscription : question obligatoire « Es-tu élève de Baptiste ? » (classe si oui ; sinon utilisateur libre ou demande de droits admin, validée dans Admin → Élèves).

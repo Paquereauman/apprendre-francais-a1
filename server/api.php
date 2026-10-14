@@ -10,6 +10,7 @@ if ($app && !is_dir("$base/bak")) { @mkdir("$base/bak", 0700, true); }
 $k = $_GET["k"] ?? "";
 if (isset($_GET["rank"])) { rank_main($k, $base, $app); exit; }
 if (isset($_GET["admin"])) { admin_main($k, $base, $app); exit; }
+if (isset($_GET["report"])) { report_main($k, $base); exit; }
 if (isset($_GET["accpos"])) { accpos_main($k, $base); exit; }
 if (isset($_GET["classes"])) {
   $o = ["app" => $app, "classes" => classes_load($base)];
@@ -111,6 +112,24 @@ function rank_main($k, $base, $app) {
   echo json_encode(["app" => $app, "ym" => $ym, "winner" => $win, "classes" => ($app !== "" ? classes_load($base) : []), "list" => array_slice($out, 0, 300), "me" => $me, "total" => count($out)], JSON_UNESCAPED_UNICODE);
 }
 
+// ---- Signalements : un élève connecté signale un mot ou un élément qui ne va pas ; les administrateurs les traitent.
+function report_main($k, $base) {
+  if ($_SERVER["REQUEST_METHOD"] !== "POST" || !preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad request\"}"; return; }
+  $h = hash("sha256", $k); $uf = "$base/users/$h.json";
+  if (!is_file($uf)) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 2001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
+  $u = json_decode(@file_get_contents($uf), true);
+  $cl = function ($x, $n) { return mb_substr(trim(preg_replace("/[ -<>]/u", " ", (string)$x)), 0, $n); };
+  $item = $cl($b["item"] ?? "", 80); if ($item === "") { http_response_code(400); echo "{\"error\":\"empty\"}"; return; }
+  $f = "$base/reports.json"; $fp = fopen($f, "c+"); if (!$fp) { http_response_code(500); echo "{\"error\":\"io\"}"; return; }
+  flock($fp, LOCK_EX); $R = json_decode(stream_get_contents($fp), true); if (!is_array($R)) { $R = []; }
+  $now = time(); $mine = 0; foreach ($R as $r) { if (($r["uid"] ?? "") === $h && $now - (int)$r["ts"] < 86400) { $mine++; } }
+  if ($mine >= 10) { flock($fp, LOCK_UN); fclose($fp); http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
+  $R[] = ["id" => bin2hex(random_bytes(6)), "ts" => $now, "uid" => $h, "by" => (string)($u["name"] ?? "?"), "item" => $item, "where" => $cl($b["where"] ?? "", 80), "note" => $cl($b["note"] ?? "", 300)];
+  if (count($R) > 500) { $R = array_slice($R, -500); }
+  ftruncate($fp, 0); rewind($fp); fwrite($fp, json_encode($R, JSON_UNESCAPED_UNICODE)); fflush($fp); flock($fp, LOCK_UN); fclose($fp);
+  echo "{\"ok\":true}";
+}
 // ---- Administration : les administrateurs sont des profils (hash de la clé) listés dans admins.json.
 // Premier administrateur : jeton de première activation (hash dans admin_setup.sha256), utilisable une seule fois.
 // Classes : classes.json ; chaque compte nommé a une entrée users/<hash>.json {name, ts, cls}. cls = "" pour un élève individuel.
@@ -150,6 +169,12 @@ function admin_main($k, $base, $app) {
       file_put_contents("$rq/$h", "1", LOCK_EX); echo "{\"ok\":true}"; return;
     }
     if (!$isAdmin) { http_response_code(403); echo "{\"error\":\"denied\"}"; return; }
+    if ($act === "reportdone") {   /* traité : on retire le signalement */
+      $rid = preg_replace("/[^a-f0-9]/", "", (string)($b["rid"] ?? "")); $rf = "$base/reports.json";
+      $R = is_file($rf) ? json_decode(@file_get_contents($rf), true) : []; if (!is_array($R)) { $R = []; }
+      $R = array_values(array_filter($R, function ($r) use ($rid) { return ($r["id"] ?? "") !== $rid; }));
+      file_put_contents($rf, json_encode($R, JSON_UNESCAPED_UNICODE), LOCK_EX); echo "{\"ok\":true}"; return;
+    }
     $id = (string)($b["id"] ?? "");
     if (in_array($act, ["promote", "demote", "kick", "setclass", "recovery", "denyreq"], true) && !preg_match("/^[a-f0-9]{64}$/", $id)) { http_response_code(400); echo "{\"error\":\"bad id\"}"; return; }
     $cls = classes_load($base);
@@ -207,6 +232,7 @@ function admin_main($k, $base, $app) {
   }
   $out = ["admin" => $isAdmin, "claimable" => $claimable];
   if ($isAdmin) {
+    $rf0 = "$base/reports.json"; $out["reports"] = is_file($rf0) ? (json_decode(@file_get_contents($rf0), true) ?: []) : [];
     $users = []; $months = [cur_ym(), cur_ym(-1), cur_ym(-2), cur_ym(-3), cur_ym(-4), cur_ym(-5)]; $mt = [];
     foreach (array_slice(glob("$base/users/*.json") ?: [], 0, 500) as $uf) {
       $id = basename($uf, ".json"); if (!preg_match("/^[a-f0-9]{64}$/", $id)) continue;
