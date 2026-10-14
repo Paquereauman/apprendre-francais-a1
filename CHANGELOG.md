@@ -14,6 +14,9 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.13 — 2026-10-14 — Tête et objets en volume
+- Salon : la tête du personnage est maintenant plaquée sur un volume qui tourne avec lui (8 directions) ; les objets tenus ont de l'épaisseur et tournent aussi.
+
 ## v6.12 — 2026-10-14 — Salon 3D, protection contre l'aspiration
 - **Salon** isométrique : plein écran, chat (Entrée), s'asseoir (canapé, tapis), personnages en vraie 3D à 8 directions qui suivent la souris (tête, vêtements, ailes, aura animée en lumière, objets tenus, badge du Parti).
 - Messages : pastille de notification, icône ✉️ dans le classement ; profil : couleur de l'habit, calendrier du cadeau du jour, badge ADMIN.
