@@ -10,6 +10,8 @@ if ($app && !is_dir("$base/bak")) { @mkdir("$base/bak", 0700, true); }
 $k = $_GET["k"] ?? "";
 if (isset($_GET["rank"])) { rank_main($k, $base, $app); exit; }
 if (isset($_GET["admin"])) { admin_main($k, $base, $app); exit; }
+if (isset($_GET["room"])) { room_main($k, $base); exit; }
+if (isset($_GET["msg"])) { msg_main($k, $base, $app); exit; }
 if (isset($_GET["report"])) { report_main($k, $base); exit; }
 if (isset($_GET["accpos"])) { accpos_main($k, $base); exit; }
 if (isset($_GET["classes"])) {
@@ -112,6 +114,106 @@ function rank_main($k, $base, $app) {
   echo json_encode(["app" => $app, "ym" => $ym, "winner" => $win, "classes" => ($app !== "" ? classes_load($base) : []), "list" => array_slice($out, 0, 300), "me" => $me, "total" => count($out)], JSON_UNESCAPED_UNICODE);
 }
 
+// ---- Messagerie entre usagers (comptes de l'appli) : conversations à deux, blocage, limite quotidienne.
+function msg_uid_by_name($base, $name) {
+  $n = mb_strtolower(trim((string)$name), "UTF-8"); if ($n === "") { return null; }
+  foreach (glob("$base/users/*.json") ?: [] as $uf) {
+    $u = json_decode(@file_get_contents($uf), true);
+    if (is_array($u) && mb_strtolower(trim((string)($u["name"] ?? "")), "UTF-8") === $n) { return basename($uf, ".json"); }
+  }
+  return null;
+}
+function msg_card($base, $id) {
+  $u = is_file("$base/users/$id.json") ? json_decode(@file_get_contents("$base/users/$id.json"), true) : null;
+  $S = is_file("$base/$id.json") ? json_decode(@file_get_contents("$base/$id.json"), true) : null;
+  $nick = is_array($S) ? clean_name($S["nick"] ?? "", 20) : "";
+  return ["name" => is_array($u) ? (string)($u["name"] ?? "?") : "?", "nick" => $nick, "emo" => is_array($S) ? clean_emo($S["emo"] ?? "") : "", "cls" => is_array($u) ? (string)($u["cls"] ?? "") : ""];
+}
+function msg_main($k, $base, $app) {
+  if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; return; }
+  $h = hash("sha256", $k);
+  if (!is_file("$base/users/$h.json")) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
+  $dir = "$base/msgs"; if (!is_dir($dir)) { @mkdir($dir, 0700, true); }
+  $act = (string)($_GET["msg"] ?? "list");
+  $bf = "$dir/block_$h.json"; $blocked = is_file($bf) ? (json_decode(@file_get_contents($bf), true) ?: []) : [];
+  $tf = function ($o) use ($dir, $h) { $p = [$h, $o]; sort($p); return "$dir/" . $p[0] . "_" . $p[1] . ".json"; };
+  if ($act === "list") {
+    $th = []; $unread = 0;
+    foreach (glob("$dir/*_*.json") ?: [] as $f) {
+      $b = basename($f, ".json"); if (strpos($b, "block_") === 0 || strpos($b, "rate_") === 0 || strpos($b, $h) === false) continue;
+      $pp = explode("_", $b); if (count($pp) !== 2) continue; $o = $pp[0] === $h ? $pp[1] : $pp[0]; if (in_array($o, $blocked, true)) continue;
+      $T = json_decode(@file_get_contents($f), true); if (!is_array($T) || empty($T["m"])) continue;
+      $rd = (int)($T["r"][$h] ?? 0); $un = 0; foreach ($T["m"] as $m) { if ($m["f"] !== $h && (int)$m["t"] > $rd) { $un++; } }
+      $last = end($T["m"]); $unread += $un;
+      $th[] = array_merge(msg_card($base, $o), ["last" => mb_substr($last["x"], 0, 80), "t" => (int)$last["t"], "mine" => $last["f"] === $h, "unread" => $un]);
+    }
+    usort($th, function ($a, $b) { return $b["t"] <=> $a["t"]; });
+    echo json_encode(["threads" => $th, "unread" => $unread], JSON_UNESCAPED_UNICODE); return;
+  }
+  if ($act === "people") {   /* annuaire : les comptes de l'appli (nom, emoji, classe), sans soi-même */
+    $o = [];
+    foreach (array_slice(glob("$base/users/*.json") ?: [], 0, 500) as $uf) { $id = basename($uf, ".json"); if ($id === $h || in_array($id, $blocked, true)) continue; $o[] = msg_card($base, $id); }
+    usort($o, function ($a, $b) { return strcasecmp($a["name"], $b["name"]); });
+    echo json_encode(["people" => $o], JSON_UNESCAPED_UNICODE); return;
+  }
+  $with = msg_uid_by_name($base, $_GET["with"] ?? "");
+  if ($act === "thread") {
+    if (!$with) { http_response_code(404); echo "{\"error\":\"unknown\"}"; return; }
+    $f = $tf($with); $T = is_file($f) ? json_decode(@file_get_contents($f), true) : null; if (!is_array($T)) { $T = ["m" => [], "r" => []]; }
+    $T["r"][$h] = time(); if (is_file($f)) { file_put_contents($f, json_encode($T, JSON_UNESCAPED_UNICODE), LOCK_EX); }
+    $ms = []; foreach ($T["m"] as $m) { $ms[] = ["me" => $m["f"] === $h, "t" => (int)$m["t"], "x" => $m["x"]]; }
+    echo json_encode(["with" => msg_card($base, $with), "m" => $ms, "blocked" => in_array($with, $blocked, true)], JSON_UNESCAPED_UNICODE); return;
+  }
+  if ($_SERVER["REQUEST_METHOD"] !== "POST") { http_response_code(405); echo "{\"error\":\"post\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 3001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
+  $to = msg_uid_by_name($base, $b["to"] ?? "");
+  if (!$to || $to === $h) { http_response_code(404); echo "{\"error\":\"unknown\"}"; return; }
+  if ($act === "block") {
+    $blocked = array_values(array_diff($blocked, [$to])); if (!empty($b["on"])) { $blocked[] = $to; }
+    file_put_contents($bf, json_encode(array_values(array_unique($blocked))), LOCK_EX); echo "{\"ok\":true}"; return;
+  }
+  if ($act !== "send") { http_response_code(400); echo "{\"error\":\"bad action\"}"; return; }
+  $x = mb_substr(trim(preg_replace('/[\x00-\x08\x0b\x0c\x0e-\x1f<>]/u', " ", (string)($b["text"] ?? ""))), 0, 500);
+  if ($x === "") { http_response_code(400); echo "{\"error\":\"empty\"}"; return; }
+  $ob = "$dir/block_$to.json"; $oblocked = is_file($ob) ? (json_decode(@file_get_contents($ob), true) ?: []) : [];
+  if (in_array($h, $oblocked, true) || in_array($to, $blocked, true)) { http_response_code(403); echo "{\"error\":\"blocked\"}"; return; }
+  $rf = "$dir/rate_$h.json"; $now = time(); $rt = is_file($rf) ? (json_decode(@file_get_contents($rf), true) ?: []) : [];
+  $rt = array_values(array_filter($rt, function ($t) use ($now) { return $now - (int)$t < 86400; }));
+  if (count($rt) >= 60) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
+  $rt[] = $now; file_put_contents($rf, json_encode($rt), LOCK_EX);
+  $f = $tf($to); $fp = fopen($f, "c+"); if (!$fp) { http_response_code(500); echo "{\"error\":\"io\"}"; return; }
+  flock($fp, LOCK_EX); $T = json_decode(stream_get_contents($fp), true); if (!is_array($T)) { $T = ["m" => [], "r" => []]; }
+  $T["m"][] = ["f" => $h, "t" => $now, "x" => $x]; if (count($T["m"]) > 200) { $T["m"] = array_slice($T["m"], -200); } $T["r"][$h] = $now;
+  ftruncate($fp, 0); rewind($fp); fwrite($fp, json_encode($T, JSON_UNESCAPED_UNICODE)); fflush($fp); flock($fp, LOCK_UN); fclose($fp);
+  echo "{\"ok\":true}";
+}
+// ---- Salon : pièce vue du dessus, présence et position des usagers connectés (interrogation régulière, sans serveur temps réel).
+function room_main($k, $base) {
+  if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; return; }
+  $h = hash("sha256", $k); $uf = "$base/users/$h.json";
+  if (!is_file($uf)) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
+  $dir = "$base/room"; if (!is_dir($dir)) { @mkdir($dir, 0700, true); }
+  $now = time(); $mine = "$dir/$h.json";
+  if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $b = json_decode(file_get_contents("php://input", false, null, 0, 1001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
+    $P = is_file($mine) ? (json_decode(@file_get_contents($mine), true) ?: []) : [];
+    if (isset($b["x"], $b["y"])) { $P["x"] = max(0, min(11, (int)$b["x"])); $P["y"] = max(0, min(7, (int)$b["y"])); }
+    if (isset($b["say"])) { $say = mb_substr(trim(preg_replace('/[\x00-\x1f<>]/u', " ", (string)$b["say"])), 0, 70); if ($say !== "") { $P["say"] = $say; $P["st"] = $now; } }
+    $P["x"] = $P["x"] ?? 5; $P["y"] = $P["y"] ?? 4; $P["t"] = $now;
+    file_put_contents($mine, json_encode($P, JSON_UNESCAPED_UNICODE), LOCK_EX); echo "{\"ok\":true}"; return;
+  }
+  $users = [];
+  foreach (glob("$dir/*.json") ?: [] as $f) {
+    $age = $now - filemtime($f);
+    if ($age > 25) { if ($age > 3600) { @unlink($f); } continue; }
+    $id = basename($f, ".json"); $P = json_decode(@file_get_contents($f), true); if (!is_array($P) || $now - (int)($P["t"] ?? 0) > 25) continue;
+    $card = msg_card($base, $id); $S = is_file("$base/$id.json") ? json_decode(@file_get_contents("$base/$id.json"), true) : null;
+    $av = []; foreach ((is_array($S) ? ($S["av"] ?? []) : []) as $ak => $v) { if (!is_string($ak) || !preg_match("/^[a-zA-Z]{2,8}$/", $ak) || count($av) >= 30) continue; if (is_int($v) && $v >= 0 && $v < 100) $av[$ak] = $v; elseif (is_string($v) && preg_match("/^#[0-9a-fA-F]{6}$/", $v)) $av[$ak] = $v; }
+    $users[] = ["me" => $id === $h, "name" => $card["name"], "nick" => $card["nick"], "emo" => $card["emo"], "av" => $av, "x" => (int)$P["x"], "y" => (int)$P["y"], "say" => (isset($P["st"]) && $now - (int)$P["st"] < 8) ? (string)$P["say"] : "", "st" => (int)($P["st"] ?? 0)];
+    if (count($users) >= 40) break;
+  }
+  echo json_encode(["users" => $users, "now" => $now], JSON_UNESCAPED_UNICODE);
+}
 // ---- Signalements : un élève connecté signale un mot ou un élément qui ne va pas ; les administrateurs les traitent.
 function report_main($k, $base) {
   if ($_SERVER["REQUEST_METHOD"] !== "POST" || !preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad request\"}"; return; }
@@ -119,7 +221,7 @@ function report_main($k, $base) {
   if (!is_file($uf)) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
   $b = json_decode(file_get_contents("php://input", false, null, 0, 2001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
   $u = json_decode(@file_get_contents($uf), true);
-  $cl = function ($x, $n) { return mb_substr(trim(preg_replace("/[ -<>]/u", " ", (string)$x)), 0, $n); };
+  $cl = function ($x, $n) { return mb_substr(trim(preg_replace('/[\x00-\x08\x0b\x0c\x0e-\x1f<>]/u', " ", (string)$x)), 0, $n); };
   $item = $cl($b["item"] ?? "", 80); if ($item === "") { http_response_code(400); echo "{\"error\":\"empty\"}"; return; }
   $f = "$base/reports.json"; $fp = fopen($f, "c+"); if (!$fp) { http_response_code(500); echo "{\"error\":\"io\"}"; return; }
   flock($fp, LOCK_EX); $R = json_decode(stream_get_contents($fp), true); if (!is_array($R)) { $R = []; }

@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.11 — 2026-10-14 — Salon, messagerie, Mon personnage
+- **Salon** : pièce vue du dessus, avatars pixelisés qui marchent et parlent (bulles), entrée depuis l'accueil.
+- **Messages** (barre du bas, à la place de « Réviser ») : conversations entre usagers, blocage, signalement.
+- **Mon personnage** : équipement et inventaire sur la même page (6 emplacements, pages selon la taille de l'écran, objets de départ + objets de collection avec cadenas, couleur de l'habit), badge ADMIN animé.
+- **Mon visage** : visage seul, plus compact ; le hasard ne change plus tenue/lunettes/objets ; les objets de collection ne s'y choisissent plus.
+- **Calendrier du cadeau du jour** : jours présents/manqués, indice de rareté des prochains cadeaux ; raretés par origine (séries 7/30 jours, podium du mois).
+- **Admin** : onglet Admins (nommer/retirer), signalements, demandes de droits ; inscription : question « élève de Baptiste ? ».
+- Prononciation : barre du bas, couleurs de l'appli. `server/api.php` : messagerie, salon, signalements, demandes admin.
+
 ## v6.10 — 2026-10-14 — Signaler une erreur
 - Bouton « ⚑ Signaler » dans les quiz et les cartes : l'élève connecté signale un mot ou un élément à corriger (note facultative, 10 par jour max).
 - Admin : nouvel onglet « Signalements » avec bouton « Traité ».
