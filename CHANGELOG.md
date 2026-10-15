@@ -14,6 +14,10 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.14 — 2026-10-15 — Cadeau du jour
+
+- Le cadeau s'affiche uniquement à la connexion (compte connecté) ; calendrier limité à 7 jours ; l'objet gagné est visible dans l'aperçu.
+
 ## v6.13 — 2026-10-14 — Tête et objets en volume
 - Salon : la tête du personnage est maintenant plaquée sur un volume qui tourne avec lui (8 directions) ; les objets tenus ont de l'épaisseur et tournent aussi.
 

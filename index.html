@@ -297,8 +297,8 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 .avw{position:relative;display:inline-block}.admtag{position:absolute;bottom:-6px;top:auto;left:50%;transform:translateX(-50%);z-index:5;font:900 .62rem/1 system-ui,sans-serif;letter-spacing:.16em;padding:3px 9px;border-radius:99px;color:#4a3100;background:linear-gradient(100deg,#b8860b,#ffe27a,#fff3b0,#ffd23f,#b8860b);background-size:250% 100%;box-shadow:0 0 0 1.5px #fff8,0 0 10px #f4c64a;text-shadow:0 1px 0 #fff8;animation:admsh 2.4s linear infinite;pointer-events:none}
 @keyframes admsh{from{background-position:0 0}to{background-position:-250% 0}}.eqhero .admtag{bottom:4px;top:auto;font-size:.78rem;padding:4px 12px}
 .calw{margin:10px 0 4px;text-align:left}.calt{font-weight:800;font-size:.85rem;color:var(--blue);display:flex;justify-content:space-between;margin-bottom:6px}.calt span{color:#d4570f}
-.cal{display:grid;grid-template-columns:repeat(13,minmax(0,1fr));gap:3px}
-.cd{display:flex;flex-direction:column;align-items:center;gap:1px;padding:3px 0;border-radius:8px;background:#f1f4fa;border:2px solid transparent;min-width:0}.cd small{font-size:.55rem;color:var(--mut)}.cd b{font-size:.72rem}.cd i{font-style:normal;font-size:.9rem;line-height:1.1}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cd{display:flex;flex-direction:column;align-items:center;gap:1px;padding:3px 0;border-radius:8px;background:#f1f4fa;border:2px solid transparent;min-width:0}.cd small{font-size:.62rem;color:var(--mut)}.cd b{font-size:.85rem}.cd i{font-style:normal;font-size:1.05rem;line-height:1.1}
 .cd.ok{background:#e3f7ec}.cd.miss{background:#fde8e8;opacity:.85}.cd.na{opacity:.4}.cd.today{border-color:var(--blue);background:#fff;box-shadow:0 0 0 2px #f4c64a}.cd.fut{background:#fff;border-color:var(--rc,#cfd9ee)}.cd.ms{box-shadow:0 0 8px var(--rc)}
 .calh{font-size:.62rem;color:var(--mut);margin-top:6px;line-height:1.4}
 @media(max-width:700px){.cal{grid-template-columns:repeat(7,minmax(0,1fr))}}
@@ -643,7 +643,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
     S.dismissSync=1;S.ts=0;await pull();
     if(!exists){const st=await push();if(st===409){logoutLocal();m.textContent="Ce nom vient d'être pris par un autre élève : choisis-en un autre. · 该用户名刚被其他学生使用，请换一个。";return}}
     if(!exists&&wantAdm){const ok=await admPost({action:"reqadmin"});setTimeout(()=>toast(ok?"📨 Demande envoyée à l'administrateur · 已向管理员发送申请":"Demande non envoyée · 申请未发送"),1800)}
-    loadClasses();loadQV();profClose();head();if(cur)cur();admStatus();toast(!exists?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(!exists)setTimeout(meOpen,700)}
+    loadClasses();loadQV();profClose();head();if(cur)cur();setTimeout(giftCheck,1800);admStatus();toast(!exists?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(!exists)setTimeout(meOpen,700)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 function logoutLocal(){const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";ADM=null;QV=null;CODE=rndCode();
   try{localStorage.removeItem("frA1name");localStorage.setItem("frA1code",CODE);localStorage.removeItem(K)}catch(e){}
@@ -1368,20 +1368,20 @@ function giftDraw(kind,fr){const un=lockables().filter(x=>!isOwned(x[0],x[1]));i
   const av=[...new Set(un.map(u=>u[2]))].filter(r=>W[r]>0);if(!av.length)return null;
   const tot=av.reduce((s,r)=>s+W[r],0);let x=Math.random()*tot,rr=av[0];for(const r of av){if((x-=W[r])<0){rr=r;break}}
   const pool=un.filter(u=>u[2]===rr);return pool[Math.random()*pool.length|0]}
-function giftCheck(){if(!window.DB||isAdmin()||document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
+function giftCheck(){if(!window.DB||!PNAME||isAdmin()||document.body.classList.contains("inquiz")||document.getElementById("gift"))return;const t=tdy();if(S.lgd===t)return;
   avGrandfather();S.unl=S.unl||[];S.lgd=t;let kind="day",ttl;const st=S.streak||0,sd=addD(-(Math.max(st,1)-1));
   if(st>=30&&S.aw30!==sd){kind="st30";S.aw30=sd;S.aw7=sd;ttl="🔥 30 jours de suite ! · 连续30天！"}else if(st>=7&&S.aw7!==sd){kind="st7";S.aw7=sd;ttl="🔥 7 jours de suite ! · 连续7天！"}
   const g=giftDraw(kind,kind==="day"?dayRar(t):null);if(!g){addXp(30);save();toast("🎁 Collection complète ! +30 XP · 收藏已集齐！");return}
   unlAdd(g);save();giftShow(g,ttl)}
-function giftShow(g,title){const[n,v,r]=g,R=RAR[r],lk=lockables(),mine=lk.filter(l=>isOwned(l[0],l[1])).length,a=avGet();avPut(a,n,v);const d=document.createElement("div");d.id="gift";
-  d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">${title||"🎁 Cadeau du jour · 每日礼物"}</div><div class="gav shiny">${avDone(a)?avSVG(a,160):"🎁"}</div><div class="gr">${R[0]}</div><div class="gn">${itemName(n,v)}</div><div class="gc">Collection : ${mine}/${lk.length} · 收藏</div>${calHtml()}<div class="ga"><button onclick="giftEquip('${n}',${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
+function giftShow(g,title){const[n,v,r]=g,R=RAR[r],lk=lockables(),mine=lk.filter(l=>isOwned(l[0],l[1])).length,a=Object.assign({},avDone(S.av)?avGet():avStart());["hat","hac","gls","tnf","obj","wng","aur"].forEach(k=>a[k]=0);a[AVK.accessories]=0;avPut(a,n,v);const GC={hat:"head",hac:"head",gls:"glasses",acc:"glasses",tnf:"outfit",clo:"outfit",obj:"hand",wng:"back",aur:"aura"}[n]||"me";const d=document.createElement("div");d.id="gift";
+  d.innerHTML=`<div class="gbox r-${r}" style="--rc:${R[1]}"><div class="gt">${title||"🎁 Cadeau du jour · 每日礼物"}</div><div class="gav shiny">${avSVG(a,190,{vb:AVCROP[GC]||AV_VB})}</div><div class="gr">${R[0]}</div><div class="gn">${itemName(n,v)}</div><div class="gc">Collection : ${mine}/${lk.length} · 收藏</div>${calHtml()}<div class="ga"><button onclick="giftEquip('${n}',${v})">✨ Porter · 穿上</button><button class="alt" onclick="giftClose()">Plus tard · 稍后</button></div></div>`;
   document.body.appendChild(d);loc(d);fanfare();burst(innerWidth/2,innerHeight/2,r==="e"?120:r==="s"?80:50);if(navigator.vibrate)try{navigator.vibrate(r==="e"?[60,40,60,40,120]:[60])}catch(e){}}
 /* ---- calendrier des connexions : jours présents, jours manqués, indice des prochains cadeaux ---- */
 function hsh(t){let h=2166136261;for(const c of String(t)){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function seeded(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const dayRar=d=>{let x=seeded(hsh((CODE||"")+"|"+d))()*100;for(const k of RORD){x-=GW.day[k]||0;if(x<0)return k}return"c"};
 function calHtml(){const t=tdy(),got=S.dl||[],first=got.length?got[0]:t,st=S.streak||0,DN=UI()==="zh"?["日","一","二","三","四","五","六"]:["D","L","M","M","J","V","S"];let h="";
-  for(let o=-6;o<=6;o++){const d=addD(o),dt=new Date(d+"T12:00:00"),ok=got.includes(d)||(o===0&&S.lgd===d);let ic,cl,tt="";
+  for(let o=-3;o<=3;o++){const d=addD(o),dt=new Date(d+"T12:00:00"),ok=got.includes(d)||(o===0&&S.lgd===d);let ic,cl,tt="";
     if(o<0){if(ok){ic="✅";cl="ok"}else if(d<first){ic="·";cl="na"}else{ic="✖";cl="miss"}}
     else if(o===0){ic=ok?"✅":"🎁";cl="today"}
     else{const sj=st+o;if(sj===7||sj===30){ic="🔥";cl="fut ms";tt=sj===30?"s":"r"}else{ic="🎁";cl="fut";tt=dayRar(d)}}
