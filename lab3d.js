@@ -244,7 +244,11 @@ function build(av){const T=H();if(char){root.remove(char);char.traverse(o=>{if(o
   const legH=.5*P.legs,torH=.46*P.torso,tw=.5*P.width,td=.3*P.depth,r=.3*P.head,neck=.04,k=r/62;
   const add=(m,x,y,z)=>{m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;char.add(m);return m};
   /* jambes, chaussures */
-  [-1,1].forEach(s=>{add(new T.Mesh(rbox(.15*P.width,legH-.07,.17*P.depth,.05,BS),M(pants)),s*.1*P.width,.07+(legH-.07)/2,0);add(new T.Mesh(rbox(.17*P.width,.07,.24*P.depth,.03,BS),M(shoe)),s*.1*P.width,.035,.03)});
+  const standLegs=[],sitLegs=new T.Group();
+  [-1,1].forEach(s=>{standLegs.push(add(new T.Mesh(rbox(.15*P.width,legH-.07,.17*P.depth,.05,BS),M(pants)),s*.1*P.width,.07+(legH-.07)/2,0));standLegs.push(add(new T.Mesh(rbox(.17*P.width,.07,.24*P.depth,.03,BS),M(shoe)),s*.1*P.width,.035,.03));
+    /* jambes de la position assise : cuisses vers l'avant, mollets vers le bas */
+    const x=s*.1*P.width;sitLegs.add(oMesh(rbox(.15*P.width,.15,.34,.05,BS),M(pants),x,legH-.075,.17));sitLegs.add(oMesh(rbox(.14*P.width,.34,.15*P.depth,.05,BS),M(pants),x,legH-.2,.33));sitLegs.add(oMesh(rbox(.17*P.width,.07,.24*P.depth,.03,BS),M(shoe),x,legH-.39,.36))});
+  sitLegs.visible=false;char.add(sitLegs);char.userData.stand=standLegs;char.userData.sit=sitLegs;
   /* buste (face avant = tenue de collection si elle existe) */
   const mid=slLayerImg(av,"mid"),bm=M(cl),mats=[bm,bm,bm,bm,bm,bm];
   if(mid.ok&&mid.img){const mt=new T.MeshStandardMaterial({map:tex(mid.img),roughness:.8,flatShading:fl});mats[4]=mt}
@@ -338,7 +342,8 @@ window.sl3d={draw(c,p,u,e,t){if(!H()||!sl3Init())return;const av=e.isme?S.av:e.a
   /* ombre portée 2D (comme avant) */
   {const sg=c.createRadialGradient(p[0],p[1],1,p[0],p[1],u*.42);sg.addColorStop(0,"#0000007a");sg.addColorStop(1,"#00000000");c.fillStyle=sg;c.beginPath();c.ellipse(p[0],p[1],u*.42,u*.17,0,0,7);c.fill()}
   const d=e.dir8===undefined?2:e.dir8,sit=e.sit&&!e.walk,ch=I.char;ch.rotation.y=(2-d)*Math.PI/4;
-  ch.position.y=sit?-.28:(e.walk?Math.abs(Math.sin(t/120))*.04:Math.sin(t/520)*.01);ch.rotation.z=e.walk?Math.sin(t/120)*.04:0;
+  if(ch.userData.sit){ch.userData.sit.visible=!!sit;(ch.userData.stand||[]).forEach(m=>m.visible=!sit)}
+  ch.position.y=sit?-.24:(e.walk?Math.abs(Math.sin(t/120))*.04:Math.sin(t/520)*.01);ch.rotation.z=e.walk?Math.sin(t/120)*.04:0;
   if(I.aura){const q=1+.06*Math.sin(t/380);I.aura.scale.set(2.2*q,2.2*q,1);I.aura.material.opacity=(.75+.2*Math.sin(t/500))*P.glow}
   if(I.auraG)I.auraG.userData.tick(t);
   (I.flap||[]).forEach(g=>{if(g.wing){g.wing.rotation.y=g.s*(-.2-Math.sin(t/230)*.16);g.wing.rotation.z=g.s*(-.08+Math.sin(t/230)*.05);return}if(g.halo){g.halo.rotation.z=t/900;return}const f=Math.sin(t/230);g.scale.set(1+.08*f,1+.03*f,1)});

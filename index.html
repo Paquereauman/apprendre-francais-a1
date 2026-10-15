@@ -963,6 +963,20 @@ function slBody3(c,p,u,e,t,cl,skin){const walk=e.walk,ph=walk?Math.sin(t/120):Ma
   const arm=(dx,k)=>{const x=p[0]+dx-sx*k*.3,y=tT+u*.05+sy*k*.2;slCap(c,x,y,u*.13,u*.4,slShade(cl,.92),1);c.fillStyle=skin||"#f3c9a3";c.beginPath();c.arc(x,y+u*.43,u*.07,0,7);c.fill();c.strokeStyle=slShade(skin||"rgb(243,201,163)",.6);c.lineWidth=1;c.stroke()};
   arm(-u*.26,1);arm(u*.26,-1);return tT}
 function slPoly(c,pts,fill,stroke){c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.lineWidth=1;c.stroke()}}
+function slSofa(c,f,sl){const tw=SL.tw,a=f.x+sl,b=a+1.03,T=["#5c7fc4","#3f5f9f","#2f4a80"],C=["#7f9ee0","#5a7cc0","#4767a3"],AR=.28,cw=(f.w-2*AR)/3,Hh=tw*3,
+    P=[slIso(a,f.y),slIso(b,f.y),slIso(b,f.y+f.d),slIso(a,f.y+f.d)],pts=[];P.forEach(q=>{pts.push([q[0],q[1]],[q[0],q[1]-Hh])});
+  pts.sort((u,v)=>u[0]-v[0]||u[1]-v[1]);const cr=(o,p1,p2)=>(p1[0]-o[0])*(p2[1]-o[1])-(p1[1]-o[1])*(p2[0]-o[0]),lo=[],up=[];
+  for(const q of pts){while(lo.length>=2&&cr(lo[lo.length-2],lo[lo.length-1],q)<=0)lo.pop();lo.push(q)}
+  for(const q of pts.slice().reverse()){while(up.length>=2&&cr(up[up.length-2],up[up.length-1],q)<=0)up.pop();up.push(q)}
+  const hull=lo.slice(0,-1).concat(up.slice(0,-1));
+  c.save();c.beginPath();hull.forEach((q,i)=>i?c.lineTo(q[0],q[1]):c.moveTo(q[0],q[1]));c.closePath();c.clip();
+  slBox(c,f.x,f.y,f.w,.3,1.05,T[0],T[1],T[2]);                                                   /* dossier */
+  slBox(c,f.x+AR,f.y+.3,f.w-2*AR,.7,.42,T[0],T[1],T[2]);                                         /* assise */
+  slBox(c,f.x,f.y+.3,AR,.7,.75,T[0],T[1],T[2]);                                                   /* accoudoir gauche */
+  for(let i=0;i<3;i++)slBox(c,f.x+AR+.01+i*cw,f.y+.3,cw-.02,.22,.95,C[0],C[1],C[2]);              /* coussins de dossier */
+  for(let i=0;i<3;i++)slBox(c,f.x+AR+.01+i*cw,f.y+.52,cw-.02,.48,.52,C[0],C[1],C[2]);             /* coussins d'assise, alignés avec le dossier */
+  slBox(c,f.x+f.w-AR,f.y+.3,AR,.7,.75,T[0],T[1],T[2]);                                            /* accoudoir droit (devant) */
+  c.restore()}
 function slBox(c,x,y,w,d,h,top,sideL,sideR,el){const tw=SL.tw,z=h*tw*.5,e0=el||0,lf=q=>[q[0],q[1]-e0],A=lf(slIso(x,y)),B=lf(slIso(x+w,y)),C=lf(slIso(x+w,y+d)),D=lf(slIso(x,y+d)),up=q=>[q[0],q[1]-z];
   slPoly(c,[D,C,up(C),up(D)],sideL,"#0003");slPoly(c,[C,B,up(B),up(C)],sideR,"#0003");slPoly(c,[up(A),up(B),up(C),up(D)],top,"#0003")}
 function slShade(col,f){let r,g,b;col=String(col||"");const h=/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i.exec(col);if(h){r=parseInt(h[1],16);g=parseInt(h[2],16);b=parseInt(h[3],16)}else{const m=/(\d+)\D+(\d+)\D+(\d+)/.exec(col)||[0,91,107,140];r=+m[1];g=+m[2];b=+m[3]}
@@ -1003,14 +1017,10 @@ function slFrame(t){if(!SL||SL.stop||cur!==salonPage){slStop();return}
   const L=[...SL.users.entries()];
   for(const [id,e] of L){if(e.path.length){const n=e.path[0],dx=n.x-e.px,dy=n.y-e.py,d=Math.hypot(dx,dy),st=3.2*dt;if(d<=st){e.px=n.x;e.py=n.y;e.path.shift();if(!e.path.length&&e.pendSit){e.sit=true;e.pendSit=false}}else{e.px+=dx/d*st;e.py+=dy/d*st}e.walk=true}else e.walk=false}
   /* éléments à trier par profondeur (x+y) : meubles + avatars */
-  const items=[];SL_FURN.forEach(f=>items.push({z:f.x+f.w+f.y+f.d-1.5,f}));L.forEach(([id,e])=>items.push({z:(e.sit&&Math.round(e.py)===0&&Math.round(e.px)>=1&&Math.round(e.px)<=3)?3.6:e.px+e.py+.5,e}));items.sort((a,b)=>a.z-b.z);
+  const items=[];SL_FURN.forEach(f=>{if(f.kind==="sofa")for(let i=0;i<f.w;i++)items.push({z:f.x+i+f.y+.5,f,slice:i});else items.push({z:f.x+f.w+f.y+f.d-1.5,f})});L.forEach(([id,e])=>items.push({z:(e.sit&&Math.round(e.py)===0&&Math.round(e.px)>=1&&Math.round(e.px)<=3)?Math.round(e.px)+.55:e.px+e.py+.5,e}));items.sort((a,b)=>a.z-b.z);
   for(const it of items){if(it.f){const f=it.f;
       if(f.kind==="plant"){const p=slIso(f.x+.5,f.y+.5);cx.font=(tw*.95)+"px serif";cx.textAlign="center";cx.textBaseline="bottom";cx.fillText(f.e,p[0],p[1]+tw*.12)}
-      else if(f.kind==="sofa"){const T=["#5c7fc4","#3f5f9f","#2f4a80"],C=["#7f9ee0","#5a7cc0","#4767a3"];
-        slBox(cx,f.x,f.y,f.w,.3,1.05,T[0],T[1],T[2]);                                   /* dossier */
-        slBox(cx,f.x,f.y+.3,.28,.7,.75,T[0],T[1],T[2]);slBox(cx,f.x+f.w-.28,f.y+.3,.28,.7,.75,T[0],T[1],T[2]);   /* accoudoirs */
-        slBox(cx,f.x+.28,f.y+.3,f.w-.56,.7,.42,T[0],T[1],T[2]);                          /* assise */
-        const cw=(f.w-.56)/3;for(let i=0;i<3;i++){slBox(cx,f.x+.3+i*cw,f.y+.34,cw-.04,.62,.52,C[0],C[1],C[2]);slBox(cx,f.x+.3+i*cw,f.y+.3,cw-.04,.18,.92,C[0],C[1],C[2])}}   /* coussins */
+      else if(f.kind==="sofa"){slSofa(cx,f,it.slice||0)}
       else{slBox(cx,f.x,f.y,f.w,f.d,f.h,f.top,f.side,f.side2);
         if(f.kind==="shelf"){const zt=f.h*tw*.5;[0,1,2].forEach(r=>{const z=zt*(.1+r*.3),bh=Math.min(zt*.26,tw*.26),a=slIso(f.x+.12,f.y+1),b=slIso(f.x+f.w-.12,f.y+1);slPoly(cx,[[a[0],a[1]-z],[b[0],b[1]-z],[b[0],b[1]-z-tw*.04],[a[0],a[1]-z-tw*.04]],"#4a2f16");["#e63946","#2f5fa8","#2bb673","#f4a300","#8e44e0","#ff5c8a","#2a9d8f"].forEach((col,i)=>{const q=slIso(f.x+.2+i*.38,f.y+1);cx.fillStyle=col;cx.fillRect(q[0]-tw*.05,q[1]-z-tw*.04-bh,tw*.1,bh)})})}
         if(f.kind==="table"){const m=slIso(f.x+1,f.y+1);cx.font=(tw*.5)+"px serif";cx.textAlign="center";cx.textBaseline="bottom";cx.fillText("🍵",m[0],m[1]-f.h*tw*.5+tw*.1)}}
