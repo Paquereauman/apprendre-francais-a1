@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.15 — 2026-10-15 — Personnages en vraie 3D (Three.js)
+
+- Salon : les personnages sont rendus en 3D avec Three.js (tête sphérique avec le vrai visage, cheveux en volume, corps arrondi, ailes, capes, couronnes et auréole en polygones, objets tenus en polygones, auras en particules 3D animées), sur 8 directions, légèrement pixelisés (corps 90 %, objet 95 %). Retour automatique à l'ancien rendu si le WebGL n'est pas disponible.
+- Pseudos, badge ADMIN et bulles : dessinés sur un calque net à la résolution de l'écran (plus de pixelisation).
+- Menu admin du salon : réglages 3D et « Labo 3D » (aperçu isolé avec curseurs).
+- Nouveaux fichiers : `lab3d.js`, `three.min.js` (Three.js r160).
+
 ## v6.14 — 2026-10-15 — Cadeau du jour
 
 - Le cadeau s'affiche uniquement à la connexion (compte connecté) ; calendrier limité à 7 jours ; l'objet gagné est visible dans l'aperçu.
