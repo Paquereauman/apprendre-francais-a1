@@ -22,9 +22,17 @@ if (isset($_GET["admin"])) { admin_main($k, $base, $app); exit; }
 if (isset($_GET["room"])) { room_main($k, $base); exit; }
 if (isset($_GET["msg"])) { msg_main($k, $base, $app); exit; }
 if (isset($_GET["report"])) { report_main($k, $base); exit; }
+if (isset($_GET["forum"])) { forum_main($k, $base); exit; }
+if (isset($_GET["gram"])) { gram_main($k, $base); exit; }
+if (isset($_GET["team"])) { team_main($k, $base); exit; }
 if (isset($_GET["accpos"])) { accpos_main($k, $base); exit; }
 if (isset($_GET["classes"])) {
-  $o = ["app" => $app, "classes" => classes_load($base)];
+  $adm0 = admin_load($base); $o = ["app" => $app, "classes" => [], "teachers" => []];
+  $tm = is_file("$base/team.json") ? json_decode(@file_get_contents("$base/team.json"), true) : []; if (!is_array($tm)) { $tm = []; }
+  foreach ($adm0 as $ai => $ah) { if ($ai !== 0 && !(isset($tm[$ah]) && (int)($tm[$ah]["show"] ?? 1))) continue; $au = is_file("$base/users/$ah.json") ? json_decode(@file_get_contents("$base/users/$ah.json"), true) : null; if (!is_array($au)) continue;
+    $o["teachers"][] = ["id" => substr($ah, 0, 12), "name" => (string)($au["name"] ?? "?"), "role" => (string)($tm[$ah]["role"] ?? "")]; }
+  $own0 = $adm0 ? substr($adm0[0], 0, 12) : "";
+  foreach (classes_load($base) as $c) { $c["owner"] = isset($c["owner"]) ? substr((string)$c["owner"], 0, 12) : $own0; $o["classes"][] = $c; }
   if (preg_match("/^[a-z0-9]{8,40}$/", $k)) {
     $uf = "$base/users/" . hash("sha256", $k) . ".json";
     $u = is_file($uf) ? json_decode(@file_get_contents($uf), true) : null;
@@ -242,6 +250,137 @@ function report_main($k, $base) {
   ftruncate($fp, 0); rewind($fp); fwrite($fp, json_encode($R, JSON_UNESCAPED_UNICODE)); fflush($fp); flock($fp, LOCK_UN); fclose($fp);
   echo "{\"ok\":true}";
 }
+// ---- Communauté : forum, fiches de grammaire, équipe. Stockage : $base/forum/, $base/gram.json, $base/team.json. Ne touche à aucune donnée d'élève (progression, classement, temps). ----
+function cm_clean($s, $n) { return mb_substr(trim(preg_replace('/[\x00-\x08\x0b\x0c\x0e-\x1f]/u', " ", str_replace("\r", "", (string)$s))), 0, $n); }
+function cm_read($f, $d) { $a = is_file($f) ? json_decode(@file_get_contents($f), true) : null; return is_array($a) ? $a : $d; }
+function cm_write($f, $v) { file_put_contents($f, json_encode($v, JSON_UNESCAPED_UNICODE), LOCK_EX); }
+function cm_av($a) {
+  if (!is_array($a)) return null; $o = []; $i = 0;
+  foreach ($a as $k => $v) { if (++$i > 40) break; if (preg_match('/^[A-Za-z0-9_]{1,8}$/', (string)$k) && (is_int($v) || is_float($v) || (is_string($v) && preg_match('/^#?[0-9a-fA-F]{1,8}$/', $v)))) { $o[$k] = $v; } }
+  return $o ?: null;
+}
+function cm_me($k, $base) {   /* identité : compte existant uniquement ; admin = profil listé dans admins.json */
+  if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) return null;
+  $h = hash("sha256", $k); $uf = "$base/users/$h.json"; if (!is_file($uf)) return null;
+  $u = json_decode(@file_get_contents($uf), true); if (!is_array($u)) return null;
+  return ["h" => $h, "uf" => $uf, "u" => $u, "name" => (string)($u["name"] ?? "?"), "adm" => in_array($h, admin_load($base), true)];
+}
+function cm_meta($t, $h) {
+  return ["id" => $t["id"], "title" => $t["title"], "cat" => $t["cat"], "lvl" => $t["lvl"], "st" => $t["st"], "pin" => (int)($t["pin"] ?? 0), "lock" => (int)($t["lock"] ?? 0), "by" => $t["by"], "av" => $t["av"] ?? null,
+    "adm" => (int)($t["adm"] ?? 0), "ts" => (int)$t["ts"], "last" => (int)$t["last"], "n" => (int)$t["n"], "votes" => count($t["v"] ?? []), "voted" => in_array($h, $t["v"] ?? [], true), "ex" => mb_substr($t["body"], 0, 160), "mine" => $t["uid"] === $h];
+}
+function forum_main($k, $base) {
+  $act = (string)($_GET["forum"] ?? "list"); $me = cm_me($k, $base);
+  if (!$me) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
+  $h = $me["h"]; $adm = $me["adm"]; $now = time(); $dir = "$base/forum"; if (!is_dir($dir)) { @mkdir($dir, 0700, true); }
+  $IF = "$dir/index.json"; $CATS = ["ann", "sug", "bug", "help", "cours", "free"]; $LVLS = ["all", "A1", "A2", "B1"]; $STS = ["open", "review", "doing", "done", "no"];
+  $meo = ["name" => $me["name"], "adm" => $adm, "rules" => (int)($me["u"]["forum_rules"] ?? 0)];
+  $fp = fopen($IF, "c+"); if (!$fp) { http_response_code(500); echo "{\"error\":\"io\"}"; return; }
+  flock($fp, $act === "list" || $act === "thread" || $act === "badge" ? LOCK_SH : LOCK_EX);
+  $idx = json_decode(stream_get_contents($fp), true); if (!is_array($idx)) { $idx = []; }
+  $save = function () use ($fp, &$idx) { ftruncate($fp, 0); rewind($fp); fwrite($fp, json_encode(array_values($idx), JSON_UNESCAPED_UNICODE)); fflush($fp); };
+  $done = function ($code, $o) use ($fp) { flock($fp, LOCK_UN); fclose($fp); http_response_code($code); echo json_encode($o, JSON_UNESCAPED_UNICODE); };
+  $g = function ($n, $d = "") { return (string)($_GET[$n] ?? $d); };
+  if ($act === "list") {
+    $cat = $g("cat"); $lvl = $g("lvl"); $st = $g("st"); $sort = $g("sort", "act"); $q = mb_strtolower($g("q")); $mine = $g("mine"); $L = [];
+    foreach ($idx as $t) {
+      if ($cat !== "" && $t["cat"] !== $cat) continue; if ($lvl !== "" && $t["lvl"] !== $lvl && $t["lvl"] !== "all") continue;
+      if ($st === "open" && !in_array($t["st"], ["open", "review", "doing"], true)) continue; if ($st !== "" && $st !== "open" && $t["st"] !== $st) continue;
+      if ($mine === "1" && $t["uid"] !== $h) continue; if ($q !== "" && mb_strpos(mb_strtolower($t["title"] . " " . $t["body"]), $q) === false) continue;
+      if ($sort === "unans" && (int)$t["n"] !== 0) continue; $L[] = $t;
+    }
+    usort($L, function ($a, $b) use ($sort) { $p = (int)($b["pin"] ?? 0) <=> (int)($a["pin"] ?? 0); if ($p) return $p;
+      if ($sort === "new" || $sort === "unans") return $b["ts"] <=> $a["ts"]; if ($sort === "votes") return count($b["v"] ?? []) <=> count($a["v"] ?? []); return $b["last"] <=> $a["last"]; });
+    $off = max(0, (int)$g("off", "0")); $o = []; foreach (array_slice($L, $off, 20) as $t) { $o[] = cm_meta($t, $h); }
+    $done(200, ["threads" => $o, "total" => count($L), "me" => $meo]); return;
+  }
+  if ($act === "badge") { $since = (int)$g("since", "0"); $n = 0; foreach ($idx as $t) { if ((int)$t["last"] > $since && ($t["lastby"] ?? "") !== $h) $n++; } $done(200, ["n" => $n]); return; }
+  if ($act === "thread") {
+    $id = preg_replace("/[^a-f0-9]/", "", $g("id")); $t = null; foreach ($idx as $x) { if ($x["id"] === $id) { $t = $x; break; } }
+    if (!$t) { $done(404, ["error" => "none"]); return; }
+    $P = cm_read("$dir/p_$id.json", []); $o = [];
+    foreach ($P as $p) { $o[] = ["id" => $p["id"], "by" => $p["by"], "av" => $p["av"] ?? null, "adm" => (int)($p["adm"] ?? 0), "ts" => (int)$p["ts"], "body" => $p["body"], "votes" => count($p["v"] ?? []), "voted" => in_array($h, $p["v"] ?? [], true), "mine" => $p["uid"] === $h, "sol" => (int)($p["sol"] ?? 0)]; }
+    $done(200, ["t" => array_merge(cm_meta($t, $h), ["body" => $t["body"]]), "posts" => $o, "me" => $meo]); return;
+  }
+  if ($_SERVER["REQUEST_METHOD"] !== "POST") { $done(400, ["error" => "post"]); return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 20001), true); if (!is_array($b)) { $done(400, ["error" => "body"]); return; }
+  if ($act === "rules") { $u = $me["u"]; $u["forum_rules"] = 1; cm_write($me["uf"], $u); $done(200, ["ok" => true]); return; }
+  if ($act === "new") {
+    if (!$meo["rules"]) { $done(403, ["error" => "rules"]); return; }
+    $cat = cm_clean($b["cat"] ?? "", 8); $lvl = cm_clean($b["lvl"] ?? "", 4); $title = cm_clean($b["title"] ?? "", 90); $body = cm_clean($b["body"] ?? "", 4000);
+    if (!in_array($cat, $CATS, true) || !in_array($lvl, $LVLS, true) || mb_strlen($title) < 4 || mb_strlen($body) < 5) { $done(400, ["error" => "invalid"]); return; }
+    if ($cat === "ann" && !$adm) { $done(403, ["error" => "admin only"]); return; }
+    $rc = 0; foreach ($idx as $t) { if ($t["uid"] === $h && $now - (int)$t["ts"] < 3600) $rc++; } if ($rc >= 5) { $done(429, ["error" => "limit"]); return; }
+    $t = ["id" => bin2hex(random_bytes(5)), "uid" => $h, "by" => $me["name"], "adm" => $adm ? 1 : 0, "av" => cm_av($b["av"] ?? null), "title" => $title, "body" => $body, "cat" => $cat, "lvl" => $lvl, "st" => "open", "ts" => $now, "last" => $now, "lastby" => $h, "n" => 0, "v" => []];
+    $idx[] = $t; if (count($idx) > 3000) { $idx = array_slice($idx, -3000); } $save(); $done(200, ["id" => $t["id"]]); return;
+  }
+  $id = preg_replace("/[^a-f0-9]/", "", cm_clean($b["id"] ?? "", 20)); $ti = -1; foreach ($idx as $i => $x) { if ($x["id"] === $id) { $ti = $i; break; } }
+  if ($ti < 0) { $done(404, ["error" => "none"]); return; }
+  $t = &$idx[$ti]; $pf = "$dir/p_$id.json"; $P = cm_read($pf, []); $pid = preg_replace("/[^a-f0-9]/", "", cm_clean($b["pid"] ?? "", 20));
+  if ($act === "reply") {
+    if (!$meo["rules"]) { $done(403, ["error" => "rules"]); return; }
+    $body = cm_clean($b["body"] ?? "", 4000); if (mb_strlen($body) < 2) { $done(400, ["error" => "invalid"]); return; }
+    if (!empty($t["lock"]) && !$adm) { $done(403, ["error" => "locked"]); return; }
+    $rc = 0; foreach ($P as $p) { if ($p["uid"] === $h && $now - (int)$p["ts"] < 600) $rc++; } if ($rc >= 8) { $done(429, ["error" => "limit"]); return; }
+    $P[] = ["id" => bin2hex(random_bytes(5)), "uid" => $h, "by" => $me["name"], "adm" => $adm ? 1 : 0, "av" => cm_av($b["av"] ?? null), "ts" => $now, "body" => $body, "v" => []];
+    if (count($P) > 500) { $P = array_slice($P, -500); } cm_write($pf, $P); $t["n"] = count($P); $t["last"] = $now; $t["lastby"] = $h; $save(); $done(200, ["ok" => true]); return;
+  }
+  if ($act === "vote") {
+    if ($pid !== "") { $pi = -1; foreach ($P as $i => $p) { if ($p["id"] === $pid) { $pi = $i; break; } } if ($pi < 0) { $done(404, ["error" => "none"]); return; }
+      $v = $P[$pi]["v"] ?? []; $has = in_array($h, $v, true); $v = $has ? array_values(array_diff($v, [$h])) : array_merge($v, [$h]); $P[$pi]["v"] = $v; cm_write($pf, $P); $done(200, ["votes" => count($v), "voted" => !$has]); return; }
+    $v = $t["v"] ?? []; $has = in_array($h, $v, true); $v = $has ? array_values(array_diff($v, [$h])) : array_merge($v, [$h]); $t["v"] = $v; $save(); $done(200, ["votes" => count($v), "voted" => !$has]); return;
+  }
+  if ($act === "mod") {
+    $op = cm_clean($b["op"] ?? "", 12); $own = $t["uid"] === $h;
+    if ($pid !== "") { foreach ($P as $p) { if ($p["id"] === $pid) { $own = $p["uid"] === $h; break; } } }
+    if ($op === "del") {
+      if (!$adm && !$own) { $done(403, ["error" => "forbidden"]); return; }
+      if ($pid !== "") { $P = array_values(array_filter($P, function ($p) use ($pid) { return $p["id"] !== $pid; })); cm_write($pf, $P); $t["n"] = count($P); $save(); }
+      else { unset($t); array_splice($idx, $ti, 1); @unlink($pf); $save(); }
+      $done(200, ["ok" => true]); return;
+    }
+    if (!$adm) { $done(403, ["error" => "forbidden"]); return; }
+    if ($op === "pin" || $op === "unpin") { $t["pin"] = $op === "pin" ? 1 : 0; }
+    elseif ($op === "lock" || $op === "unlock") { $t["lock"] = $op === "lock" ? 1 : 0; }
+    elseif ($op === "st" && in_array(cm_clean($b["v"] ?? "", 8), $STS, true)) { $t["st"] = cm_clean($b["v"], 8); }
+    elseif ($op === "move" && in_array(cm_clean($b["cat"] ?? "", 8), $CATS, true)) { $t["cat"] = cm_clean($b["cat"], 8); if (in_array(cm_clean($b["lvl"] ?? "", 4), $LVLS, true)) { $t["lvl"] = cm_clean($b["lvl"], 4); } }
+    elseif ($op === "sol" && $pid !== "") { foreach ($P as $i => $p) { $P[$i]["sol"] = ($p["id"] === $pid && empty($p["sol"])) ? 1 : 0; } cm_write($pf, $P); }
+    else { $done(400, ["error" => "op"]); return; }
+    $save(); $done(200, ["ok" => true]); return;
+  }
+  $done(400, ["error" => "act"]);
+}
+function gram_main($k, $base) {
+  $act = (string)($_GET["gram"] ?? "list"); $f = "$base/gram.json"; $S = cm_read($f, []);
+  if ($act === "list") { echo json_encode(["sheets" => array_values($S)], JSON_UNESCAPED_UNICODE); return; }   /* lecture publique */
+  $me = cm_me($k, $base); if (!$me || !$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 40001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
+  if ($act === "save") {
+    $s = is_array($b["sheet"] ?? null) ? $b["sheet"] : []; $id = preg_replace("/[^a-f0-9]/", "", cm_clean($s["id"] ?? "", 20)); if ($id === "") { $id = bin2hex(random_bytes(4)); }
+    $ex = []; foreach (array_slice(is_array($s["ex"] ?? null) ? $s["ex"] : [], 0, 40) as $e) { if (is_array($e) && count($e) >= 2) { $ex[] = [cm_clean($e[0], 200), cm_clean($e[1], 200)]; } }
+    $lvl = cm_clean($s["lvl"] ?? "", 4); if (!in_array($lvl, ["A1", "A2", "B1"], true)) { $lvl = "A1"; }
+    $row = ["id" => $id, "lvl" => $lvl, "theme" => cm_clean($s["theme"] ?? "", 40) ?: "Divers", "order" => (int)($s["order"] ?? 0), "tfr" => cm_clean($s["tfr"] ?? "", 90), "tzh" => cm_clean($s["tzh"] ?? "", 90), "bfr" => cm_clean($s["bfr"] ?? "", 8000), "bzh" => cm_clean($s["bzh"] ?? "", 8000), "ex" => $ex, "ts" => time()];
+    if ($row["tfr"] === "") { http_response_code(400); echo "{\"error\":\"title\"}"; return; }
+    $S = array_values(array_filter($S, function ($x) use ($id) { return $x["id"] !== $id; })); $S[] = $row; cm_write($f, $S); echo json_encode(["id" => $id]); return;
+  }
+  if ($act === "del") { $id = cm_clean($b["id"] ?? "", 20); $S = array_values(array_filter($S, function ($x) use ($id) { return $x["id"] !== $id; })); cm_write($f, $S); echo "{\"ok\":true}"; return; }
+  http_response_code(400); echo "{\"error\":\"act\"}";
+}
+function team_main($k, $base) {
+  $act = (string)($_GET["team"] ?? "list"); $f = "$base/team.json"; $T = cm_read($f, []); $me = cm_me($k, $base);
+  if ($act === "list") {
+    $m = []; foreach ($T as $key => $v) { if ((int)($v["show"] ?? 1)) { $v["key"] = substr($key, 0, 8); $m[] = $v; } }
+    echo json_encode(["members" => $m, "me" => ($me && $me["adm"]) ? ($T[$me["h"]] ?? null) : null, "adm" => (bool)($me && $me["adm"])], JSON_UNESCAPED_UNICODE); return;
+  }
+  if (!$me || !$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 4001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
+  if ($act === "save") {
+    $li = cm_clean($b["linkedin"] ?? "", 200); if ($li !== "" && !preg_match('#^https://([a-z0-9-]+\.)?linkedin\.com/[A-Za-z0-9_\-./%?=&]*$#', $li)) { http_response_code(400); echo "{\"error\":\"linkedin\"}"; return; }
+    $T[$me["h"]] = ["name" => $me["name"], "role" => cm_clean($b["role"] ?? "", 80), "bio" => cm_clean($b["bio"] ?? "", 300), "linkedin" => $li, "show" => (($b["show"] ?? true) === false) ? 0 : 1, "av" => cm_av($b["av"] ?? null), "ts" => time()];
+    cm_write($f, $T); echo "{\"ok\":true}"; return;
+  }
+  http_response_code(400); echo "{\"error\":\"act\"}";
+}
 // ---- Administration : les administrateurs sont des profils (hash de la clé) listés dans admins.json.
 // Premier administrateur : jeton de première activation (hash dans admin_setup.sha256), utilisable une seule fois.
 // Classes : classes.json ; chaque compte nommé a une entrée users/<hash>.json {name, ts, cls}. cls = "" pour un élève individuel.
@@ -278,7 +417,7 @@ function admin_main($k, $base, $app) {
     if ($act === "reqadmin") {   /* un enseignant demande les droits admin : l'administrateur valide dans sa fenêtre Gestion */
       if (!is_file("$base/$h.json")) { http_response_code(400); echo "{\"error\":\"no profile\"}"; return; }
       $rq = "$base/adminreq"; if (!is_dir($rq)) { @mkdir($rq, 0700, true); }
-      file_put_contents("$rq/$h", "1", LOCK_EX); echo "{\"ok\":true}"; return;
+      file_put_contents("$rq/$h", json_encode(["note" => mb_substr(trim(preg_replace('/[\x00-\x1f<>]/u', " ", (string)($b["note"] ?? ""))), 0, 120), "ts" => time()], JSON_UNESCAPED_UNICODE), LOCK_EX); echo "{\"ok\":true}"; return;
     }
     if (!$isAdmin) { http_response_code(403); echo "{\"error\":\"denied\"}"; return; }
     if ($act === "reportdone") {   /* traité : on retire le signalement */
@@ -315,7 +454,7 @@ function admin_main($k, $base, $app) {
       $cid = substr(preg_replace("/[^a-z0-9]/", "", strtolower((string)@iconv("UTF-8", "ASCII//TRANSLIT", $name))), 0, 16);
       if ($cid === "") { $cid = "c" . time(); }
       if (class_exists_in($base, $cid)) { $cid .= substr((string)time(), -4); }
-      $cls[] = ["id" => $cid, "name" => $name]; classes_save($base, $cls);
+      $cls[] = ["id" => $cid, "name" => $name, "owner" => $h]; classes_save($base, $cls);
     }
     elseif ($act === "setperiod") {
       $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $df = (string)($b["from"] ?? ""); $dt = (string)($b["to"] ?? ""); $de = (string)($b["end"] ?? "");
@@ -380,7 +519,10 @@ function self_setcls($k, $base, $app) {
   $ud = "$base/users"; if (!is_dir($ud)) { @mkdir($ud, 0700, true); }
   $uf = "$ud/$h.json"; $u = is_file($uf) ? json_decode(@file_get_contents($uf), true) : null;
   if (!is_array($u)) { $u = ["name" => "", "ts" => time()]; }
-  $u["cls"] = $cid; file_put_contents($uf, json_encode($u, JSON_UNESCAPED_UNICODE), LOCK_EX);
+  $u["cls"] = $cid;
+  $tch = preg_replace("/[^a-f0-9]/", "", (string)(is_array($b) ? ($b["tch"] ?? "") : ""));
+  if ($tch !== "") { foreach (admin_load($base) as $ah) { if (substr($ah, 0, 12) === substr($tch, 0, 12)) { $u["tch"] = substr($ah, 0, 12); } } }
+  file_put_contents($uf, json_encode($u, JSON_UNESCAPED_UNICODE), LOCK_EX);
   echo json_encode(["ok" => true, "cls" => $cid]);
 }
 

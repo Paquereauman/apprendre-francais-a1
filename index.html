@@ -327,7 +327,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 </style></head><body>
 <header><button id="backb" onclick="goBack()" style="display:none" aria-label="Retour">←</button><h1 onclick="home()">🥖 Je parle baguette <small style="font-weight:600;opacity:.85;margin-left:6px">我说法棍</small></h1><span id="xp"></span><span id="streak" onclick="giftCal()" style="cursor:pointer" title="Calendrier · 日历"></span><span id="cld"></span><button id="rkb" onclick="rankPage()" aria-label="Classement">🏆</button><button id="admb" style="display:none" onclick="adminPage()" aria-label="Administration">🛡️ Admin</button><button id="prfb" onclick="profClick()"></button><button id="lng" onclick="cycLang()"></button><button id="spd" onclick="cycSpd()"></button></header><div id="hp"><i></i></div>
 <div id="crumb"></div><div id="app"></div>
-<nav id="bnav"><button data-k="home" onclick="home()"><i>🏠</i><small>Parcours · 路径</small></button><button data-k="msg" onclick="msgPage()"><i>💬</i><small>Messages · 消息</small></button><button data-k="pron" onclick="location.href='prononciation/'"><i>🗣️</i><small>Sons · 发音</small></button><button data-k="rank" onclick="rankPage()"><i>🏆</i><small>Classement · 排行</small></button><button data-k="me" onclick="profClick()"><i>👤</i><small>Profil · 我</small></button></nav>
+<nav id="bnav"><button data-k="home" onclick="home()"><i>🏠</i><small>Parcours · 路径</small></button><button data-k="res" onclick="resourcesPage()"><i>📚</i><small>Ressources · 资源</small></button><button data-k="comm" onclick="forumPage()"><i>💬</i><small>Communauté · 社区</small></button><button data-k="me" onclick="profClick()"><i>👤</i><small>Profil · 我</small></button></nav>
 <div class="modal" id="lang"><div class="box" style="text-align:center"><h3>🌐 Langue du menu · 菜单语言</h3><p style="color:var(--mut)">Tu pourras la changer à tout moment avec le bouton 🌐. · 之后可随时用 🌐 按钮更改。</p>
 <button class="langb" onclick="setLang('fr')">🇫🇷 Français</button><button class="langb" onclick="setLang('zh')">🇨🇳 中文</button><button class="langb" onclick="setLang('both')">🇫🇷 + 🇨🇳 Français + 中文</button></div></div>
 <div class="modal" id="me"><div class="box rpgp">
@@ -448,7 +448,7 @@ function setKnown(cid,h,on){const a=S.known[cid]=S.known[cid]||[],i=a.indexOf(h)
 /* ---- navigation / accueil ---- */
 let cat,Q,cur,IN_POP=false;
 function goBack(){if(document.body.classList.contains("inquiz")){clearTimeout(Q&&Q.tm);document.body.classList.remove("inquiz");(!cat||["test","rev","phr","chap"].includes(Q.mode))?home():menu();return}
-  if(cat&&(cur===list||cur===cards||cur===poster))menu();else home()}
+  if(window.CM&&CM.back&&CM.back())return;if(cat&&(cur===list||cur===cards||cur===poster))menu();else home()}
 window.addEventListener("popstate",()=>{IN_POP=true;try{if(document.body.classList.contains("inquiz")||(cur&&cur!==home))goBack()}finally{IN_POP=false}});
 function head(){document.getElementById("xp").textContent="⭐ "+S.xp+" XP";document.getElementById("streak").textContent="🔥 "+(S.streak||0);document.getElementById("spd").textContent="🔊 "+["très lent · 很慢","lent · 慢","normal · 正常"][S.sp];
   document.getElementById("prfb").innerHTML=PNAME?(avDone(S.av)?`<span class="svgav" style="display:inline-block;vertical-align:middle;width:22px;height:22px">${avSVG(S.av,44,{vb:AVCROP.icon,lite:1})}</span>`:escH(S.emo||"🙂"))+" "+escH(dispName().slice(0,12)):"👤 Connexion · 登录";{const bi=document.querySelector('#bnav button[data-k="me"] i');if(bi)bi.innerHTML=avDone(S.av)?`<span class="svgav" style="display:inline-block;width:28px;height:28px">${avSVG(S.av,56,{vb:AVCROP.icon,lite:1})}</span>`:"👤"}document.getElementById("lng").textContent="🌐 "+LANGLAB[UI()];document.getElementById("admb").style.display=(typeof ADM!=="undefined"&&ADM&&PNAME&&(ADM.admin||(ADM.claimable&&PNAME.trim().toLowerCase()==="baptiste")))?"":"none";document.querySelector("#hp i").style.width=stats().all+"%";const ck=cur===home?"home":(cur===msgPage||cur===msgThread||cur===msgNew)?"msg":cur===salonPage?"home":cur===rankPage?"rank":cur===plan?"plan":"";document.querySelectorAll("#bnav button").forEach(b=>b.classList.toggle("on",b.dataset.k===ck));document.getElementById("backb").style.display=(document.body.classList.contains("inquiz")||(cur&&cur!==home))?"":"none"}
@@ -464,7 +464,7 @@ function chTile(i){const e=chRes(i),b=e?e.b:0,left=QV&&QV.left?QV.left[stepKey(i
 const CHC=["#e63946","#f4801a","#e0a800","#4caf50","#16a085","#1e88c8","#3f5fd0","#7b4fd1","#c0399f","#d6455d","#8d6e63","#2a9d8f","#5c7cfa","#e67e22","#43a047","#00838f","#6d4c9f"];
 function home(){cur=home;cat=null;head();crumb([]);const st=stats(),T=timerInfo(),L=lvOf(S.xp),lo=40*(L-1)**2,hi=40*L*L,dn=S.day&&S.day.d===tdy()?S.day.n:0,gd=goalDay(),due=dueItems().length,nx=nextAction();
   const acts=(nx?`<div class="hm-act main" onclick="${nx.fn}"><span style="font-size:1.4rem">${nx.quiz?"🏁":"▶"}</span><div>${nx.quiz?"Passer le quiz du chapitre · 参加章节测验":"Continuer · 继续"}<small>${nx.label}</small></div></div>`:`<div class="hm-act ok">🎉 Parcours A1 terminé ! · A1课程完成！</div>`)+
-   (due?`<div class="hm-act" onclick="revStart()"><span style="font-size:1.4rem">🔁</span><div>Révision du jour · 今日复习<small>${due} mot${due>1?"s":""} à revoir · ${due}个词待复习</small></div></div>`:(Object.keys(S.rev).length?`<div class="hm-act ok"><span style="font-size:1.4rem">✅</span><div>Révisions à jour · 复习已完成<small>Rien à revoir aujourd'hui · 今天没有需要复习的</small></div></div>`:""))+`<div class="hm-act" onclick="salonPage()"><span style="font-size:1.4rem">🏠</span><div>Salon · 沙龙<small>retrouve les autres élèves · 与同学见面</small></div></div>`;
+   (due?`<div class="hm-act" onclick="revStart()"><span style="font-size:1.4rem">🔁</span><div>Révision du jour · 今日复习<small>${due} mot${due>1?"s":""} à revoir · ${due}个词待复习</small></div></div>`:(Object.keys(S.rev).length?`<div class="hm-act ok"><span style="font-size:1.4rem">✅</span><div>Révisions à jour · 复习已完成<small>Rien à revoir aujourd'hui · 今天没有需要复习的</small></div></div>`:""))+``;
   const sub=!PNAME?"Connecte-toi pour suivre ta progression · 登录后可查看进度":(T&&!T.noEnd&&!T.over?(T.onBreak?"⏸️ Pause vacances · 假期暂停":"⏳ "+T.days+" jours de travail restants · 剩余"+T.days+"个学习日")+(T.perWeek?"<br>🎯 ≈ "+T.perWeek+" chapitre(s)/semaine · 每周约"+T.perWeek+"章":""):(T&&T.onBreak?"⏸️ Pause vacances · 假期暂停":"Seuls les quiz de fin de chapitre comptent · 只有章节测验计入进度"));
   $.innerHTML=`<div class="homegrid"><div class="hm">${syncBanner()}<div class="hm-stats"><div class="hm-card hm-me"><div class="hm-lab">Niveau · 等级</div><div class="hm-val">Niveau ${L} · ${L}级 <small>⭐ ${S.xp} XP</small></div>${bar((S.xp-lo)/(hi-lo)*100)}</div>
   <div class="hm-card"><div class="hm-lab">Aujourd'hui · 今天</div><div class="hm-val">${dn}<small> / ${gd} mots · 个词</small></div>${bar(dn/gd*100)}<div class="hm-sub">🔥 ${S.streak||0} jour${S.streak>1?"s":""} de suite · 连续${S.streak||0}天</div></div>
@@ -629,20 +629,21 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   if(n.length<2||pw.length<6){m.textContent="Nom : 2 caractères minimum. Mot de passe : 6 minimum. · 用户名至少2个字符，密码至少6位。";return}
   if(!window.crypto||!crypto.subtle){m.textContent="Connexion impossible ici : ouvre le site en https. · 请使用 https 打开本站。";return}
   const who=document.querySelector("input[name=pwho]:checked");
-  if(mode==="create"&&!who){m.textContent="Réponds d'abord à la question : es-tu élève de Baptiste ? · 请先回答：你是 Baptiste 老师的学生吗？";return}
+  if(mode==="create"&&!who){m.textContent="Choisis d'abord ton rôle (élève, apprenant libre ou professeur). · 请先选择你的身份。";return}
   m.textContent="Connexion… · 连接中……";
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim(),exists=t!=="null";
     if(!exists&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
     if(exists&&mode==="create"){m.textContent="Ce compte existe déjà (même nom et même mot de passe) : connecte-toi, ou choisis un autre mot de passe. · 该账号已存在（用户名和密码相同）：请直接登录，或换一个密码。";return}
     if(!exists){try{const a=await fetch(API+"?avail=1&n="+encodeURIComponent(n)+APPQ,{cache:"no-store"});if(a.ok){const j=await a.json();if(j.free===false){m.textContent="Ce nom est déjà pris par un autre élève : choisis-en un autre. · 该用户名已被其他学生使用，请换一个。";return}}}catch(e){}}
     /* la progression déjà présente sur cet appareil n'est JAMAIS mélangée à un autre compte */
-    const sc=who&&who.value==="yes"?document.querySelector("input[name=pcl]:checked"):null,wantAdm=who&&who.value==="no"&&(document.querySelector("input[name=pnoc]:checked")||{}).value==="admin",prevAnon=!PNAME&&(S.xp>0||wordsIn(S)>0),keepPrefs={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp};
+    const sc=who&&who.value==="yes"?document.querySelector("input[name=pcl]:checked"):null,tchSel=who&&who.value==="yes"?((document.querySelector("input[name=ptc]:checked")||{}).value||""):"",wantAdm=!!(who&&who.value==="teacher"),roleNote=wantAdm?((document.getElementById("pnote")||{}).value||"").trim():"",prevAnon=!PNAME&&(S.xp>0||wordsIn(S)>0),keepPrefs={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp};
     let carry=null;if(!exists&&prevAnon&&confirm(locText("Associer la progression faite sur cet appareil (sans compte) à ce nouveau compte ? OK = oui, Annuler = repartir de zéro. · 把本设备上（未登录时）的学习进度并入新账号？确定=是，取消=从零开始。")))carry=S;
     CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
     S=Object.assign(carry||freshS(),keepPrefs);S.owner=ownerId();S.cls=exists?"":(sc?sc.value:"");
     S.dismissSync=1;S.ts=0;await pull();
     if(!exists){const st=await push();if(st===409){logoutLocal();m.textContent="Ce nom vient d'être pris par un autre élève : choisis-en un autre. · 该用户名刚被其他学生使用，请换一个。";return}}
-    if(!exists&&wantAdm){const ok=await admPost({action:"reqadmin"});setTimeout(()=>toast(ok?"📨 Demande envoyée à l'administrateur · 已向管理员发送申请":"Demande non envoyée · 申请未发送"),1800)}
+    if(!exists&&tchSel){try{await fetch(API+"?setcls=1&k="+k+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:S.cls||"",tch:tchSel})})}catch(e){}}
+    if(!exists&&wantAdm){const ok=await admPost({action:"reqadmin",note:roleNote,role:"teacher"});setTimeout(()=>toast(ok?"📨 Demande envoyée à l'administrateur · 已向管理员发送申请":"Demande non envoyée · 申请未发送"),1800)}
     loadClasses();loadQV();profClose();head();if(cur)cur();setTimeout(giftCheck,1800);admStatus();toast(!exists?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(!exists)setTimeout(meOpen,700)}
   catch(e){m.textContent="Serveur injoignable, réessaie dans un instant. · 无法连接服务器，请稍后再试。"}}
 function logoutLocal(){const keep={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp,dismissSync:1};PNAME="";ADM=null;QV=null;CODE=rndCode();
@@ -653,14 +654,18 @@ function profOut(){if(!confirm(locText("Se déconnecter ? Ta progression reste s
 function syncBanner(){if(PNAME||S.dismissSync)return "";return`<div class="hm-sync"><div style="flex:1 1 240px"><b>👤 Sauvegarde ta progression · 保存你的进度</b><div class="hm-sub" style="margin:0">Crée un compte pour la retrouver sur tous tes appareils et entrer dans le classement. · 创建账号即可在所有设备上同步进度并参加排行榜。</div></div><div class="nav" style="margin:0"><button onclick="profOpen()">Compte · 账号</button><button class="alt" onclick="profLater()">Plus tard · 稍后</button></div></div>`}
 
 /* ---- classes (choix à la création du compte) ---- */
-let CLS=[{id:"classe2026",name:"Classe 2026"}];
+let CLS=[{id:"classe2026",name:"Classe 2026"}],TCH=[];
 const dispName=()=>S.nick||PNAME;
-function renderPcls(){const e=document.getElementById("pcls");if(!e)return;const g=n=>{const x=document.querySelector("input[name="+n+"]:checked");return x?x.value:undefined},sel=g("pcl"),who=g("pwho"),no=g("pnoc")||"free";
-  e.innerHTML=`<div class="evd" style="margin-top:8px"><b>Es-tu élève de Baptiste ? · 你是 Baptiste 老师的学生吗？</b> *</div>
-   <label class="pcl"><input type="radio" name="pwho" value="yes" ${who==="yes"?"checked":""} onchange="renderPcls()"> Oui · 是</label><label class="pcl"><input type="radio" name="pwho" value="no" ${who==="no"?"checked":""} onchange="renderPcls()"> Non · 不是</label>`+
-   (who==="yes"?`<div class="evd" style="margin-top:6px">Ma classe · 我的班级 :</div>`+CLS.map((c,i)=>`<label class="pcl"><input type="radio" name="pcl" value="${escH(c.id)}" ${(sel!==undefined?sel===c.id:i===0)?"checked":""}> ${escH(c.name)}</label>`).join("")+`<label class="pcl"><input type="radio" name="pcl" value="" ${sel===""||(!CLS.length)?"checked":""}> Sans classe · 无班级</label>`:"")+
-   (who==="no"?`<label class="pcl"><input type="radio" name="pnoc" value="free" ${no==="free"?"checked":""}> Utilisateur libre : j'apprends seul(e) · 自由学习者</label><label class="pcl"><input type="radio" name="pnoc" value="admin" ${no==="admin"?"checked":""}> Je suis enseignant(e) : demander les droits admin · 我是老师：申请管理员权限</label>`:"")}
-async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ+(PNAME?"&k="+CODE:""),{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length){CLS=j.classes;if(PNAME&&typeof j.mine==="string")S.cls=j.mine;const m=CLS.find(c=>c.id===S.cls);S.cper=m&&(m.from||m.end)?{from:m.from||"",to:m.to||"",end:m.end||""}:null;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}}catch(e){}renderPcls();head();if(cur===home||cur===plan)cur()}
+function renderPcls(){const e=document.getElementById("pcls");if(!e)return;const g=n=>{const x=document.querySelector("input[name="+n+"]:checked");return x?x.value:undefined},sel=g("pcl"),tc=g("ptc"),who=g("pwho"),note=(document.getElementById("pnote")||{}).value||"";
+  const role=(v,ic,t,s)=>`<label class="pcl" style="display:flex;gap:8px;align-items:flex-start"><input type="radio" name="pwho" value="${v}" ${who===v?"checked":""} onchange="renderPcls()"><span><b>${ic} ${t}</b><br><small style="color:var(--mut)">${s}</small></span></label>`;
+  e.innerHTML=`<div class="evd" style="margin-top:8px"><b>Je suis… · 我是…</b> *</div>`+
+   role("yes","🎓","Élève · 学生","Je choisis mon professeur et ma classe · 选择我的老师和班级")+
+   role("free","🧑‍💻","Apprenant libre · 自学者","J'apprends seul(e) · 我自己学习")+
+   role("teacher","👩‍🏫","Professeur / enseignant(e) · 教师","Je demande les droits admin pour suivre mes élèves · 申请管理员权限以管理我的学生")+
+   (who==="yes"?(TCH.length?`<div class="evd" style="margin-top:6px"><b>Mon professeur · 我的老师</b> :</div>`+TCH.map((t,i)=>`<label class="pcl" style="display:flex;gap:8px;align-items:flex-start"><input type="radio" name="ptc" value="${escH(t.id)}" ${(tc!==undefined?tc===t.id:TCH.length===1&&i===0)?"checked":""} onchange="renderPcls()"><span><b>${escH(t.name)}</b>${t.role?`<br><small style="color:var(--mut)">${escH(t.role)}</small>`:""}</span></label>`).join("")+`<label class="pcl"><input type="radio" name="ptc" value="" ${tc===""?"checked":""} onchange="renderPcls()"> Je ne vois pas mon professeur · 找不到我的老师</label>`:"")+
+     (()=>{const cur_t=tc!==undefined?tc:(TCH.length===1?TCH[0].id:undefined),lst=TCH.length&&cur_t?CLS.filter(c=>!c.owner||c.owner===cur_t):(TCH.length?[]:CLS);return(TCH.length&&cur_t===undefined)?"":`<div class="evd" style="margin-top:6px">Ma classe · 我的班级 :</div>`+lst.map((c,i)=>`<label class="pcl"><input type="radio" name="pcl" value="${escH(c.id)}" ${(sel!==undefined?sel===c.id:i===0)?"checked":""}> ${escH(c.name)}</label>`).join("")+`<label class="pcl"><input type="radio" name="pcl" value="" ${sel===""||!lst.length?"checked":""}> Sans classe · 无班级</label>`})():"")+
+   (who==="teacher"?`<div class="evd" style="margin-top:6px">Établissement / fonction (facultatif) · 学校/职务（可选）</div><input class="t" id="pnote" maxlength="120" placeholder="Ex. : professeur de FLE, Université de … · 例如：法语教师，…大学" value="${escH(note)}" style="width:100%;box-sizing:border-box"><div class="evd" style="margin-top:4px">Un administrateur validera ta demande. En attendant, tu utilises l'appli comme apprenant. · 管理员会审核你的申请，在此之前你可以作为学习者使用。</div>`:"")}
+async function loadClasses(){try{const r=await fetch(API+"?classes=1"+APPQ+(PNAME?"&k="+CODE:""),{cache:"no-store"});if(r.ok){const j=await r.json();if(j.app==="fr"&&Array.isArray(j.classes)&&j.classes.length){TCH=Array.isArray(j.teachers)?j.teachers:[];CLS=j.classes;if(PNAME&&typeof j.mine==="string")S.cls=j.mine;const m=CLS.find(c=>c.id===S.cls);S.cper=m&&(m.from||m.end)?{from:m.from||"",to:m.to||"",end:m.end||""}:null;try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}}}catch(e){}renderPcls();head();if(cur===home||cur===plan)cur()}
 /* ---- profil : pseudo + emoji personnage ---- */
 const EMOS=["🐼", "🐯", "🦊", "🐱", "🐶", "🐰", "🐻", "🐨", "🦁", "🐸", "🐵", "🦄", "🐲", "🐧", "🦉", "🦋", "🐢", "🐙", "🐬", "🦖", "🤖", "👽", "🧙", "🥷", "🧚", "🦸", "🧜", "🎅", "😎", "🤓", "🥳", "😺", "👻", "🎃", "🌸", "🍀", "⭐", "🔥", "🍕", "🥐", "⚽", "🎸", "🚀", "🌈", "🐘", "🦒", "🐳", "🦈", "🦅", "🦜", "🐝", "🐞", "🐌", "🦔", "🦦", "🦥", "🐊", "🦩", "🍉", "🍓", "🍜", "🍣", "🧋", "🍩", "🎨", "🎧", "🎮", "🏀", "🏄", "🚴", "🌙", "☀️", "⚡", "❄️", "🌊", "🎯", "🏆", "💎", "👑", "🎓", "🧠", "💪", "🎤", "🎬", "📚", "✈️", "🚗", "🏯", "🗼"];
 const COLS=["#e3edff","#ffe3e3","#e3ffe9","#fff3c4","#f1e3ff","#ffe8d1","#d9f7f5","#fbe3f1","#e8e8e8","#c9d8ff"];
@@ -1044,7 +1049,7 @@ function slFrame(t){if(!SL||SL.stop||cur!==salonPage){slStop();return}
 /* ---- messagerie entre usagers ---- */
 let MSGL=[],MSGTM=0,MSGTH="",MSGL_T=[];
 const msgApi=(a,q)=>API+"?msg="+a+(q||"")+"&k="+CODE+APPQ;
-function setMsgBadge(n){const i=document.querySelector('#bnav button[data-k="msg"] i');if(i)i.innerHTML="💬"+(n?`<b class="nbd">${n>9?"9+":n}</b>`:"")}
+function setMsgBadge(n){const i=document.querySelector('#bnav button[data-k="comm"] i');if(i)i.innerHTML="💬"+(n?`<b class="nbd">${n>9?"9+":n}</b>`:"")}
 let MSGN=0;const TITLE0=document.title;
 function msgNotify(n){setMsgBadge(n);document.title=n?"("+n+") "+TITLE0:TITLE0;if(n>MSGN&&MSGN>=0&&cur!==msgThread)toast("💬 Nouveau message · 新消息");MSGN=n}
 async function msgPoll(){if(!PNAME){msgNotify(0);return}try{const r=await fetch(msgApi("list"),{cache:"no-store"});if(r.ok){const j=await r.json();msgNotify(j.unread|0)}}catch(e){}}
@@ -1713,4 +1718,5 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
     (shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+how+`</div>`}
 try{speechSynthesis.getVoices()}catch(e){}
 touchStreak();home();loc(document.body);accLoad();setTimeout(giftCheck,3500);pull();admStatus();loadClasses();loadQV();if(!S.uiChosen)langOpen();
-</script></body></html>
+</script><script src="community.js"></script>
+</body></html>

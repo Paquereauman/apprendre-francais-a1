@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.17 — 2026-10-21 — Communauté, Ressources, rôles à l'inscription
+
+- Nouvelle barre du bas : Parcours · Ressources · Communauté · Profil. Le Salon est désactivé (code conservé).
+- **Communauté** : forum (annonces, suggestions, bugs, aide, cours & contenus, discussion libre ; niveaux A1/A2/B1 ; statuts ; votes ; solution ; épinglage, verrouillage, déplacement ; règles à accepter), Messages, Classement et page **Projet** (open source, contributeurs, équipe avec fonction et lien LinkedIn).
+- **Ressources** : Grammaire (fiches FR/中文 avec exemples audio, éditeur pour les admins) + Prononciation.
+- Signalement rapide d'une question ou d'une traduction (une feuille, 5 motifs).
+- Inscription : rôles Élève / Apprenant libre / Professeur ; l'élève choisit son professeur dans la liste puis sa classe ; le professeur indique son établissement dans sa demande de droits.
+- Serveur (api.php) : forum, grammaire, équipe, propriétaire des classes, liste des professeurs (admins ayant une fiche d'équipe + le premier admin). Aucune donnée d'élève modifiée.
+
 ## v6.16 — 2026-10-15 — Canapé et personnages 3D
 
 - Canapé découpé en 3 places triées avec les personnages (plus de mauvaise superposition), coussins alignés, accoudoir droit au premier plan.
