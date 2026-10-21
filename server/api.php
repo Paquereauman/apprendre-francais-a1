@@ -25,6 +25,7 @@ if (isset($_GET["report"])) { report_main($k, $base); exit; }
 if (isset($_GET["forum"])) { forum_main($k, $base); exit; }
 if (isset($_GET["gram"])) { gram_main($k, $base); exit; }
 if (isset($_GET["team"])) { team_main($k, $base); exit; }
+if (isset($_GET["donate"])) { donate_main($k, $base); exit; }
 if (isset($_GET["accpos"])) { accpos_main($k, $base); exit; }
 if (isset($_GET["classes"])) {
   $adm0 = admin_load($base); $o = ["app" => $app, "classes" => [], "teachers" => []];
@@ -401,6 +402,33 @@ function team_main($k, $base) {
     }
     $T[$me["h"]] = $e; cm_write($f, $T); echo "{\"ok\":true}"; return;
   }
+  http_response_code(400); echo "{\"error\":\"act\"}";
+}
+
+function donate_pub($D) {
+  $dn = []; foreach (($D["donors"] ?? []) as $d) { $dn[] = ["n" => !empty($d["anon"]) ? "" : (string)($d["n"] ?? ""), "anon" => !empty($d["anon"]) ? 1 : 0]; }
+  return ["methods" => $D["methods"] ?? [], "costs" => $D["costs"] ?? [], "note" => (string)($D["note"] ?? ""), "donors" => $dn];
+}
+function donate_main($k, $base) {
+  $act = (string)($_GET["donate"] ?? "get"); $f = "$base/donate.json"; $D = cm_read($f, []);
+  $me = cm_me($k, $base);
+  if ($act === "get") { echo json_encode(array_merge(donate_pub($D), ["adm" => (bool)($me && $me["adm"])]), JSON_UNESCAPED_UNICODE); return; }
+  if (!$me || !$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 400001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
+  if ($act === "save") {
+    $ms = [];
+    foreach (array_slice(is_array($b["methods"] ?? null) ? $b["methods"] : [], 0, 6) as $x) {
+      if (!is_array($x)) continue; $t = cm_clean($x["t"] ?? "", 8); if (!in_array($t, ["stripe", "paypal", "wechat", "alipay", "other"], true)) { $t = "other"; }
+      $u = cm_clean($x["u"] ?? "", 300); if ($u !== "" && !preg_match('#^https://[^\s<>"\']+$#', $u)) { $u = ""; }
+      $qr = is_string($x["qr"] ?? null) ? $x["qr"] : ""; if ($qr !== "" && !(strlen($qr) <= 90000 && preg_match('#^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$#', $qr))) { $qr = ""; }
+      if ($u !== "" || $qr !== "") { $ms[] = ["t" => $t, "l" => cm_clean($x["l"] ?? "", 40) ?: $t, "u" => $u, "qr" => $qr]; }
+    }
+    $cs = []; foreach (array_slice(is_array($b["costs"] ?? null) ? $b["costs"] : [], 0, 8) as $c) { if (is_array($c) && cm_clean($c["l"] ?? "", 40) !== "") { $cs[] = ["l" => cm_clean($c["l"], 40), "a" => cm_clean($c["a"] ?? "", 20)]; } }
+    $D["methods"] = $ms; $D["costs"] = $cs; $D["note"] = cm_clean($b["note"] ?? "", 400); cm_write($f, $D); echo "{\"ok\":true}"; return;
+  }
+  if ($act === "adddonor") { $n = cm_clean($b["name"] ?? "", 30); if (mb_strlen($n) < 2) { http_response_code(400); echo "{\"error\":\"name\"}"; return; }
+    $D["donors"][] = ["n" => $n, "anon" => !empty($b["anon"]) ? 1 : 0, "ts" => time()]; cm_write($f, $D); echo "{\"ok\":true}"; return; }
+  if ($act === "deldonor") { $i = (int)($b["i"] ?? -1); $L = $D["donors"] ?? []; if ($i >= 0 && $i < count($L)) { array_splice($L, $i, 1); $D["donors"] = $L; cm_write($f, $D); } echo "{\"ok\":true}"; return; }
   http_response_code(400); echo "{\"error\":\"act\"}";
 }
 // ---- Administration : les administrateurs sont des profils (hash de la clé) listés dans admins.json.

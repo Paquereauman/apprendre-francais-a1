@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.20 — 2026-10-21 — Soutenir le projet et feuille de route
+
+- Page **Soutenir le projet** : projet bénévole et non lucratif, dons facultatifs (Stripe, WeChat Pay, Alipay, PayPal…), frais couverts, badge 💛 « Généreux donateur » affiché dans « Qui sommes-nous » (nom ou anonyme). Moyens de don, frais et donateurs gérés par les admins.
+- « Qui sommes-nous » : **feuille de route** (grammaire simplifiée, niveau A2, interface graphique, vos idées) ; Linguistes et Orthophonistes ajoutés aux contributeurs recherchés.
+- Serveur : points d'accès `donate` (lecture publique, écriture admin).
+
 ## v6.19.1 — 2026-10-21 — Mise à jour immédiate
 
 - Les fichiers du module Communauté sont maintenant rechargés dès qu'une nouvelle version est publiée (plus d'ancien menu du haut en cache pendant 10 minutes).
