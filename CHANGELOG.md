@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.35 — 2026-10-21 — Fiche des participes passés : deux rois dessinés, règles du COD, score
+
+- **Fiche « Hugo et les rois »** : un gros roi ÊTRE gentil et un roi AVOIR maigre, méchant et fourbe (dessins) ; section « Les règles du COD » (trouver le COD avec « quoi ? / qui ? », COD avant le verbe : pronoms, « que », questions) ; 12 questions interactives, dont les cas où AVOIR s'accorde en cachette.
+- **Exercices des fiches** : un score s'affiche en bas de chaque page d'exercices (« Score : 7 / 12 ») avec un bouton « Recommencer ».
+- **Mise en page des fiches** : espaces trop grands supprimés à la lecture (les éléments se resserrent automatiquement, sans se chevaucher).
+
+---
+
 ## v6.34 — 2026-10-21 — Exercices interactifs dans les fiches, fiche des participes passés
 
 - **Quiz dans le concepteur** : nouvel élément ❓ (une question, une option par ligne, `*` devant la bonne réponse) ; à la lecture, la bonne réponse devient verte, une erreur est barrée avec « Essaie encore ».
