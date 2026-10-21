@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.38 — 2026-10-21 — Corrections d'affichage
+
+- **Fiches de grammaire** : plus de chevauchements (quiz qui se recouvraient, exemples cachés sous les astuces, textes français/chinois superposés), y compris quand les réponses affichent un message ; vérifié sur les deux fiches dans les trois langues d'affichage.
+- **Langue** : les textes avec mots en gras (Qui sommes-nous, Soutenir, cadeaux du classement) n'affichaient plus que du français + chinois mélangés en mode « français seul » ; corrigé. Les champs de saisie (placeholders) et info-bulles sont maintenant aussi traduits selon la langue choisie. Le titre chinois sous les fiches n'apparaît plus en mode français.
+- **Administration → Ma classe** : zone de message à la largeur de l'écran.
+- Aucun débordement horizontal constaté sur mobile (accueil, forum, ressources, grammaire, équipe, soutenir, classement, administration, messages).
+
+---
+
 ## v6.37 — 2026-10-21 — Ressources s'affiche tout de suite
 
 - La page Ressources s'affiche immédiatement ; le nombre de fiches de grammaire arrive ensuite, sans bloquer la page (elle restait vide tant que le serveur ne répondait pas).
