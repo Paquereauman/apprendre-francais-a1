@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.30 — 2026-10-21 — Serveur de secours plus rapide
+
+- Bascule vers le serveur de secours après 5 s (au lieu de 9 s) et mémorisation pendant 6 h (au lieu de 1 h) : moins d'attente quand le serveur principal est injoignable depuis un réseau.
+
+---
+
 ## v6.29 — 2026-10-21 — Serveur de secours
 
 - Si le serveur principal est injoignable depuis un réseau (DNS, filtrage, VPN…), l'appli réessaie automatiquement par un second nom de domaine (`french-fast.fr`) et le mémorise une heure. Corrige les messages « Serveur injoignable » et les listes vides (grammaire, classement…) sur ces réseaux.
