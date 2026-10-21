@@ -14,6 +14,16 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.27 — 2026-10-21 — Concepteur de fiches façon Canva, administration en menu latéral, cadeau selon le groupe
+
+- **Concepteur de fiches de grammaire** : page blanche avec éléments libres (texte, titre, exemple, astuce, image) ; déplacement avec aimantation (centre, marges, autres éléments), poignées de redimensionnement, barre d'outils flottante (taille, gras, italique, alignement dont justifié, couleur, langue), images par glisser-déposer ou collage ; lecture adaptée au téléphone.
+- **Administration** : menu à gauche sur ordinateur (icônes, compteurs) ; création de classe depuis « Ma classe ».
+- **Classement** : cadeau affiché selon le groupe — Classe 2026 : Petit Écolier au chocolat (illustration) ; classement général et individuels : « cadeau à définir », avec accès au forum.
+- Qui sommes-nous / Soutenir : mots importants en gras ; membres sans avatar : visage par défaut ; feuille de route : effet lumineux de l'étape en cours corrigé.
+- Serveur : les fiches de grammaire acceptent les éléments positionnés (x, y, largeur, taille, couleur, langue).
+
+---
+
 ## v6.26 — 2026-10-21 — Classement en deux colonnes, « Ma classe » pour les professeurs
 
 - **Classement** : filtres (période, groupe) dans une colonne de gauche, podium et classement à droite ; sur mobile, filtres au-dessus.
