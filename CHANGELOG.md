@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.33 — 2026-10-21 — Fiche BANGS illustrée, voix des exemples de grammaire
+
+- **Fiche « La place de l'adjectif : BANGS »** refaite dans le concepteur : bandeau BANGS, une carte illustrée par famille (Beauté, Âge, Nombre, Goodness, Size), exemples audio, mise en garde, **exercice** (page 2) et **corrigé** (page 3). Elle est modifiable en ligne par les administrateurs (✏️ dans la liste Grammaire).
+- **Voix** : les exemples des fiches de grammaire utilisent la même voix (Denise) que le vocabulaire et la Prononciation, au lieu de la voix du navigateur. Outil `gen-gram-audio.py` pour ajouter les audios des nouveaux exemples.
+
+---
+
 ## v6.32 — 2026-10-21 — Site plus rapide
 
 - **Cache de fichiers (service worker)** : le site, les scripts versionnés, les audios et les images sont gardés sur l'appareil : ouvertures suivantes beaucoup plus rapides, même avec un réseau lent. Les pages restent à jour (réseau d'abord, 3 s maximum).
