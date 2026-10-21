@@ -146,7 +146,8 @@ function msg_card($base, $id) {
   $u = is_file("$base/users/$id.json") ? json_decode(@file_get_contents("$base/users/$id.json"), true) : null;
   $S = is_file("$base/$id.json") ? json_decode(@file_get_contents("$base/$id.json"), true) : null;
   $nick = is_array($S) ? clean_name($S["nick"] ?? "", 20) : "";
-  return ["name" => is_array($u) ? (string)($u["name"] ?? "?") : "?", "nick" => $nick, "emo" => is_array($S) ? clean_emo($S["emo"] ?? "") : "", "cls" => is_array($u) ? (string)($u["cls"] ?? "") : ""];
+  $av = []; foreach ((is_array($S) ? ($S["av"] ?? []) : []) as $ak => $v) { if (!is_string($ak) || !preg_match("/^[a-zA-Z]{2,8}$/", $ak) || count($av) >= 30) continue; if (is_int($v) && $v >= 0 && $v < 100) $av[$ak] = $v; elseif (is_string($v) && preg_match("/^#[0-9a-fA-F]{6}$/", $v)) $av[$ak] = $v; }
+  return ["name" => is_array($u) ? (string)($u["name"] ?? "?") : "?", "nick" => $nick, "emo" => is_array($S) ? clean_emo($S["emo"] ?? "") : "", "av" => (object)$av, "cls" => is_array($u) ? (string)($u["cls"] ?? "") : ""];
 }
 function msg_main($k, $base, $app) {
   if (!preg_match("/^[a-z0-9]{8,40}$/", $k)) { http_response_code(400); echo "{\"error\":\"bad key\"}"; return; }
@@ -355,12 +356,16 @@ function gram_main($k, $base) {
   $act = (string)($_GET["gram"] ?? "list"); $f = "$base/gram.json"; $S = cm_read($f, []);
   if ($act === "list") { echo json_encode(["sheets" => array_values($S)], JSON_UNESCAPED_UNICODE); return; }   /* lecture publique */
   $me = cm_me($k, $base); if (!$me || !$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
-  $b = json_decode(file_get_contents("php://input", false, null, 0, 40001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 2000001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
   if ($act === "save") {
     $s = is_array($b["sheet"] ?? null) ? $b["sheet"] : []; $id = preg_replace("/[^a-f0-9]/", "", cm_clean($s["id"] ?? "", 20)); if ($id === "") { $id = bin2hex(random_bytes(4)); }
     $ex = []; foreach (array_slice(is_array($s["ex"] ?? null) ? $s["ex"] : [], 0, 40) as $e) { if (is_array($e) && count($e) >= 2) { $ex[] = [cm_clean($e[0], 200), cm_clean($e[1], 200)]; } }
     $lvl = cm_clean($s["lvl"] ?? "", 4); if (!in_array($lvl, ["A1", "A2", "B1"], true)) { $lvl = "A1"; }
-    $row = ["id" => $id, "lvl" => $lvl, "theme" => cm_clean($s["theme"] ?? "", 40) ?: "Divers", "order" => (int)($s["order"] ?? 0), "tfr" => cm_clean($s["tfr"] ?? "", 90), "tzh" => cm_clean($s["tzh"] ?? "", 90), "bfr" => cm_clean($s["bfr"] ?? "", 8000), "bzh" => cm_clean($s["bzh"] ?? "", 8000), "ex" => $ex, "ts" => time()];
+    $blocks = []; $tot = 0; foreach (array_slice(is_array($s["blocks"] ?? null) ? $s["blocks"] : [], 0, 60) as $bk) { if (!is_array($bk)) continue; $bt = (string)($bk["t"] ?? ""); if (!in_array($bt, ["title", "text", "ex", "tip", "img"], true)) continue; $bc = (int)($bk["c"] ?? 12); if (!in_array($bc, [3, 4, 6, 8, 12], true)) { $bc = 12; } $ba = (string)($bk["al"] ?? "l"); if (!in_array($ba, ["l", "c", "r"], true)) { $ba = "l"; }
+      $br = ["t" => $bt, "c" => $bc, "al" => $ba, "fr" => cm_clean($bk["fr"] ?? "", 4000), "zh" => cm_clean($bk["zh"] ?? "", 4000)];
+      if ($bt === "img") { $src = is_string($bk["src"] ?? null) ? $bk["src"] : ""; if (!(strlen($src) <= 250000 && preg_match('#^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$#', $src))) continue; $tot += strlen($src); if ($tot > 1500000) break; $br["src"] = $src; }
+      $blocks[] = $br; }
+    $row = ["id" => $id, "lvl" => $lvl, "theme" => cm_clean($s["theme"] ?? "", 40) ?: "Divers", "order" => (int)($s["order"] ?? 0), "tfr" => cm_clean($s["tfr"] ?? "", 90), "tzh" => cm_clean($s["tzh"] ?? "", 90), "bfr" => cm_clean($s["bfr"] ?? "", 8000), "bzh" => cm_clean($s["bzh"] ?? "", 8000), "ex" => $ex, "blocks" => $blocks, "ts" => time()];
     if ($row["tfr"] === "") { http_response_code(400); echo "{\"error\":\"title\"}"; return; }
     $S = array_values(array_filter($S, function ($x) use ($id) { return $x["id"] !== $id; })); $S[] = $row; cm_write($f, $S); echo json_encode(["id" => $id]); return;
   }

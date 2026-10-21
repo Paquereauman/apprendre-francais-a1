@@ -14,6 +14,16 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.22 — 2026-10-21 — Concepteur de fiches de grammaire, avatars dans les messages, visage par défaut
+
+- **Concepteur de fiches de grammaire** (administrateurs) : mise en page par blocs (titre, texte, exemple avec audio, astuce, image) sur une grille de 12 colonnes ; largeur ⅓ · ½ · ⅔ · 1/1 et alignement en un clic ; déplacement par glisser-déposer ou flèches ; images par glisser-déposer, collage ou import (réduites automatiquement) ; bouton « Ranger » pour l'alignement automatique ; aperçu avant enregistrement. Les anciennes fiches s'ouvrent dans le concepteur.
+- **Messagerie** : avatar de chaque personne (au lieu de l'emoji), pseudo et avatar toujours à jour.
+- **Visage par défaut** : retour du sourire et du regard droit (les valeurs par défaut étaient décalées d'un cran) ; les avatars touchés par ce décalage sont réparés.
+- Qui sommes-nous : bouton unique « Ajouter un membre » pour les administrateurs ; tirelire 🐷 sur le bandeau Soutenir.
+- Serveur : les fiches acceptent des blocs et des images (jusqu'à 1,5 Mo) ; les cartes de messagerie renvoient l'avatar.
+
+---
+
 ## v6.21 — 2026-10-21 — Forum simplifié, messagerie en deux colonnes, feuille de route en frise
 
 - **Forum** repensé : recherche, onglets de catégories, filtres Récentes / Populaires / Sans réponse / Mes discussions, une ligne par discussion ; modération repliée ; zone de réponse intégrée à la page ; formulaire de nouvelle discussion simplifié.
