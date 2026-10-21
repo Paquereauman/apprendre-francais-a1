@@ -604,10 +604,10 @@ const API=(location.hostname.endsWith("github.io")?"https://chinois.45-192-198-9
 /* Serveur de secours : si le serveur principal est injoignable depuis un réseau (DNS, filtrage…), on réessaie automatiquement par un second nom de domaine. */
 const API_ALT="https://french-fast.fr/chinois-api.php";
 (function(){if(!API.startsWith("https://"))return;const real=window.fetch.bind(window);let alt=0;try{alt=+localStorage.getItem("apialt")||0}catch(e){}
-  const tryAlt=(tail,o)=>real(API_ALT+tail,o).then(r=>{try{localStorage.setItem("apialt",String(Date.now()+3600000))}catch(e){}alt=Date.now()+3600000;return r});
+  const tryAlt=(tail,o)=>real(API_ALT+tail,o).then(r=>{try{localStorage.setItem("apialt",String(Date.now()+21600000))}catch(e){}alt=Date.now()+21600000;return r});
   window.fetch=function(u,o){if(typeof u!=="string"||!u.startsWith(API))return real(u,o);const tail=u.slice(API.length);
     if(alt>Date.now())return real(API_ALT+tail,o).catch(()=>real(u,o));
-    const c=new AbortController(),t=setTimeout(()=>c.abort(),9000);
+    const c=new AbortController(),t=setTimeout(()=>c.abort(),5000);
     return real(u,Object.assign({},o||{},{signal:c.signal})).then(r=>{clearTimeout(t);return r},()=>{clearTimeout(t);return tryAlt(tail,o)})}})();
 const APPQ="&app=fr";
 const rndCode=()=>[...crypto.getRandomValues(new Uint8Array(12))].map(b=>"abcdefghjkmnpqrstuvwxyz23456789"[b%31]).join("");
@@ -1776,5 +1776,5 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
    <section class="rk-main">${podium}`+(shown.length?`<div class="lb-list">${rows}</div>`:`<div class="hm-card" style="text-align:center;color:var(--mut)">Personne ici pour l'instant. · 这里暂时没有人。</div>`)+`</section></div>`}
 try{speechSynthesis.getVoices()}catch(e){}
 touchStreak();home();loc(document.body);accLoad();setTimeout(giftCheck,3500);pull();admStatus();loadClasses();loadQV();if(!S.uiChosen)langOpen();
-</script><script src="community.js?v=630"></script>
+</script><script src="community.js?v=631"></script>
 </body></html>

@@ -14,9 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
-## v6.30 — 2026-10-21 — Serveur de secours plus rapide
+## v6.31 — 2026-10-21 — Serveur de secours plus rapide
 
 - Bascule vers le serveur de secours après 5 s (au lieu de 9 s) et mémorisation pendant 6 h (au lieu de 1 h) : moins d'attente quand le serveur principal est injoignable depuis un réseau.
+
+---
+
+## v6.30 — 2026-10-21 — (publication sans changement de code)
+
+- Numéro de version seulement ; le contenu annoncé est dans la v6.31.
 
 ---
 
