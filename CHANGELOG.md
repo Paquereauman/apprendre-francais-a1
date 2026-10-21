@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.37 — 2026-10-21 — Ressources s'affiche tout de suite
+
+- La page Ressources s'affiche immédiatement ; le nombre de fiches de grammaire arrive ensuite, sans bloquer la page (elle restait vide tant que le serveur ne répondait pas).
+
+---
+
 ## v6.36 — 2026-10-21 — Fiches : plus de grands espaces en chinois
 
 - Quand la fiche est lue en chinois seul (ou en français seul), les éléments de l'autre langue ne laissent plus de vide : tout se resserre depuis le haut de la page.

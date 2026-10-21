@@ -144,12 +144,13 @@ window.reportItem=function(what,where){if(!PNAME){toast(L("Connecte-toi pour sig
     try{const r=await fetch(API+"?report=1&k="+CODE+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({item:what.slice(0,80),where:where||(typeof cat!=="undefined"&&cat?cat.name:"quiz"),note})});s.remove();toast(r.ok?L("📨 Merci, signalement envoyé · 谢谢，已提交"):r.status===429?L("Trop de signalements aujourd'hui · 今天举报次数过多"):L("Envoi impossible · 无法发送"))}catch(e){toast(L("Serveur injoignable · 无法连接服务器"))}}};
 /* ---------- ressources : grammaire + prononciation (+ la suite) ---------- */
 window.resourcesPage=async function(){cur=window.resourcesPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Ressources · 资源"]]);
-  let n=0;try{const r=await api("gram","list");n=((r.j&&r.j.sheets)||[]).length}catch(e){}
+  const n=0;
   const big=(e,t,s,f,tag)=>`<button class="cm-card" onclick="${f}" style="align-items:center;padding:16px 14px"><span style="font-size:2.2rem">${e}</span><div style="flex:1"><h3 style="font-size:1.1rem">${t}</h3><div class="ex" style="-webkit-line-clamp:3">${s}</div>${tag?`<div class="cm-meta"><span class="cm-pill lv">${tag}</span></div>`:""}</div><span style="font-size:1.4rem;color:var(--mut)">›</span></button>`;
   $.innerHTML=`<div class="hm cm-res"><div class="cm-hero"><b>📚 ${L("Ressources · 资源")}</b></div>
    ${big("🗣️",L("Prononciation · 发音"),L("Les sons du français : écouter, répéter, s'entraîner. · 法语发音：听、读、练。"),"location.href='prononciation/'","")}
-   ${big("📘",L("Grammaire · 语法"),L("Les règles du français expliquées simplement, avec des exemples audio et la traduction en chinois. · 用简单的方式讲解法语规则，配有音频例句和中文翻译。"),"grammarPage()",n?n+" "+L("fiches · 张卡片"):"")}
-   <div class="hm-card" style="color:var(--mut);text-align:center">${L("D'autres ressources arrivent : tu peux proposer des idées dans le forum. · 更多资源即将推出，欢迎在论坛提出建议。")} <a onclick="forumNew('sug')" style="color:var(--blue);font-weight:800;cursor:pointer">💡 ${L("Proposer · 提建议")}</a></div></div>`};
+   ${big("📘",L("Grammaire · 语法"),L("Les règles du français expliquées simplement, avec des exemples audio et la traduction en chinois. · 用简单的方式讲解法语规则，配有音频例句和中文翻译。"),"grammarPage()","<span id=\"gcnt\">"+L("Fiches · 卡片")+"</span>")}
+   <div class="hm-card" style="color:var(--mut);text-align:center">${L("D'autres ressources arrivent : tu peux proposer des idées dans le forum. · 更多资源即将推出，欢迎在论坛提出建议。")} <a onclick="forumNew('sug')" style="color:var(--blue);font-weight:800;cursor:pointer">💡 ${L("Proposer · 提建议")}</a></div></div>`;
+  api("gram","list").then(r=>{const k=((r.j&&r.j.sheets)||[]).length,e=document.getElementById("gcnt");if(e&&k)e.textContent=k+" "+L("fiches · 张卡片")}).catch(()=>{})};
 /* ---------- grammaire ---------- */
 const GS={lvl:"",q:"",sheets:null};
 function gramLoadBase(){return new Promise(res=>{if(window.GRAM_BASE)return res();const e=document.createElement("script");e.src="grammaire-data.js?v=6211";e.onload=()=>res();e.onerror=()=>{window.GRAM_BASE=[];res()};document.head.appendChild(e)})}
