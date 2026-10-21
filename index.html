@@ -1333,7 +1333,7 @@ const HAC=[
    le dessin est rogné à cette forme, donc rien ne dépasse et rien ne manque sur les côtés. */
 const TORSO="M85 203Q60 212 50 234Q41 256 40 280L239 280Q238 256 229 234Q219 212 194 203Z",NECKH="M114 203Q140 225 166 203Z";
 /* TW(corps, avecCol, devant) : corps rogné à la silhouette (avecCol = on laisse voir le cou) ; devant = éléments qui peuvent dépasser */
-const TW=(inner,hole,over)=>`<g><defs><clipPath id="fxtor${hole?"h":""}"><path d="${TORSO}${hole?" "+NECKH:""}" clip-rule="evenodd"/></clipPath></defs><g clip-path="url(#fxtor${hole?"h":""})">${inner}</g>${over||""}</g>`;
+const TW=(inner,hole,over)=>`<g><defs><clipPath id="fxtor${hole?"h":""}"><path d="${TORSO}${hole?" "+NECKH:""}" clip-rule="evenodd"/></clipPath></defs><g clip-path="url(#fxtor${hole?"h":""})">${inner}</g><path d="${TORSO}" fill="none" stroke="rgba(25,35,70,.34)" stroke-width="2.6" stroke-linejoin="round"/>${over||""}</g>`;
 const TB=c=>`<rect x="0" y="195" width="280" height="90" fill="${c}"/>`;
 const TNF=[
  ["Marinière · 海魂衫","c",()=>TW(TB("#f4f6fa")+[0,1,2,3,4,5,6].map(i=>`<rect x="0" y="${214+i*13}" width="280" height="6" fill="#1d3a6e"/>`).join("")+`<path d="${NECKH}" fill="none" stroke="#c1121f" stroke-width="6"/>`,true),"#f4f6fa"],

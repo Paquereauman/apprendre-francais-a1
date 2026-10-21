@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.39 — 2026-10-21 — Tenues plus lisibles
+
+- Les tenues spéciales (armure, combinaison d'astronaute, marinière, maillot…) ont maintenant un fin contour : elles ne disparaissent plus sur un fond clair (podium, liste, forum, messages).
+
+---
+
 ## v6.38 — 2026-10-21 — Corrections d'affichage
 
 - **Fiches de grammaire** : plus de chevauchements (quiz qui se recouvraient, exemples cachés sous les astuces, textes français/chinois superposés), y compris quand les réponses affichent un message ; vérifié sur les deux fiches dans les trois langues d'affichage.
