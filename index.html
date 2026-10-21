@@ -1420,7 +1420,12 @@ function avLayers(r,lite){const back=[],mid=[],front=[],top=[];
   if(!lite&&r.obj>0&&OBJ[r.obj-1])front.push(`<g ${accT(r,"obj")}>${fxObj(OBJ[r.obj-1],dbSkin(r))}</g>`);
   return {back:back.join(""),mid:mid.join(""),front:front.join("")+top.join("")}}
 function avFrame(s,w,vb){const p=vb.split(" ").map(Number),h=Math.round(w*p[3]/p[2]);return s.replace(/^<svg[^>]*>/,m=>m.replace(/viewBox="[^"]*"/,'viewBox="'+vb+'"').replace(/width="[^"]*"/,'width="'+w+'"').replace(/height="[^"]*"/,'height="'+h+'"'))}
-function avSVG(a,px,opt){a=a||{};if(!window.DB)return "";const r=avResolve(a),vb=(opt&&opt.vb)||AV_VB,lite=!!(opt&&opt.lite),key=JSON.stringify([r,vb,px,accSig(r),lite]);if(DBC[key])return DBC[key];
+/* ids uniques par avatar : plusieurs avatars sur la même page partageaient les mêmes clipPath / dégradés (fxtor, fxar…) ;
+   si le premier était dans un élément caché, les tenues n'étaient plus découpées et dépassaient des épaules. */
+let AVUN=0;
+function avUniq(s){if(!s||s.indexOf(' id="')<0)return s;const n=++AVUN,ids=[...new Set([...s.matchAll(/ id="([^"]+)"/g)].map(m=>m[1]))];ids.forEach(id=>{const nid=id+"_"+n;s=s.split(' id="'+id+'"').join(' id="'+nid+'"').split("url(#"+id+")").join("url(#"+nid+")").split('href="#'+id+'"').join('href="#'+nid+'"').split("url('#"+id+"')").join("url('#"+nid+"')")});return s}
+function avSVG(a,px,opt){return avUniq(avSVG0(a,px,opt))}
+function avSVG0(a,px,opt){a=a||{};if(!window.DB)return "";const r=avResolve(a),vb=(opt&&opt.vb)||AV_VB,lite=!!(opt&&opt.lite),key=JSON.stringify([r,vb,px,accSig(r),lite]);if(DBC[key])return DBC[key];
   let s;try{s=window.DB.createAvatar(window.DB.styles[AVST],Object.assign({size:px},dbOpts(r))).toString()}catch(e){return ""}
   const L=avLayers(r,lite);s=avFrame(s,px,vb);
   s=s.replace(/^<svg[^>]*>/,m=>m+L.back);

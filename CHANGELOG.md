@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.40 — 2026-10-21 — Tenues : plus de débordement sur les épaules
+
+- **Cause trouvée** : tous les avatars d'une page partageaient les mêmes identifiants internes (découpe des épaules, dégradés). Quand le premier avatar était dans un élément caché (profil, fenêtre fermée), les tenues spéciales n'étaient plus découpées et dépassaient des épaules (bandeaux plats). Chaque avatar a maintenant ses propres identifiants.
+- Contour fin sur les tenues claires (v6.39).
+
+---
+
 ## v6.39 — 2026-10-21 — Tenues plus lisibles
 
 - Les tenues spéciales (armure, combinaison d'astronaute, marinière, maillot…) ont maintenant un fin contour : elles ne disparaissent plus sur un fond clair (podium, liste, forum, messages).
