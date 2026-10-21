@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.29 — 2026-10-21 — Serveur de secours
+
+- Si le serveur principal est injoignable depuis un réseau (DNS, filtrage, VPN…), l'appli réessaie automatiquement par un second nom de domaine (`french-fast.fr`) et le mémorise une heure. Corrige les messages « Serveur injoignable » et les listes vides (grammaire, classement…) sur ces réseaux.
+- Serveur : le second nom de domaine répond avec le même programme ; taille maximale d'une requête portée à 3 Mo (fiches de grammaire avec images).
+
+---
+
 ## v6.28 — 2026-10-21 — Concepteur : titres, listes, pages ; photo du cadeau de la classe
 
 - **Concepteur de fiches** : styles Titre 1 / 2 / 3, listes à puces et numérotées (Entrée continue la liste), fiches sur plusieurs pages (onglets de pages, « Page 1 / 2 » à la lecture).
