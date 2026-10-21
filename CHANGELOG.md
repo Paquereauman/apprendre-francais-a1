@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.23 — 2026-10-21 — Badge fondateur
+
+- Qui sommes-nous : badge 👑 « Fondateur » sur la carte du fondateur.
+
+---
+
 ## v6.22 — 2026-10-21 — Concepteur de fiches de grammaire, avatars dans les messages, visage par défaut
 
 - **Concepteur de fiches de grammaire** (administrateurs) : mise en page par blocs (titre, texte, exemple avec audio, astuce, image) sur une grille de 12 colonnes ; largeur ⅓ · ½ · ⅔ · 1/1 et alignement en un clic ; déplacement par glisser-déposer ou flèches ; images par glisser-déposer, collage ou import (réduites automatiquement) ; bouton « Ranger » pour l'alignement automatique ; aperçu avant enregistrement. Les anciennes fiches s'ouvrent dans le concepteur.
