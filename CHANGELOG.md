@@ -14,6 +14,18 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.21 — 2026-10-21 — Forum simplifié, messagerie en deux colonnes, feuille de route en frise
+
+- **Forum** repensé : recherche, onglets de catégories, filtres Récentes / Populaires / Sans réponse / Mes discussions, une ligne par discussion ; modération repliée ; zone de réponse intégrée à la page ; formulaire de nouvelle discussion simplifié.
+- **Messagerie** : sur grand écran, conversations à gauche et conversation ouverte au centre.
+- **Prononciation** : menu du bas aligné sur celui de l'application (Parcours, Ressources, Communauté, Profil).
+- **Qui sommes-nous** : feuille de route en frise horizontale (flèches, points, légende ; terminé / en cours / à faire), étapes « Niveau A1 », « Cours de prononciation » et « Ajouter l'anglais » ; ordre : équipe, feuille de route, soutenir, contribuer.
+- Pages de la communauté plus larges sur grand écran, adaptées au mobile.
+- **Grammaire** : les fiches fournies avec l'application sont retirées (les administrateurs ajoutent les leurs).
+- Serveur : aucun changement.
+
+---
+
 ## v6.20 — 2026-10-21 — Soutenir le projet et feuille de route
 
 - Page **Soutenir le projet** : projet bénévole et non lucratif, dons facultatifs (Stripe, WeChat Pay, Alipay, PayPal…), frais couverts, badge 💛 « Généreux donateur » affiché dans « Qui sommes-nous » (nom ou anonyme). Moyens de don, frais et donateurs gérés par les admins.
