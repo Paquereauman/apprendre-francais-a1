@@ -143,7 +143,7 @@ window.resourcesPage=async function(){cur=window.resourcesPage;cat=null;head();c
    <div class="hm-card" style="color:var(--mut);text-align:center">${L("D'autres ressources arrivent : tu peux proposer des idées dans le forum. · 更多资源即将推出，欢迎在论坛提出建议。")} <a onclick="forumNew('sug')" style="color:var(--blue);font-weight:800;cursor:pointer">💡 ${L("Proposer · 提建议")}</a></div></div>`};
 /* ---------- grammaire ---------- */
 const GS={lvl:"A1",q:"",sheets:null};
-function gramLoadBase(){return new Promise(res=>{if(window.GRAM_BASE)return res();const e=document.createElement("script");e.src="grammaire-data.js?v=1";e.onload=()=>res();e.onerror=()=>{window.GRAM_BASE=[];res()};document.head.appendChild(e)})}
+function gramLoadBase(){return new Promise(res=>{if(window.GRAM_BASE)return res();const e=document.createElement("script");e.src="grammaire-data.js?v=6191";e.onload=()=>res();e.onerror=()=>{window.GRAM_BASE=[];res()};document.head.appendChild(e)})}
 async function gramAll(){await gramLoadBase();let sv=[];try{const r=await api("gram","list");if(r.ok)sv=r.j.sheets||[]}catch(e){}const ids=new Set(sv.map(x=>x.id));return{sheets:(window.GRAM_BASE||[]).filter(x=>!ids.has(x.id)).map(x=>Object.assign({_base:1},x)).concat(sv),server:sv.length>0}}
 window.grammarPage=async function(){cur=window.grammarPage;cat=null;head();crumb([["🏠 Parcours · 路径","home"],["Ressources · 资源","resourcesPage"],["Grammaire · 语法"]]);
   $.innerHTML=`<div class="hm"><div class="hm-card">${L("Chargement… · 加载中……")}</div></div>`;

@@ -14,6 +14,10 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.19.1 — 2026-10-21 — Mise à jour immédiate
+
+- Les fichiers du module Communauté sont maintenant rechargés dès qu'une nouvelle version est publiée (plus d'ancien menu du haut en cache pendant 10 minutes).
+
 ## v6.19 — 2026-10-21 — Interface épurée, forum, grammaire, Qui sommes-nous
 
 - En-tête épuré : plus de XP, série ni nuage de synchronisation (alerte seulement en cas d'échec) ; boutons **Classement** et **Qui sommes-nous** bien visibles ; icône admin.
