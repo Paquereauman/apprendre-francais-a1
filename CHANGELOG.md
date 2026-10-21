@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.28 — 2026-10-21 — Concepteur : titres, listes, pages ; photo du cadeau de la classe
+
+- **Concepteur de fiches** : styles Titre 1 / 2 / 3, listes à puces et numérotées (Entrée continue la liste), fiches sur plusieurs pages (onglets de pages, « Page 1 / 2 » à la lecture).
+- **Classement** : le cadeau de la Classe 2026 s'affiche avec la photo du Petit Écolier au chocolat (sans fond).
+- Qui sommes-nous : description simplifiée (« outil gratuit »).
+- Serveur : les éléments des fiches acceptent un numéro de page.
+
+---
+
 ## v6.27 — 2026-10-21 — Concepteur de fiches façon Canva, administration en menu latéral, cadeau selon le groupe
 
 - **Concepteur de fiches de grammaire** : page blanche avec éléments libres (texte, titre, exemple, astuce, image) ; déplacement avec aimantation (centre, marges, autres éléments), poignées de redimensionnement, barre d'outils flottante (taille, gras, italique, alignement dont justifié, couleur, langue), images par glisser-déposer ou collage ; lecture adaptée au téléphone.
