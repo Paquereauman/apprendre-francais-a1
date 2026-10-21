@@ -606,6 +606,10 @@ function mergeS(A,B){const eA=A.epoch||0,eB=B.epoch||0;if(eB>eA)return clone(B);
   if((B.ts||0)>(A.ts||0)){M.nick=B.nick||M.nick;M.emo=B.emo||M.emo;M.test=Object.assign({},M.test||{},B.test||{});M.testDate=B.testDate||M.testDate;if(B.pace){M.pace=B.pace;M.unit=B.unit}}
   M.ev=M.ev||{};Object.entries(B.ev||{}).forEach(([k,a])=>{M.ev[k]=[...new Set([...(M.ev[k]||[]),...a])]});
   M.rev=M.rev||{};Object.entries(B.rev||{}).forEach(([k,e])=>{if(!M.rev[k]||e.d>M.rev[k].d)M.rev[k]=e});
+  /* avatar, tenues et réglages de personnage : la version la plus récente gagne ; un navigateur neuf (sans avatar) récupère celui du serveur */
+  if(B.av!==undefined&&((B.ts||0)>(A.ts||0)||A.av===undefined))M.av=B.av;
+  if((B.ts||0)>(A.ts||0)){if(B.nw!==undefined)M.nw=B.nw;if(B.admshow!==undefined)M.admshow=B.admshow}
+  M.dl=[...new Set([...(A.dl||[]),...(B.dl||[])])].sort().slice(-60);
   M.unl=[...new Set([...(A.unl||[]),...(B.unl||[])])];M.lgd=(A.lgd||"")>(B.lgd||"")?A.lgd:B.lgd;
   M.xp=Math.max(A.xp||0,B.xp||0);M.phr=Math.max(A.phr||0,B.phr||0);
   if((B.last||"")>(A.last||"")){M.last=B.last;M.streak=B.streak}else if(B.last===A.last)M.streak=Math.max(A.streak||0,B.streak||0);

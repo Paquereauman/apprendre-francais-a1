@@ -14,6 +14,10 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.18 — 2026-10-21 — Avatar retrouvé sur un autre navigateur
+
+- Correction : sur un navigateur neuf, la synchronisation ne reprenait pas l'avatar, les tenues ni les réglages de personnage du serveur (et pouvait les remplacer par un avatar vide). La version la plus récente gagne maintenant ; un navigateur sans avatar récupère celui du serveur. Les jours de connexion sont réunis.
+
 ## v6.17 — 2026-10-21 — Communauté, Ressources, rôles à l'inscription
 
 - Nouvelle barre du bas : Parcours · Ressources · Communauté · Profil. Le Salon est désactivé (code conservé).
