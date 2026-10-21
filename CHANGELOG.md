@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.32 — 2026-10-21 — Site plus rapide
+
+- **Cache de fichiers (service worker)** : le site, les scripts versionnés, les audios et les images sont gardés sur l'appareil : ouvertures suivantes beaucoup plus rapides, même avec un réseau lent. Les pages restent à jour (réseau d'abord, 3 s maximum).
+- Connexion anticipée au serveur de l'appli (preconnect).
+- Serveur : HTTP/2 (toutes les requêtes de l'appli partagent une seule connexion) et compression des réponses de l'API.
+
+---
+
 ## v6.31 — 2026-10-21 — Serveur de secours plus rapide
 
 - Bascule vers le serveur de secours après 5 s (au lieu de 9 s) et mémorisation pendant 6 h (au lieu de 1 h) : moins d'attente quand le serveur principal est injoignable depuis un réseau.
