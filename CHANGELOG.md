@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.25 — 2026-10-21 — Ordre de l'équipe, cartes compactes, gestion des fiches de grammaire
+
+- **Qui sommes-nous** : le fondateur réordonne l'équipe (boutons ◀ ▶) ; l'ordre est partagé par tous. Cartes compactes : liens, « Modifier » et « Retirer » en icônes sur une ligne sous l'avatar.
+- **Grammaire** : boutons ✏️ Modifier et 🗑 Supprimer sur chaque fiche de la liste, pour les administrateurs.
+- Serveur : action `team=order` réservée au fondateur ; la liste de l'équipe est triée selon cet ordre.
+
+---
+
 ## v6.24 — 2026-10-21 — Fiches d'équipe modifiables par chaque membre
 
 - **Qui sommes-nous** : chaque membre de l'équipe (élève, enseignant·e, orthophoniste…) modifie sa propre fiche (fonction, présentation, liens, photo) ; son avatar est lié à son compte et se met à jour tout seul.

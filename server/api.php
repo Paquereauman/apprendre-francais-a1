@@ -382,8 +382,9 @@ function team_main($k, $base) {
   $act = (string)($_GET["team"] ?? "list"); $f = "$base/team.json"; $T = cm_read($f, []); $me = cm_me($k, $base);
   if ($act === "list") {
     $m = []; foreach ($T as $key => $v) { if ((int)($v["show"] ?? 1)) { $v["key"] = substr($key, 0, 8); $LS = is_file("$base/$key.json") ? json_decode(@file_get_contents("$base/$key.json"), true) : null; if (is_array($LS) && is_array($LS["av"] ?? null)) { $v["av"] = cm_av($LS["av"]); } $m[] = $v; } }
+    usort($m, function ($a, $b) { return ((int)($a["ord"] ?? 999)) <=> ((int)($b["ord"] ?? 999)); });
     $mine = ($me && isset($T[$me["h"]])) ? $T[$me["h"]] : null;
-    echo json_encode(["members" => $m, "me" => $mine, "adm" => (bool)($me && $me["adm"]), "canedit" => $mine !== null], JSON_UNESCAPED_UNICODE); return;
+    echo json_encode(["members" => $m, "me" => $mine, "adm" => (bool)($me && $me["adm"]), "canedit" => $mine !== null, "founder" => (bool)($me && substr($me["h"], 0, 8) === "095ad09e")], JSON_UNESCAPED_UNICODE); return;
   }
   if (!$me) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
   $b = json_decode(file_get_contents("php://input", false, null, 0, 90001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
@@ -392,6 +393,10 @@ function team_main($k, $base) {
     $u = json_decode(@file_get_contents("$base/users/$id.json"), true);
     if (!isset($T[$id])) { $T[$id] = ["name" => (string)($u["name"] ?? "?"), "role" => "", "bio" => "", "links" => [], "photo" => "", "show" => 1, "ts" => time()]; cm_write($f, $T); }
     echo "{\"ok\":true}"; return;
+  }
+  if ($act === "order" && substr($me["h"], 0, 8) === "095ad09e") {
+    $keys = is_array($b["keys"] ?? null) ? array_slice($b["keys"], 0, 60) : []; foreach ($keys as $i => $key) { $key = substr(preg_replace("/[^a-f0-9]/", "", (string)$key), 0, 8); if (strlen($key) < 8) continue; foreach (array_keys($T) as $kk) { if (substr($kk, 0, 8) === $key) { $T[$kk]["ord"] = (int)$i; } } }
+    cm_write($f, $T); echo "{\"ok\":true}"; return;
   }
   if ($act === "del" && $me["adm"]) {
     $key = preg_replace("/[^a-f0-9]/", "", (string)($b["key"] ?? "")); foreach (array_keys($T) as $kk) { if (substr($kk, 0, 8) === substr($key, 0, 8) && strlen($key) >= 8) { unset($T[$kk]); } }
