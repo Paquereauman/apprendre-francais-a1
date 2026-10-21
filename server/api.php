@@ -366,18 +366,40 @@ function gram_main($k, $base) {
   if ($act === "del") { $id = cm_clean($b["id"] ?? "", 20); $S = array_values(array_filter($S, function ($x) use ($id) { return $x["id"] !== $id; })); cm_write($f, $S); echo "{\"ok\":true}"; return; }
   http_response_code(400); echo "{\"error\":\"act\"}";
 }
+function cm_links($L) {
+  $o = []; if (!is_array($L)) return $o;
+  foreach (array_slice($L, 0, 4) as $x) { if (!is_array($x)) continue; $l = cm_clean($x["l"] ?? "", 24); $u = cm_clean($x["u"] ?? "", 200);
+    if ($l !== "" && preg_match('#^https://[^\s<>"\']+$#', $u)) { $o[] = ["l" => $l, "u" => $u]; } }
+  return $o;
+}
 function team_main($k, $base) {
   $act = (string)($_GET["team"] ?? "list"); $f = "$base/team.json"; $T = cm_read($f, []); $me = cm_me($k, $base);
   if ($act === "list") {
     $m = []; foreach ($T as $key => $v) { if ((int)($v["show"] ?? 1)) { $v["key"] = substr($key, 0, 8); $m[] = $v; } }
-    echo json_encode(["members" => $m, "me" => ($me && $me["adm"]) ? ($T[$me["h"]] ?? null) : null, "adm" => (bool)($me && $me["adm"])], JSON_UNESCAPED_UNICODE); return;
+    $mine = ($me && isset($T[$me["h"]])) ? $T[$me["h"]] : null;
+    echo json_encode(["members" => $m, "me" => $mine, "adm" => (bool)($me && $me["adm"]), "canedit" => $mine !== null], JSON_UNESCAPED_UNICODE); return;
   }
-  if (!$me || !$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
-  $b = json_decode(file_get_contents("php://input", false, null, 0, 4001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
-  if ($act === "save") {
-    $li = cm_clean($b["linkedin"] ?? "", 200); if ($li !== "" && !preg_match('#^https://([a-z0-9-]+\.)?linkedin\.com/[A-Za-z0-9_\-./%?=&]*$#', $li)) { http_response_code(400); echo "{\"error\":\"linkedin\"}"; return; }
-    $T[$me["h"]] = ["name" => $me["name"], "role" => cm_clean($b["role"] ?? "", 80), "bio" => cm_clean($b["bio"] ?? "", 300), "linkedin" => $li, "show" => (($b["show"] ?? true) === false) ? 0 : 1, "av" => cm_av($b["av"] ?? null), "ts" => time()];
+  if (!$me) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 90001), true); if ($_SERVER["REQUEST_METHOD"] !== "POST" || !is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
+  if ($act === "add" && $me["adm"]) {
+    $id = msg_uid_by_name($base, $b["name"] ?? ""); if (!$id) { http_response_code(404); echo "{\"error\":\"unknown\"}"; return; }
+    $u = json_decode(@file_get_contents("$base/users/$id.json"), true);
+    if (!isset($T[$id])) { $T[$id] = ["name" => (string)($u["name"] ?? "?"), "role" => "", "bio" => "", "links" => [], "photo" => "", "show" => 1, "ts" => time()]; cm_write($f, $T); }
+    echo "{\"ok\":true}"; return;
+  }
+  if ($act === "del" && $me["adm"]) {
+    $key = preg_replace("/[^a-f0-9]/", "", (string)($b["key"] ?? "")); foreach (array_keys($T) as $kk) { if (substr($kk, 0, 8) === substr($key, 0, 8) && strlen($key) >= 8) { unset($T[$kk]); } }
     cm_write($f, $T); echo "{\"ok\":true}"; return;
+  }
+  if ($act === "save") {
+    if (!$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
+    $e = $T[$me["h"]] ?? ["photo" => ""]; $e["name"] = $me["name"]; $e["role"] = cm_clean($b["role"] ?? "", 80); $e["bio"] = cm_clean($b["bio"] ?? "", 300);
+    $e["links"] = cm_links($b["links"] ?? []); $e["show"] = (($b["show"] ?? true) === false) ? 0 : 1; $e["av"] = cm_av($b["av"] ?? null); $e["ts"] = time();
+    if (isset($b["photo"]) && is_string($b["photo"])) {
+      if ($b["photo"] === "") { $e["photo"] = ""; }
+      elseif (strlen($b["photo"]) <= 70000 && preg_match('#^data:image/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$#', $b["photo"])) { $e["photo"] = $b["photo"]; }
+    }
+    $T[$me["h"]] = $e; cm_write($f, $T); echo "{\"ok\":true}"; return;
   }
   http_response_code(400); echo "{\"error\":\"act\"}";
 }

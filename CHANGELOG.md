@@ -14,6 +14,16 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.19 — 2026-10-21 — Interface épurée, forum, grammaire, Qui sommes-nous
+
+- En-tête épuré : plus de XP, série ni nuage de synchronisation (alerte seulement en cas d'échec) ; boutons **Classement** et **Qui sommes-nous** bien visibles ; icône admin.
+- Accueil : quêtes du jour repliables ; Ressources = Prononciation + Grammaire (nouvelle icône) ; Communauté = Forum + Boîte de messages.
+- Forum à la manière d'un vrai forum : colonne auteur avec avatar, numéros de messages, citation, bouton flottant sur mobile.
+- **Grammaire** : 25 fiches A1/A2 en français et en chinois (exemples audio), modifiables par les admins.
+- **Qui sommes-nous** : présentation du projet, contributeurs (photo, fonction, liens au choix : LinkedIn, GitHub, site…), gestion réservée aux admins.
+- Visage par défaut souriant (les anciens avatars créés avec le défaut « en colère » sont réparés) ; l'aperçu de l'avatar s'affiche dès la première modification.
+- Images non glissables (pas de menu « enregistrer l'image »).
+
 ## v6.18 — 2026-10-21 — Avatar retrouvé sur un autre navigateur
 
 - Correction : sur un navigateur neuf, la synchronisation ne reprenait pas l'avatar, les tenues ni les réglages de personnage du serveur (et pouvait les remplacer par un avatar vide). La version la plus récente gagne maintenant ; un navigateur sans avatar récupère celui du serveur. Les jours de connexion sont réunis.
