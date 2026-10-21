@@ -186,6 +186,29 @@ function msg_main($k, $base, $app) {
   }
   if ($_SERVER["REQUEST_METHOD"] !== "POST") { http_response_code(405); echo "{\"error\":\"post\"}"; return; }
   $b = json_decode(file_get_contents("php://input", false, null, 0, 3001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"bad body\"}"; return; }
+  if ($act === "classsend") {   /* message à toute une classe : réservé à l'administrateur propriétaire de la classe */
+    $adm0 = admin_load($base); if (!in_array($h, $adm0, true)) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
+    $cid = preg_replace("/[^a-z0-9]/", "", (string)($b["cls"] ?? "")); $ok = false;
+    foreach (classes_load($base) as $c0) { if ($c0["id"] === $cid) { $ow = isset($c0["owner"]) ? (string)$c0["owner"] : (string)($adm0[0] ?? ""); $ok = ($ow === $h); } }
+    if (!$ok || $cid === "") { http_response_code(403); echo "{\"error\":\"not your class\"}"; return; }
+    $x = mb_substr(trim(preg_replace('/[\x00-\x08\x0b\x0c\x0e-\x1f<>]/u', " ", (string)($b["text"] ?? ""))), 0, 500);
+    if ($x === "") { http_response_code(400); echo "{\"error\":\"empty\"}"; return; }
+    $rf = "$dir/rate_$h.json"; $now = time(); $rt = is_file($rf) ? (json_decode(@file_get_contents($rf), true) ?: []) : [];
+    $rt = array_values(array_filter($rt, function ($t) use ($now) { return $now - (int)$t < 86400; }));
+    if (count($rt) >= 60) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
+    $rt[] = $now; file_put_contents($rf, json_encode($rt), LOCK_EX);
+    $n = 0;
+    foreach (array_slice(glob("$base/users/*.json") ?: [], 0, 500) as $uf) {
+      $id = basename($uf, ".json"); if (!preg_match("/^[a-f0-9]{64}$/", $id) || $id === $h) continue;
+      $uu = json_decode(@file_get_contents($uf), true); if (!is_array($uu) || (string)($uu["cls"] ?? "") !== $cid) continue;
+      $ob = "$dir/block_$id.json"; $obl = is_file($ob) ? (json_decode(@file_get_contents($ob), true) ?: []) : []; if (in_array($h, $obl, true)) continue;
+      $f = $tf($id); $fp = fopen($f, "c+"); if (!$fp) continue;
+      flock($fp, LOCK_EX); $T = json_decode(stream_get_contents($fp), true); if (!is_array($T)) { $T = ["m" => [], "r" => []]; }
+      $T["m"][] = ["f" => $h, "t" => $now, "x" => $x]; if (count($T["m"]) > 200) { $T["m"] = array_slice($T["m"], -200); } $T["r"][$h] = $now;
+      ftruncate($fp, 0); rewind($fp); fwrite($fp, json_encode($T, JSON_UNESCAPED_UNICODE)); fflush($fp); flock($fp, LOCK_UN); fclose($fp); $n++;
+    }
+    echo json_encode(["ok" => true, "n" => $n]); return;
+  }
   $to = msg_uid_by_name($base, $b["to"] ?? "");
   if (!$to || $to === $h) { http_response_code(404); echo "{\"error\":\"unknown\"}"; return; }
   if ($act === "block") {
@@ -563,7 +586,7 @@ function admin_main($k, $base, $app) {
     usort($users, function ($a, $b) { return $b["seen"] <=> $a["seen"]; });
     $win = [];
     foreach ($months as $ym2) { $l = $mt[$ym2] ?? []; usort($l, function ($a, $b) { return [$b["pts"], $a["ts"]] <=> [$a["pts"], $b["ts"]]; }); $win[] = ["ym" => $ym2, "top" => array_slice($l, 0, 3)]; }
-    $out["users"] = $users; $out["classes"] = classes_load($base); $out["winners"] = $win;
+    $out["users"] = $users; $out["classes"] = array_map(function ($c) use ($h, $admins) { $ow = isset($c["owner"]) ? (string)$c["owner"] : (string)($admins[0] ?? ""); $c["mine"] = ($ow === $h); return $c; }, classes_load($base)); $out["winners"] = $win;
   }
   echo json_encode($out, JSON_UNESCAPED_UNICODE);
 }

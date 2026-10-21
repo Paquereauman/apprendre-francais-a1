@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.26 — 2026-10-21 — Classement en deux colonnes, « Ma classe » pour les professeurs
+
+- **Classement** : filtres (période, groupe) dans une colonne de gauche, podium et classement à droite ; sur mobile, filtres au-dessus.
+- **Administration → « Ma classe »** : chaque professeur administrateur voit uniquement les élèves de sa classe (progression, activité des 7 derniers jours, élèves inactifs, recherche) et peut **envoyer un message à toute la classe**.
+- **Qui sommes-nous** : équipe complétée (tous les administrateurs) ; annonce de recrutement (designer, animation Discord) publiée dans le forum.
+- Serveur : `msg=classsend` (message à une classe, réservé à son propriétaire) ; les classes renvoient l'indicateur « mine ».
+
+---
+
 ## v6.25 — 2026-10-21 — Ordre de l'équipe, cartes compactes, gestion des fiches de grammaire
 
 - **Qui sommes-nous** : le fondateur réordonne l'équipe (boutons ◀ ▶) ; l'ordre est partagé par tous. Cartes compactes : liens, « Modifier » et « Retirer » en icônes sur une ligne sous l'avatar.
