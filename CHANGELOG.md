@@ -14,6 +14,17 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.34 — 2026-10-21 — Exercices interactifs dans les fiches, fiche des participes passés
+
+- **Quiz dans le concepteur** : nouvel élément ❓ (une question, une option par ligne, `*` devant la bonne réponse) ; à la lecture, la bonne réponse devient verte, une erreur est barrée avec « Essaie encore ».
+- **Fiche BANGS** : exercice interactif (10 questions) à la place de l'exercice papier ; mise en page corrigée (textes qui se chevauchaient).
+- **Fiche « Accorder le participe passé : Hugo et les rois »** refaite : cartes illustrées Roi ÊTRE / Roi AVOIR, source citée (Anne-Marie Gaignard), exemples audio, 10 questions interactives.
+- Les éléments d'une fiche ne se chevauchent plus à la lecture (espacement automatique) ; les exemples n'affichent la traduction chinoise que si la langue le demande.
+- **Grammaire** : la liste affiche par défaut tous les niveaux (puce « Tous »), avec le niveau sur chaque fiche.
+- Serveur : les fiches acceptent les quiz et mémorisent la hauteur des éléments.
+
+---
+
 ## v6.33 — 2026-10-21 — Fiche BANGS illustrée, voix des exemples de grammaire
 
 - **Fiche « La place de l'adjectif : BANGS »** refaite dans le concepteur : bandeau BANGS, une carte illustrée par famille (Beauté, Âge, Nombre, Goodness, Size), exemples audio, mise en garde, **exercice** (page 2) et **corrigé** (page 3). Elle est modifiable en ligne par les administrateurs (✏️ dans la liste Grammaire).
