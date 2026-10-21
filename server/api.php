@@ -381,7 +381,7 @@ function cm_links($L) {
 function team_main($k, $base) {
   $act = (string)($_GET["team"] ?? "list"); $f = "$base/team.json"; $T = cm_read($f, []); $me = cm_me($k, $base);
   if ($act === "list") {
-    $m = []; foreach ($T as $key => $v) { if ((int)($v["show"] ?? 1)) { $v["key"] = substr($key, 0, 8); $m[] = $v; } }
+    $m = []; foreach ($T as $key => $v) { if ((int)($v["show"] ?? 1)) { $v["key"] = substr($key, 0, 8); $LS = is_file("$base/$key.json") ? json_decode(@file_get_contents("$base/$key.json"), true) : null; if (is_array($LS) && is_array($LS["av"] ?? null)) { $v["av"] = cm_av($LS["av"]); } $m[] = $v; } }
     $mine = ($me && isset($T[$me["h"]])) ? $T[$me["h"]] : null;
     echo json_encode(["members" => $m, "me" => $mine, "adm" => (bool)($me && $me["adm"]), "canedit" => $mine !== null], JSON_UNESCAPED_UNICODE); return;
   }
@@ -398,8 +398,8 @@ function team_main($k, $base) {
     cm_write($f, $T); echo "{\"ok\":true}"; return;
   }
   if ($act === "save") {
-    if (!$me["adm"]) { http_response_code(403); echo "{\"error\":\"admin only\"}"; return; }
-    $e = $T[$me["h"]] ?? ["photo" => ""]; $e["name"] = $me["name"]; $e["role"] = cm_clean($b["role"] ?? "", 80); $e["bio"] = cm_clean($b["bio"] ?? "", 300);
+    if (!$me["adm"] && !isset($T[$me["h"]])) { http_response_code(403); echo "{\"error\":\"not a team member\"}"; return; }
+    $e = $T[$me["h"]] ?? ["photo" => ""]; $e["name"] = (($e["name"] ?? "") !== "") ? $e["name"] : $me["name"]; $e["role"] = cm_clean($b["role"] ?? "", 80); $e["bio"] = cm_clean($b["bio"] ?? "", 300);
     $e["links"] = cm_links($b["links"] ?? []); $e["show"] = (($b["show"] ?? true) === false) ? 0 : 1; $e["av"] = cm_av($b["av"] ?? null); $e["ts"] = time();
     if (isset($b["photo"]) && is_string($b["photo"])) {
       if ($b["photo"] === "") { $e["photo"] = ""; }

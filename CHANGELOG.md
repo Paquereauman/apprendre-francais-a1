@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.24 — 2026-10-21 — Fiches d'équipe modifiables par chaque membre
+
+- **Qui sommes-nous** : chaque membre de l'équipe (élève, enseignant·e, orthophoniste…) modifie sa propre fiche (fonction, présentation, liens, photo) ; son avatar est lié à son compte et se met à jour tout seul.
+- Cartes de l'équipe réorganisées (avatar, nom et badge « Fondateur » sur une ligne, boutons alignés en bas) ; la couronne du badge est retirée.
+- Feuille de route : les étapes « À faire » passent en gris clair.
+- Serveur : la sauvegarde de fiche est ouverte aux membres de l'équipe ; la liste de l'équipe renvoie l'avatar actuel de chaque membre.
+
+---
+
 ## v6.23 — 2026-10-21 — Badge fondateur
 
 - Qui sommes-nous : badge 👑 « Fondateur » sur la carte du fondateur.
