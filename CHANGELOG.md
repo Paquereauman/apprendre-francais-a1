@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.36 — 2026-10-21 — Fiches : plus de grands espaces en chinois
+
+- Quand la fiche est lue en chinois seul (ou en français seul), les éléments de l'autre langue ne laissent plus de vide : tout se resserre depuis le haut de la page.
+
+---
+
 ## v6.35 — 2026-10-21 — Fiche des participes passés : deux rois dessinés, règles du COD, score
 
 - **Fiche « Hugo et les rois »** : un gros roi ÊTRE gentil et un roi AVOIR maigre, méchant et fourbe (dessins) ; section « Les règles du COD » (trouver le COD avec « quoi ? / qui ? », COD avant le verbe : pronoms, « que », questions) ; 12 questions interactives, dont les cas où AVOIR s'accorde en cachette.
