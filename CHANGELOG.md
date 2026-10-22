@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.41 — 2026-10-22 — Réinitialiser un mot de passe en un clic
+
+- **Administration** : bouton 🔑 sur chaque élève (onglets « Ma classe » et « Élèves ») : génère un code de réinitialisation et l'affiche dans une fenêtre (code en grand, « Copier le code », « Copier le message complet » en français + chinois avec les étapes pour l'élève). Code valable 72 h, utilisable une seule fois. Le mot de passe actuel n'est jamais visible (il est chiffré).
+- Onglet « Élèves » : champ de recherche par nom.
+
+---
+
 ## v6.40 — 2026-10-21 — Tenues : plus de débordement sur les épaules
 
 - **Cause trouvée** : tous les avatars d'une page partageaient les mêmes identifiants internes (découpe des épaules, dégradés). Quand le premier avatar était dans un élément caché (profil, fenêtre fermée), les tenues spéciales n'étaient plus découpées et dépassaient des épaules (bandeaux plats). Chaque avatar a maintenant ses propres identifiants.
