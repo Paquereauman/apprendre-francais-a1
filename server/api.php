@@ -475,11 +475,12 @@ function email_mask($e) { $p = explode("@", $e, 2); if (count($p) < 2) return ""
 function email_send($base, $to, $subject, $html, $text) {
   $c = email_cfg($base); if (!$c || !email_ok($to)) return false;
   $name = (string)($c["name"] ?? "Je parle baguette");
-  if (($c["provider"] ?? "") === "local") {   /* e-mail envoyé par le serveur lui-même (Postfix, signé DKIM) */
+  if (in_array(($c["provider"] ?? ""), ["local", "smtp"], true)) {   /* e-mail construit ici : envoyé par Postfix (signé DKIM) ou par un SMTP authentifié */
     $b = "jpb" . bin2hex(random_bytes(8)); $dom = substr(strrchr($c["from"], "@"), 1);
     $h = "From: =?UTF-8?B?" . base64_encode($name) . "?= <" . $c["from"] . ">\r\nMIME-Version: 1.0\r\nMessage-ID: <" . bin2hex(random_bytes(10)) . "@" . $dom . ">\r\nAuto-Submitted: auto-generated\r\nContent-Type: multipart/alternative; boundary=\"$b\"";
     $body = "--$b\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($text)) . "--$b\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($html)) . "--$b--\r\n";
-    return @mail($to, "=?UTF-8?B?" . base64_encode($subject) . "?=", $body, $h, "-f" . $c["from"]);
+    $sj = "=?UTF-8?B?" . base64_encode($subject) . "?="; if (($c["provider"] ?? "") === "smtp") { return email_smtp($c, $to, $sj, $h, $body); }
+    return @mail($to, $sj, $body, $h, "-f" . $c["from"]);
   }
   if (($c["provider"] ?? "brevo") === "resend") {
     $url = "https://api.resend.com/emails"; $hdr = ["Authorization: Bearer " . $c["key"], "Content-Type: application/json"];
@@ -492,6 +493,22 @@ function email_send($base, $to, $subject, $html, $text) {
   $r = curl_exec($ch); $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
   return $code >= 200 && $code < 300;
 }
+function email_smtp($c, $to, $subject, $headers, $body) {   /* envoi authentifié par un serveur SMTP (ex. la boîte e-mail OVH du domaine) */
+  $host = (string)($c["host"] ?? ""); $port = (int)($c["port"] ?? 465); if ($host === "" || !preg_match('/^[A-Za-z0-9.\-]+$/', $host)) return false;
+  $fp = @stream_socket_client(($port === 465 ? "ssl://" : "tcp://") . "$host:$port", $en, $es, 12); if (!$fp) return false; stream_set_timeout($fp, 15);
+  $rd = function () use ($fp) { $r = ""; while (($s = fgets($fp, 1024)) !== false) { $r .= $s; if (strlen($s) >= 4 && $s[3] === " ") break; } return $r; };
+  $send = function ($x, $ok) use ($fp, $rd) { if ($x !== null) { fwrite($fp, $x . "\r\n"); } $r = $rd(); return in_array(substr($r, 0, 3), (array)$ok, true); };
+  $ehlo = "french-fast.fr"; $okk = false;
+  do {
+    if (!$send(null, ["220"])) break; if (!$send("EHLO $ehlo", ["250"])) break;
+    if ($port !== 465 && $port !== 25) { if (!$send("STARTTLS", ["220"])) break; if (!@stream_socket_enable_crypto($fp, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) break; if (!$send("EHLO $ehlo", ["250"])) break; }
+    if (!empty($c["user"])) { if (!$send("AUTH LOGIN", ["334"]) || !$send(base64_encode($c["user"]), ["334"]) || !$send(base64_encode((string)($c["pass"] ?? "")), ["235"])) break; }
+    if (!$send("MAIL FROM:<" . $c["from"] . ">", ["250"]) || !$send("RCPT TO:<$to>", ["250", "251"]) || !$send("DATA", ["354"])) break;
+    $msg = "To: <$to>\r\nSubject: $subject\r\nDate: " . date("r") . "\r\n" . $headers . "\r\n\r\n" . preg_replace('/^\./m', '..', $body);
+    if (!$send($msg . "\r\n.", ["250"])) break; $okk = true; $send("QUIT", ["221"]);
+  } while (false);
+  fclose($fp); return $okk;
+}
 function email_rate($base, $key, $max, $secs) {   /* limite de demandes : renvoie false si dépassée */
   $d = "$base/emailrate"; if (!is_dir($d)) { @mkdir($d, 0700, true); } $f = "$d/" . hash("sha256", $key) . ".json"; $now = time();
   $a = is_file($f) ? (json_decode(@file_get_contents($f), true) ?: []) : []; $a = array_values(array_filter($a, function ($t) use ($now, $secs) { return $now - (int)$t < $secs; }));
@@ -503,15 +520,18 @@ function email_main($k, $base, $app) {
   $act = (string)($_GET["email"] ?? "status"); $cfg = email_cfg($base); $H = ""; $U = null; $uf = "";
   if (preg_match("/^[a-z0-9]{8,40}$/", (string)$k)) { $H = hash("sha256", $k); $uf = "$base/users/$H.json"; $U = is_file($uf) ? json_decode(@file_get_contents($uf), true) : null; if (!is_array($U)) { $U = null; } }
   $founder = $U !== null && substr($H, 0, 8) === "095ad09e";
-  if ($act === "status") { echo json_encode(["enabled" => $cfg !== null, "linked" => ($U !== null && !empty($U["email"])) ? email_mask((string)$U["email"]) : null, "founder" => $founder, "from" => $founder && $cfg ? $cfg["from"] : null, "provider" => $founder && $cfg ? ($cfg["provider"] ?? "brevo") : null]); return; }
+  if ($act === "status") { echo json_encode(["enabled" => $cfg !== null, "linked" => ($U !== null && !empty($U["email"])) ? email_mask((string)$U["email"]) : null, "founder" => $founder, "from" => $founder && $cfg ? $cfg["from"] : null, "provider" => $founder && $cfg ? ($cfg["provider"] ?? "brevo") : null, "host" => $founder && $cfg ? ($cfg["host"] ?? "") : null, "port" => $founder && $cfg ? ($cfg["port"] ?? null) : null, "user" => $founder && $cfg ? ($cfg["user"] ?? "") : null]); return; }
   if ($_SERVER["REQUEST_METHOD"] !== "POST") { http_response_code(405); echo "{\"error\":\"post\"}"; return; }
   $b = json_decode(file_get_contents("php://input", false, null, 0, 2001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
   if ($act === "cfg") {   /* configuration de l'envoi : fondateur seulement */
     if (!$founder) { http_response_code(403); echo "{\"error\":\"founder only\"}"; return; }
-    $prov = in_array($b["provider"] ?? "", ["brevo", "resend", "local"], true) ? $b["provider"] : "brevo"; $from = trim((string)($b["from"] ?? "")); $key = trim((string)($b["key"] ?? ""));
+    $prov = in_array($b["provider"] ?? "", ["brevo", "resend", "local", "smtp"], true) ? $b["provider"] : "brevo"; $from = trim((string)($b["from"] ?? "")); $key = trim((string)($b["key"] ?? ""));
     $old = email_cfg($base); if ($key === "" && $old) { $key = $old["key"]; }
-    if (!email_ok($from) || ($prov !== "local" && (strlen($key) < 10 || strlen($key) > 300))) { http_response_code(400); echo "{\"error\":\"invalid\"}"; return; }
-    file_put_contents("$base/mail.json", json_encode(["provider" => $prov, "from" => $from, "key" => ($prov === "local" ? "-" : $key), "name" => "Je parle baguette"]), LOCK_EX); @chmod("$base/mail.json", 0600);
+    if (!email_ok($from) || (!in_array($prov, ["local", "smtp"], true) && (strlen($key) < 10 || strlen($key) > 300))) { http_response_code(400); echo "{\"error\":\"invalid\"}"; return; }
+    $new = ["provider" => $prov, "from" => $from, "key" => (in_array($prov, ["local", "smtp"], true) ? "-" : $key), "name" => "Je parle baguette"];
+    if ($prov === "smtp") { $host = trim((string)($b["host"] ?? "")); $port = (int)($b["port"] ?? 465); $user = trim((string)($b["user"] ?? "")); $pass = (string)($b["pass"] ?? ""); if ($pass === "" && $old && ($old["provider"] ?? "") === "smtp") { $pass = (string)($old["pass"] ?? ""); }
+      if ($host === "" || !preg_match('/^[A-Za-z0-9.\-]+$/', $host) || !in_array($port, [25, 465, 587], true)) { http_response_code(400); echo "{\"error\":\"invalid\"}"; return; } $new["host"] = $host; $new["port"] = $port; $new["user"] = $user; $new["pass"] = $pass; }
+    file_put_contents("$base/mail.json", json_encode($new), LOCK_EX); @chmod("$base/mail.json", 0600);
     $ok = true; if (!empty($b["test"]) && email_ok((string)$b["test"])) { $ok = email_send($base, $b["test"], "Test — Je parle baguette", "<p>L'envoi d'e-mails fonctionne ✅</p><p>邮件发送正常 ✅</p>", "L'envoi d'e-mails fonctionne. 邮件发送正常。"); }
     echo json_encode(["ok" => true, "test" => $ok]); return;
   }

@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.45 — 2026-10-22 — E-mails : envoi par SMTP (boîte OVH)
+
+- Nouvelle option d'envoi « SMTP » (réglage fondateur) : serveur, port, identifiant et mot de passe d'une boîte e-mail existante (ex. OVH `ssl0.ovh.net`, port 465). Meilleure délivrabilité que l'envoi direct depuis le serveur (qui est refusé par certains fournisseurs faute de nom inverse).
+- Le mot de passe SMTP est enregistré côté serveur et jamais réaffiché.
+
+---
+
 ## v6.44 — 2026-10-22 — Récupération de compte simplifiée
 
 - **Le code identifie le compte** : l'élève saisit le code, le nom du compte s'affiche tout seul (« Compte trouvé : … »), puis il choisit son nouveau mot de passe. Plus de nom à retaper (risque d'erreur).
