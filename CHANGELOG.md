@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.47 — 2026-10-22 — Compte : un écran de départ simple
+
+- **Fenêtre Compte** : trois grands choix au départ — « 🔑 Se connecter », « ✨ Créer un compte », « 🆘 J'ai perdu mon compte ou mon mot de passe ».
+- Chaque choix ouvre un écran court avec seulement les champs utiles (connexion : nom + mot de passe ; création : nom, mot de passe, e-mail, rôle ; compte perdu : code → compte trouvé → nouveau mot de passe), avec un bouton « Retour ».
+- Si la connexion échoue, le message renvoie vers « Mot de passe oublié » au lieu de proposer de créer un nouveau compte (ce qui faisait perdre la progression).
+
+---
+
 ## v6.46 — 2026-10-22 — E-mail obligatoire à l'inscription, rappels en rouge
 
 - **Inscription** : champ e-mail obligatoire (quand l'envoi d'e-mails est actif) ; un code de vérification est envoyé tout de suite et une fenêtre permet de le saisir (ou « Plus tard »).

@@ -42,7 +42,7 @@ select{font:inherit;padding:4px;border-radius:8px}
 .flt{position:fixed;z-index:9;color:var(--gold);animation:fl 1s forwards;pointer-events:none}@keyframes fl{to{transform:translateY(-50px);opacity:0}}
 .shake{animation:sh .3s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @media(max-width:700px){.hm-stats{grid-template-columns:1fr 1fr}.hm-stats .hm-me{grid-column:1/-1}.hm-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:30;padding:14px}.modal.on{display:flex}
+.pf-big{display:block;width:100%;text-align:left;background:linear-gradient(#3f70bd,#2f5fa8);color:#fff;border:2px solid #f4c64a;border-radius:16px;padding:14px 16px;margin:0 0 10px;box-shadow:0 3px 0 #1f457f;font:inherit;cursor:pointer}.pf-big b{display:block;font-size:1.05rem}.pf-big small{display:block;opacity:.85;margin-top:2px}.pf-big.lost{background:#fff;color:var(--ink);border-color:#e5484d;box-shadow:0 3px 0 #e5484d55}.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:30;padding:14px}.modal.on{display:flex}
 .modal .box{max-height:92vh;overflow-y:auto;background:#fff;border-radius:18px;padding:20px;max-width:430px;width:100%;box-shadow:0 10px 40px #0005}.modal input{width:100%;font-size:1.05rem;padding:10px;border-radius:10px;border:2px solid #0003;margin:6px 0}
 .hm-sync{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;background:#fff;border:1px solid #e3e9f5;border-radius:14px;padding:10px 14px;font-size:.92rem}
 .lb{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #e3e9f5;border-radius:12px;padding:8px 12px;margin-bottom:6px}.lb.me{border-color:var(--blue);background:#eef4ff}.lb.adm{border:2px solid #f4c64a;background:linear-gradient(90deg,#fff6d8,#fff);box-shadow:0 0 0 1px #f4c64a55,0 0 10px #f4c64a55}
@@ -365,20 +365,28 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <div id="mmsg" class="evd"></div>
 <div class="nav rp-foot"><button onclick="meSave()">💾 Enregistrer · 保存</button><button class="alt" onclick="meClose()">← Retour · 返回</button></div>
 <div style="text-align:center;margin-top:6px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
-<div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
+<div class="modal" id="rec"><div class="box"><h3>🆘 Compte ou mot de passe perdu · 找回账号</h3><p style="color:var(--mut);font-size:.9rem">Tu as besoin d'un code : ton professeur peut te le donner, ou tu peux le recevoir par e-mail. Ensuite tu choisis un nouveau mot de passe et tu retrouves toute ta progression. · 你需要一个代码：可以向老师索取，也可以通过邮件获取。然后设置新密码，即可找回全部进度。</p>
 <div id="rmailbox" style="display:none;margin-bottom:8px"><button class="alt" onclick="document.getElementById('rmail').style.display='block';this.style.display='none'">📧 Je n'ai pas de code : le recevoir par e-mail · 没有代码？通过邮件获取</button><div id="rmail" style="display:none;margin-top:6px"><input id="rem" type="email" placeholder="ton@email.com" autocomplete="email"><div class="nav" style="margin-top:6px"><button onclick="mailForgot()">Envoyer le code · 发送代码</button></div><div id="rmailmsg" class="evd"></div></div></div>
 <input id="rc" placeholder="1. Code reçu (xxxx-xxxx-xxxx) · 找回代码" autocomplete="off" oninput="recPeek()"><input id="rn" placeholder="2. Compte trouvé (rempli tout seul) · 自动识别的账号" readonly autocomplete="username" style="background:#f3f7ff"><input id="rp" type="password" placeholder="3. Nouveau mot de passe (6 min.) · 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
-<div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
+<div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose();profOpen()">← Retour · 返回</button></div></div></div>
 <div class="modal" id="avp" onclick="if(event.target===this)avClose()"><div class="box avbox">
  <div class="avtop"><div id="avprev"></div><div class="avtools"><button class="alt" onclick="avRand()" aria-label="Au hasard"><b>🎲</b><span>Hasard · 随机</span></button><button class="alt" onclick="avUndo()" aria-label="Annuler"><b>↩️</b><span>Annuler · 撤销</span></button><button class="alt" onclick="avReset()" aria-label="Réinitialiser"><b>🔄</b><span>Reset · 重置</span></button><button class="alt" onclick="avNone()" aria-label="Utiliser un emoji"><b>🙂</b><span>Emoji · 表情</span></button><button class="alt" id="atlbtn" style="display:none;grid-column:1/-1;background:#2f5fa8" onclick="atlOpen()"><b>🛠️</b><span>Atelier admin · 工坊</span></button></div></div>
  <div id="avslots" class="slots"></div><div id="avrows"></div>
  <div class="avbar"><button class="alt" onclick="avNav(-1)" aria-label="Précédent">◀</button><button class="ok" onclick="avClose()">✔ Terminer · 完成</button><button class="alt" onclick="avNav(1)" aria-label="Suivant">▶</button></div></div></div>
 <div class="modal" id="atl"><div class="box atlbox"><div class="atlhead"><b>🛠️ Atelier admin · 管理员工坊</b><button onclick="atlClose()" aria-label="Fermer">✕</button></div><div id="atlbody"></div><div class="avbar"><button class="alt" onclick="atlStep(-1)" aria-label="Précédent">◀</button><button class="alt" style="width:auto;padding:0 12px" onclick="atlClose()">✕ Fermer</button><button class="ok" onclick="accSave()">💾 Enregistrer · 保存</button><button class="alt" onclick="atlStep(1)" aria-label="Suivant">▶</button></div></div></div>
-<div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3><p style="color:var(--mut);font-size:.9rem">Un nom + un mot de passe pour retrouver ta progression sur tous tes appareils et participer au classement. · 用户名加密码，即可在所有设备上同步进度并参加排行榜。</p>
-<input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo('login')">
-<input id="pem" type="email" placeholder="E-mail (obligatoire pour créer un compte) · 邮箱（创建账号必填）" autocomplete="email"><div class="evd" style="margin-top:-4px">Il sert à retrouver ton compte si tu oublies ton mot de passe. · 用于忘记密码时找回账号。</div>
-<div id="pcls"></div><div id="pmsg" class="evd"></div><div class="nav"><button onclick="profGo('login')">Se connecter · 登录</button><button onclick="profGo('create')">Créer un compte · 创建账号</button><button class="alt" onclick="profClose()">Fermer · 关闭</button></div>
-<div style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">Mot de passe oublié ? · 忘记密码？</span></div>
+<div class="modal" id="prof"><div class="box"><h3>👤 Compte · 账号</h3>
+<div id="pf-menu"><p style="color:var(--mut);font-size:.95rem;margin:4px 0 10px">Que veux-tu faire ? · 你想做什么？</p>
+ <button class="pf-big" onclick="profMode('login')"><b>🔑 Se connecter · 登录</b><small>J'ai déjà un compte · 我已有账号</small></button>
+ <button class="pf-big" onclick="profMode('create')"><b>✨ Créer un compte · 创建账号</b><small>C'est ma première fois · 我是第一次使用</small></button>
+ <button class="pf-big lost" onclick="recOpen()"><b>🆘 J'ai perdu mon compte ou mon mot de passe · 忘记账号或密码</b><small>Je le retrouve avec un code · 用代码找回</small></button>
+ <div class="nav" style="margin-top:8px"><button class="alt" onclick="profClose()">Fermer · 关闭</button></div></div>
+<div id="pf-form" style="display:none"><span class="lb-leave" role="button" onclick="profMode('menu')">← Retour · 返回</span>
+ <p id="pf-help" style="color:var(--mut);font-size:.92rem;margin:8px 0"></p>
+ <input id="pn" placeholder="Nom / 用户名" autocomplete="username"><input id="pp" type="password" placeholder="Mot de passe (6 min.) / 密码（至少6位）" autocomplete="current-password" onkeydown="if(event.key==='Enter')profGo(PFMODE)">
+ <div id="pf-em"><input id="pem" type="email" placeholder="E-mail (obligatoire) · 邮箱（必填）" autocomplete="email"><div class="evd" style="margin-top:-4px">Il sert à retrouver ton compte si tu oublies ton mot de passe. · 用于忘记密码时找回账号。</div></div>
+ <div id="pcls"></div><div id="pmsg" class="evd"></div>
+ <div class="nav"><button id="pf-go" onclick="profGo(PFMODE)">Se connecter · 登录</button></div>
+ <div id="pf-lost" style="text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="recOpen()">🆘 Mot de passe oublié ? · 忘记密码？</span></div></div>
 <div id="pout" style="display:none;text-align:center;margin-top:10px"><span class="lb-leave" role="button" onclick="profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <script src="dicebear.js?v=3"></script>
 <script src="data-fr.js?v=202610082019"></script>
@@ -658,7 +666,13 @@ async function deriveKey(name,pw){const en=new TextEncoder(),km=await crypto.sub
   const bits=await crypto.subtle.deriveBits({name:"PBKDF2",hash:"SHA-256",salt:en.encode("frA1:"+name.trim().toLowerCase()),iterations:200000},km,160);
   return [...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,"0")).join("")}
 function profOpen(){loadClasses();const p=document.getElementById("prof");document.getElementById("pmsg").textContent="";document.getElementById("pn").value=PNAME;document.getElementById("pp").value="";
-  document.getElementById("pout").style.display=PNAME?"block":"none";p.classList.add("on")}
+  document.getElementById("pout").style.display=PNAME?"block":"none";profMode("menu");p.classList.add("on")}
+let PFMODE="login";
+function profMode(m){PFMODE=m;const menu=document.getElementById("pf-menu"),form=document.getElementById("pf-form");if(!menu||!form)return;menu.style.display=m==="menu"?"":"none";form.style.display=m==="menu"?"none":"";
+  if(m==="menu")return;const c=m==="create";document.getElementById("pf-em").style.display=c?"":"none";document.getElementById("pcls").style.display=c?"":"none";document.getElementById("pf-lost").style.display=c?"none":"";
+  document.getElementById("pp").setAttribute("autocomplete",c?"new-password":"current-password");
+  document.getElementById("pf-help").innerHTML=c?LB("<b>Crée ton compte en 3 étapes</b> : un nom, un mot de passe, ton e-mail.","<b>3步创建账号</b>：用户名、密码、邮箱。"):LB("Entre ton <b>nom</b> et ton <b>mot de passe</b>.","输入你的<b>用户名</b>和<b>密码</b>。");
+  document.getElementById("pf-go").textContent=c?"✨ Créer mon compte · 创建账号":"🔑 Se connecter · 登录";document.getElementById("pmsg").textContent="";loc(form);if(c){try{renderPcls()}catch(e){}}setTimeout(()=>{const n=document.getElementById("pn");n&&n.focus()},60)}
 function profClose(){document.getElementById("prof").classList.remove("on")}
 function profLater(){S.dismissSync=1;save();profClose();if(cur)cur()}
 async function profGo(mode){const n=document.getElementById("pn").value.trim(),pw=document.getElementById("pp").value,m=document.getElementById("pmsg");
@@ -669,7 +683,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   let em="";if(mode==="create"){const ms=await mailStatus();if(ms&&ms.enabled){em=(document.getElementById("pem").value||"").trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent="E-mail obligatoire pour créer un compte (pour retrouver ton compte si tu oublies ton mot de passe). · 创建账号需要填写邮箱（忘记密码时用来找回账号）。";return}}}
   m.textContent="Connexion… · 连接中……";
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim(),exists=t!=="null";
-    if(!exists&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe : vérifie-les, ou touche « Créer un compte ». · 没有找到该账号，请检查，或点击“创建账号”。";return}
+    if(!exists&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe. Vérifie l'orthographe, ou touche « 🆘 Mot de passe oublié ? » ci-dessous (ne crée pas un nouveau compte : tu perdrais ta progression). · 没有找到该账号。请检查拼写，或点击下方「🆘 忘记密码？」（不要新建账号，否则会丢失进度）。";return}
     if(exists&&mode==="create"){m.textContent="Ce compte existe déjà (même nom et même mot de passe) : connecte-toi, ou choisis un autre mot de passe. · 该账号已存在（用户名和密码相同）：请直接登录，或换一个密码。";return}
     if(!exists){try{const a=await fetch(API+"?avail=1&n="+encodeURIComponent(n)+APPQ,{cache:"no-store"});if(a.ok){const j=await a.json();if(j.free===false){m.textContent="Ce nom est déjà pris par un autre élève : choisis-en un autre. · 该用户名已被其他学生使用，请换一个。";return}}}catch(e){}}
     /* la progression déjà présente sur cet appareil n'est JAMAIS mélangée à un autre compte */
