@@ -367,7 +367,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <div style="text-align:center;margin-top:6px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
 <div id="rmailbox" style="display:none;margin-bottom:8px"><button class="alt" onclick="document.getElementById('rmail').style.display='block';this.style.display='none'">📧 Je n'ai pas de code : le recevoir par e-mail · 没有代码？通过邮件获取</button><div id="rmail" style="display:none;margin-top:6px"><input id="rem" type="email" placeholder="ton@email.com" autocomplete="email"><div class="nav" style="margin-top:6px"><button onclick="mailForgot()">Envoyer le code · 发送代码</button></div><div id="rmailmsg" class="evd"></div></div></div>
-<input id="rn" placeholder="Nom de compte / 用户名" autocomplete="username"><input id="rc" placeholder="Code (xxxx-xxxx-xxxx) / 找回代码" autocomplete="off"><input id="rp" type="password" placeholder="Nouveau mot de passe (6 min.) / 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
+<input id="rc" placeholder="1. Code reçu (xxxx-xxxx-xxxx) · 找回代码" autocomplete="off" oninput="recPeek()"><input id="rn" placeholder="2. Compte trouvé (rempli tout seul) · 自动识别的账号" readonly autocomplete="username" style="background:#f3f7ff"><input id="rp" type="password" placeholder="3. Nouveau mot de passe (6 min.) · 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
 <div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
 <div class="modal" id="avp" onclick="if(event.target===this)avClose()"><div class="box avbox">
  <div class="avtop"><div id="avprev"></div><div class="avtools"><button class="alt" onclick="avRand()" aria-label="Au hasard"><b>🎲</b><span>Hasard · 随机</span></button><button class="alt" onclick="avUndo()" aria-label="Annuler"><b>↩️</b><span>Annuler · 撤销</span></button><button class="alt" onclick="avReset()" aria-label="Réinitialiser"><b>🔄</b><span>Reset · 重置</span></button><button class="alt" onclick="avNone()" aria-label="Utiliser un emoji"><b>🙂</b><span>Emoji · 表情</span></button><button class="alt" id="atlbtn" style="display:none;grid-column:1/-1;background:#2f5fa8" onclick="atlOpen()"><b>🛠️</b><span>Atelier admin · 工坊</span></button></div></div>
@@ -1219,12 +1219,19 @@ async function mailForgot(){const e=(document.getElementById("rem").value||"").t
   const r=await mailApi("forgot",{email:e}).catch(()=>null);m.textContent=r&&r.status===429?"Trop de demandes, réessaie plus tard. · 请求过多，请稍后再试。":"Si un compte est relié à cette adresse, un code vient d'être envoyé (valable 30 min). Entre-le ci-dessous avec ton nom de compte. · 如果该邮箱已绑定账号，代码已发送（30分钟内有效）。请连同用户名填写在下面。"+(r&&r.j&&r.j.dev?" [test : "+r.j.dev+"]":"");loc(m)}
 {const _m0=meOpen;meOpen=async function(){const x=await _m0.apply(this,arguments);mailUI();return x}}
 function recClose(){document.getElementById("rec").classList.remove("on")}
-async function recGo(){const n=document.getElementById("rn").value.trim(),code=document.getElementById("rc").value.trim(),pw=document.getElementById("rp").value,m=document.getElementById("rmsg");
-  if(n.length<2||pw.length<6||code.replace(/[^a-zA-Z0-9]/g,"").length!==12){m.textContent="Nom (2 car. min.), code à 12 caractères et mot de passe (6 min.) requis. · 请填写用户名（至少2个字符）、12位代码和密码（至少6位）。";return}
+let RECPK="";
+async function recPeek(){const code=document.getElementById("rc").value.replace(/[^a-zA-Z0-9]/g,""),rn=document.getElementById("rn"),m=document.getElementById("rmsg");
+  if(code.length!==12){rn.value="";RECPK="";if(code.length>0)m.textContent="";return rn.value}
+  if(RECPK===code&&rn.value)return rn.value;RECPK=code;m.textContent="Recherche du compte… · 查找账号中……";
+  try{const r=await fetch(API+"?recover=1&peek=1"+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code})});let j={};try{j=await r.json()}catch(e){}
+    if(r.ok&&j.name){rn.value=j.name;m.textContent="✅ Compte trouvé : "+j.name+" · 已找到账号："+j.name;return j.name}
+    rn.value="";RECPK="";m.textContent="Code invalide ou expiré : redemande un nouveau code. · 代码无效或已过期，请重新索取。"}catch(e){m.textContent="Serveur injoignable, réessaie. · 无法连接服务器，请重试。"}return""}
+async function recGo(){let n=document.getElementById("rn").value.trim();if(!n)n=(await recPeek()||"").trim();const code=document.getElementById("rc").value.trim(),pw=document.getElementById("rp").value,m=document.getElementById("rmsg");
+  if(!n||pw.length<6||code.replace(/[^a-zA-Z0-9]/g,"").length!==12){m.textContent=!n&&code.replace(/[^a-zA-Z0-9]/g,"").length===12?"Code invalide ou expiré. · 代码无效或已过期。":"Code à 12 caractères et mot de passe (6 min.) requis. · 请填写12位代码和新密码（至少6位）。";return}
   if(!window.crypto||!crypto.subtle){m.textContent="Ouvre le site en https. · 请使用 https 打开本站。";return}
   m.textContent="Vérification… · 验证中……";
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?recover=1"+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code,newk:k})});
-    if(!r.ok){m.textContent="Code invalide ou expiré, ou ce nom / mot de passe est déjà utilisé. · 代码无效或已过期，或该用户名/密码已被使用。";return}
+    if(!r.ok){let e="";try{e=(await r.json()).error}catch(x){}m.textContent=e==="exists"?"Ce mot de passe est déjà pris pour ce compte : choisis-en un autre. · 该密码已被使用，请换一个。":"Code invalide ou expiré : redemande un nouveau code à ton professeur. · 代码无效或已过期，请向老师重新索取。";return}
     CODE=k;PNAME=n;try{localStorage.setItem("frA1code",k);localStorage.setItem("frA1name",n)}catch(e){}
     {const kp={ui:S.ui,uiChosen:S.uiChosen,sp:S.sp};S=Object.assign(freshS(),kp);S.owner=ownerId()}
     S.dismissSync=1;S.ts=0;await pull();recClose();head();admStatus();loadClasses();loadQV();if(cur)cur();toast("✅ Compte récupéré · 账号已找回")}

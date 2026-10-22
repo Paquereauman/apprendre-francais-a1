@@ -703,10 +703,12 @@ function recover_main($base, $app) {
   $code = strtolower(preg_replace("/[^a-zA-Z0-9]/", "", (string)(is_array($b) ? ($b["code"] ?? "") : "")));
   $nk = (string)(is_array($b) ? ($b["newk"] ?? "") : "");
   $fail = function ($m) { sleep(1); http_response_code(403); echo json_encode(["error" => $m]); };
-  if (strlen($code) !== 12 || !preg_match("/^[a-z0-9]{8,40}$/", $nk)) { $fail("bad code"); return; }
+  if (strlen($code) !== 12) { $fail("bad code"); return; }
   $rf = "$base/recover/" . hash("sha256", $code) . ".json";
   $r = is_file($rf) ? json_decode(@file_get_contents($rf), true) : null;
   if (!is_array($r) || (int)($r["exp"] ?? 0) < time() || !preg_match("/^[a-f0-9]{64}$/", (string)($r["id"] ?? ""))) { $fail("invalid"); return; }
+  if (!empty($_GET["peek"])) { $pu = is_file("$base/users/" . $r["id"] . ".json") ? json_decode(@file_get_contents("$base/users/" . $r["id"] . ".json"), true) : null; echo json_encode(["ok" => true, "name" => is_array($pu) ? (string)($pu["name"] ?? "") : ""], JSON_UNESCAPED_UNICODE); return; }   /* le code identifie le compte : on renvoie son nom */
+  if (!preg_match("/^[a-z0-9]{8,40}$/", $nk)) { $fail("bad code"); return; }
   $old = $r["id"]; $new = hash("sha256", $nk);
   if ($new !== $old) {
     if (is_file("$base/$new.json")) { $fail("exists"); return; }

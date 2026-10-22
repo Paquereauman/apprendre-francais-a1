@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.44 — 2026-10-22 — Récupération de compte simplifiée
+
+- **Le code identifie le compte** : l'élève saisit le code, le nom du compte s'affiche tout seul (« Compte trouvé : … »), puis il choisit son nouveau mot de passe. Plus de nom à retaper (risque d'erreur).
+- Messages d'erreur plus clairs (code invalide ou expiré / mot de passe déjà pris).
+- Serveur : vérification du code sans le consommer (`recover&peek`) ; correction des droits du dossier des codes de récupération (les codes créés depuis l'administration n'étaient plus enregistrés).
+
+---
+
 ## v6.43 — 2026-10-22 — Envoi des e-mails par le serveur du site
 
 - L'envoi des e-mails de récupération peut se faire par le serveur du site lui-même (option « Serveur du site » dans le réglage fondateur), en plus de Brevo et Resend. Messages signés (DKIM).
