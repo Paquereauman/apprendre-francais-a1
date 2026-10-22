@@ -14,6 +14,12 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.49 — 2026-10-22 — E-mails sans OVH : Gmail / Outlook
+
+- Réglage fondateur : boutons « Gmail », « Outlook / Hotmail », « OVH » qui remplissent le serveur SMTP ; explication du mot de passe d'application pour envoyer depuis sa propre boîte e-mail, sans domaine ni DNS.
+
+---
+
 ## v6.48 — 2026-10-22 — E-mail relié directement, feuille de route
 
 - **E-mail** : on relie l'adresse directement, sans code de vérification (bouton « Relier mon e-mail »). Obligatoire à l'inscription, rappel en rouge tant qu'il n'est pas relié. L'envoi des codes de récupération reste nécessaire pour « Mot de passe oublié par e-mail ».
