@@ -680,7 +680,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
   if(!window.crypto||!crypto.subtle){m.textContent="Connexion impossible ici : ouvre le site en https. · 请使用 https 打开本站。";return}
   const who=document.querySelector("input[name=pwho]:checked");
   if(mode==="create"&&!who){m.textContent="Choisis d'abord ton rôle (élève, apprenant libre ou professeur). · 请先选择你的身份。";return}
-  let em="";if(mode==="create"){const ms=await mailStatus();if(ms&&ms.enabled){em=(document.getElementById("pem").value||"").trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent="E-mail obligatoire pour créer un compte (pour retrouver ton compte si tu oublies ton mot de passe). · 创建账号需要填写邮箱（忘记密码时用来找回账号）。";return}}}
+  let em="";if(mode==="create"){em=(document.getElementById("pem").value||"").trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em)){m.textContent="E-mail obligatoire pour créer un compte (pour retrouver ton compte si tu oublies ton mot de passe). · 创建账号需要填写邮箱（忘记密码时用来找回账号）。";return}}
   m.textContent="Connexion… · 连接中……";
   try{const k=await deriveKey(n,pw),r=await fetch(API+"?k="+k+APPQ,{cache:"no-store"});if(!r.ok)throw 0;const t=(await r.text()).trim(),exists=t!=="null";
     if(!exists&&mode==="login"){m.textContent="Aucun compte avec ce nom et ce mot de passe. Vérifie l'orthographe, ou touche « 🆘 Mot de passe oublié ? » ci-dessous (ne crée pas un nouveau compte : tu perdrais ta progression). · 没有找到该账号。请检查拼写，或点击下方「🆘 忘记密码？」（不要新建账号，否则会丢失进度）。";return}
@@ -693,7 +693,7 @@ async function profGo(mode){const n=document.getElementById("pn").value.trim(),p
     S=Object.assign(carry||freshS(),keepPrefs);S.owner=ownerId();S.cls=exists?"":(sc?sc.value:"");
     S.dismissSync=1;S.ts=0;await pull();
     if(!exists){const st=await push();if(st===409){logoutLocal();m.textContent="Ce nom vient d'être pris par un autre élève : choisis-en un autre. · 该用户名刚被其他学生使用，请换一个。";return}}
-    if(!exists&&em){mailApi("link",{email:em}).then(r=>{if(r&&r.ok&&r.j.ok){MAILPEND=em;setTimeout(mailCodeAsk,1400)}else toast("E-mail non envoyé : relie-le plus tard dans ton profil · 邮件未发送，可稍后在个人资料中绑定")}).catch(()=>{})}
+    if(!exists&&em){mailApi("link",{email:em}).then(r=>{if(!(r&&r.ok&&r.j.ok))toast("E-mail non enregistré : relie-le dans ton profil · 邮箱未保存，请在个人资料中绑定");MAILS=null}).catch(()=>{})}
     if(!exists&&tchSel){try{await fetch(API+"?setcls=1&k="+k+APPQ,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cls:S.cls||"",tch:tchSel})})}catch(e){}}
     if(!exists&&wantAdm){const ok=await admPost({action:"reqadmin",note:roleNote,role:"teacher"});setTimeout(()=>toast(ok?"📨 Demande envoyée à l'administrateur · 已向管理员发送申请":"Demande non envoyée · 申请未发送"),1800)}
     loadClasses();loadQV();profClose();head();if(cur)cur();setTimeout(giftCheck,1800);admStatus();toast(!exists?"✅ Compte créé · 账号已创建":"✅ Connecté · 已登录 : "+n);if(!exists)setTimeout(meOpen,700)}
@@ -1219,7 +1219,7 @@ function mailCodeAsk(){if(document.getElementById("mailask"))return;const w=docu
 async function mailCodeOk(){const c=document.getElementById("mcd2").value,m=document.getElementById("mcdmsg");const r=await mailApi("verify",{code:c}).catch(()=>null);if(r&&r.ok){document.getElementById("mailask").remove();toast("✅ E-mail relié · 邮箱已绑定");MAILS=null;if(cur===home)cur()}else{m.textContent="Code incorrect ou expiré. · 验证码错误或已过期。"}}
 function mailNagOff(){try{localStorage.setItem("mailnag",String(Date.now()+6048e5))}catch(e){}const b=document.getElementById("mailnag");b&&b.remove()}
 async function mailBanner(){if(!PNAME||typeof $==="undefined")return;try{if(+localStorage.getItem("mailnag")>Date.now())return}catch(e){}if(document.getElementById("mailnag"))return;
-  const s=await mailStatus();if(!s||!s.enabled||s.linked||cur!==home||document.getElementById("mailnag"))return;
+  const s=await mailStatus();if(!s||s.linked||cur!==home||document.getElementById("mailnag"))return;
   const d=document.createElement("div");d.id="mailnag";d.className="hm-card";d.style.cssText="background:#ffe9ea;border:2px solid #e5484d;color:#8f1d22;font-weight:800;display:flex;gap:10px;align-items:center;flex-wrap:wrap";
   d.innerHTML=`<span style="flex:1;min-width:200px">⚠️ Relie ton e-mail pour pouvoir retrouver ton compte si tu oublies ton mot de passe. · 请绑定邮箱，忘记密码时才能自行找回账号。</span><button onclick="meOpen()">Relier mon e-mail · 绑定邮箱</button><button class="alt" onclick="mailNagOff()" title="Plus tard · 稍后">✕</button>`;loc(d);$.prepend(d)}
 async function mailApi(act,body){const r=await fetch(API+"?email="+act+"&k="+CODE+APPQ,body!==undefined?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{cache:"no-store"});let j={};try{j=await r.json()}catch(e){}return{ok:r.ok,status:r.status,j}}
@@ -1229,20 +1229,18 @@ function mailCfgHtml(s){return`<details style="margin-top:10px"><summary><b>🛠
   <input id="mcf" type="email" placeholder="Adresse d'expédition · 发件邮箱" value="${escH(s.from||"")}"><input id="mck" type="password" placeholder="Clé API (Brevo / Resend seulement) · API 密钥" autocomplete="off"><div class="evd">SMTP (recommandé avec OVH) : serveur <b>ssl0.ovh.net</b>, port <b>465</b>, identifiant = l'adresse e-mail créée dans OVH. · SMTP：服务器 ssl0.ovh.net，端口 465，用户名为在 OVH 创建的邮箱地址。</div><input id="mch" placeholder="Serveur SMTP (ex. ssl0.ovh.net)" value="${escH(s.host||"")}"><input id="mcpt" placeholder="Port (465)" value="${escH(s.port||"")}" inputmode="numeric"><input id="mcu" placeholder="Identifiant SMTP (adresse e-mail) · 用户名" value="${escH(s.user||"")}"><input id="mcpw" type="password" placeholder="Mot de passe SMTP (vide = garder) · SMTP 密码" autocomplete="new-password"><input id="mct" type="email" placeholder="Envoyer un test à… · 发送测试到…">
   <div class="nav" style="margin-top:6px"><button onclick="mailCfgSave()">💾 Enregistrer · 保存</button></div></details>`}
 async function mailUI(){const el=document.getElementById("mmail");if(!el)return;const s=await mailStatus();if(!s){el.textContent="";return}
-  let h="";if(!s.enabled)h=`<div class="evd">Bientôt disponible. · 即将开放。</div>`;
-  else if(s.linked)h=`<div>✅ <b>${escH(s.email||s.linked)}</b> <button class="alt" style="padding:3px 9px" onclick="mailUnlink()">Retirer · 移除</button></div><div class="evd">Tu peux retrouver ton compte toi-même : « Mot de passe oublié » → e-mail. · 你可以自己找回账号：「忘记密码」→ 邮件。</div>`;
-  else h=`<div style="color:#c1121f;font-weight:800;margin-bottom:6px">⚠️ Aucun e-mail relié : si tu oublies ton mot de passe, tu ne pourras pas retrouver ton compte seul. · 未绑定邮箱：忘记密码后将无法自行找回账号。</div><input id="mem" type="email" placeholder="ton@email.com" autocomplete="email"><div class="nav" style="margin-top:6px"><button onclick="mailSend()">Envoyer le code · 发送验证码</button></div><div id="mcodebox"></div><div class="evd">Ton e-mail sert seulement à retrouver ton compte. · 邮箱仅用于找回账号。</div>`;
+  let h="";if(s.linked)h=`<div>✅ <b>${escH(s.email||s.linked)}</b> <button class="alt" style="padding:3px 9px" onclick="mailUnlink()">Retirer · 移除</button></div><div class="evd">Si tu oublies ton mot de passe : « Mot de passe oublié » → e-mail. · 如果忘记密码：「忘记密码」→ 邮件。</div>`;
+  else h=`<div style="color:#c1121f;font-weight:800;margin-bottom:6px">⚠️ Aucun e-mail relié : si tu oublies ton mot de passe, tu ne pourras pas retrouver ton compte seul. · 未绑定邮箱：忘记密码后将无法自行找回账号。</div><input id="mem" type="email" placeholder="ton@email.com" autocomplete="email"><div class="nav" style="margin-top:6px"><button onclick="mailSend()">Relier mon e-mail · 绑定邮箱</button></div><div class="evd">Ton e-mail sert seulement à retrouver ton compte. · 邮箱仅用于找回账号。</div>`;
   el.innerHTML=h+(s.founder?mailCfgHtml(s):"");loc(el)}
-async function mailSend(){const e=(document.getElementById("mem").value||"").trim();if(!/^\S+@\S+\.\S+$/.test(e)){toast("Adresse invalide · 邮箱无效");return}
-  const r=await mailApi("link",{email:e}).catch(()=>null);if(!r||!r.ok||!r.j.ok){toast(r&&r.status===429?"Trop de demandes, réessaie plus tard · 请求过多":"Envoi impossible · 无法发送");return}
-  document.getElementById("mcodebox").innerHTML=`<input id="mcd" inputmode="numeric" maxlength="6" placeholder="Code reçu (6 chiffres) · 验证码"><div class="nav" style="margin-top:6px"><button onclick="mailVerify()">Confirmer · 确认</button></div>`;loc(document.getElementById("mcodebox"));toast("📧 Code envoyé · 验证码已发送"+(r.j.dev?" ("+r.j.dev+")":""))}
+async function mailSend(){const e=(document.getElementById("mem").value||"").trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(e)){toast("Adresse invalide · 邮箱无效");return}
+  const r=await mailApi("link",{email:e}).catch(()=>null);if(r&&r.ok&&r.j.ok){toast("✅ E-mail relié · 邮箱已绑定");MAILS=null;mailUI();const b=document.getElementById("mailnag");b&&b.remove()}else toast(r&&r.status===429?"Trop de demandes, réessaie plus tard · 请求过多":"Impossible de relier l'e-mail · 无法绑定邮箱")}
 async function mailVerify(){const c=document.getElementById("mcd").value;const r=await mailApi("verify",{code:c}).catch(()=>null);if(r&&r.ok){toast("✅ E-mail relié · 邮箱已绑定");mailUI()}else toast("Code incorrect ou expiré · 验证码错误或已过期")}
 async function mailUnlink(){if(!confirm(locText("Retirer cet e-mail ? · 移除此邮箱？")))return;await mailApi("unlink",{}).catch(()=>0);mailUI()}
 async function mailCfgSave(){const r=await mailApi("cfg",{provider:document.getElementById("mcp").value,from:document.getElementById("mcf").value,key:document.getElementById("mck").value,host:document.getElementById("mch").value,port:parseInt(document.getElementById("mcpt").value)||465,user:document.getElementById("mcu").value,pass:document.getElementById("mcpw").value,test:document.getElementById("mct").value}).catch(()=>null);
   if(r&&r.ok){toast(r.j.test===false?"Enregistré, mais l'envoi du test a échoué · 已保存，但测试邮件发送失败":"✅ Enregistré · 已保存");document.getElementById("mck").value="";document.getElementById("mcpw").value="";mailUI()}else toast("Refusé ou incomplet · 被拒绝或不完整")}
 async function mailForgot(){const e=(document.getElementById("rem").value||"").trim(),m=document.getElementById("rmailmsg");if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent="Adresse invalide · 邮箱无效";return}
   const r=await mailApi("forgot",{email:e}).catch(()=>null);m.textContent=r&&r.status===429?"Trop de demandes, réessaie plus tard. · 请求过多，请稍后再试。":"Si un compte est relié à cette adresse, un code vient d'être envoyé (valable 30 min). Entre-le ci-dessous avec ton nom de compte. · 如果该邮箱已绑定账号，代码已发送（30分钟内有效）。请连同用户名填写在下面。"+(r&&r.j&&r.j.dev?" [test : "+r.j.dev+"]":"");loc(m)}
-{const _m0=meOpen;meOpen=async function(){const x=await _m0.apply(this,arguments);await mailUI();if(MAILS&&MAILS.enabled&&!MAILS.linked){const d=document.getElementById("pfset");if(d)d.open=true}return x}}
+{const _m0=meOpen;meOpen=async function(){const x=await _m0.apply(this,arguments);await mailUI();if(MAILS&&!MAILS.linked){const d=document.getElementById("pfset");if(d)d.open=true}return x}}
 function recClose(){document.getElementById("rec").classList.remove("on")}
 let RECPK="";
 async function recPeek(){const code=document.getElementById("rc").value.replace(/[^a-zA-Z0-9]/g,""),rn=document.getElementById("rn"),m=document.getElementById("rmsg");
@@ -1850,5 +1848,5 @@ async function rankPage(){cur=rankPage;cat=null;head();crumb([["🏠 Parcours ·
 try{speechSynthesis.getVoices()}catch(e){}
 touchStreak();home();loc(document.body);accLoad();setTimeout(giftCheck,3500);pull();admStatus();loadClasses();loadQV();if(!S.uiChosen)langOpen();
 </script><script>try{if("serviceWorker"in navigator&&location.protocol==="https:")addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}))}catch(e){}</script>
-<script src="community.js?v=638"></script>
+<script src="community.js?v=648"></script>
 </body></html>

@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.48 — 2026-10-22 — E-mail relié directement, feuille de route
+
+- **E-mail** : on relie l'adresse directement, sans code de vérification (bouton « Relier mon e-mail »). Obligatoire à l'inscription, rappel en rouge tant qu'il n'est pas relié. L'envoi des codes de récupération reste nécessaire pour « Mot de passe oublié par e-mail ».
+- **Feuille de route** : deux nouvelles étapes après la grammaire — « Avoir un nom de domaine » et « Ajouter un serveur mail ».
+- **Compte** : écran de départ simple (se connecter / créer un compte / compte perdu) et récupération par code qui identifie le compte (v6.44–v6.47).
+
+---
+
 ## v6.47 — 2026-10-22 — Compte : un écran de départ simple
 
 - **Fenêtre Compte** : trois grands choix au départ — « 🔑 Se connecter », « ✨ Créer un compte », « 🆘 J'ai perdu mon compte ou mon mot de passe ».

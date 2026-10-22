@@ -535,8 +535,8 @@ function email_main($k, $base, $app) {
     $ok = true; if (!empty($b["test"]) && email_ok((string)$b["test"])) { $ok = email_send($base, $b["test"], "Test — Je parle baguette", "<p>L'envoi d'e-mails fonctionne ✅</p><p>邮件发送正常 ✅</p>", "L'envoi d'e-mails fonctionne. 邮件发送正常。"); }
     echo json_encode(["ok" => true, "test" => $ok]); return;
   }
-  if (!$cfg) { http_response_code(503); echo "{\"error\":\"disabled\"}"; return; }
-  if ($act === "forgot") {   /* sans connexion : on envoie un code de récupération aux comptes reliés à cette adresse (réponse toujours identique) */
+  if ($act === "forgot") {
+    if (!$cfg) { http_response_code(503); echo "{\"error\":\"disabled\"}"; return; }   /* sans connexion : on envoie un code de récupération aux comptes reliés à cette adresse (réponse toujours identique) */
     $e = strtolower(trim((string)($b["email"] ?? ""))); $ip = (string)($_SERVER["REMOTE_ADDR"] ?? "");
     if (!email_ok($e)) { echo "{\"ok\":true}"; return; }
     if (!email_rate($base, "ip:" . $ip, 8, 3600) || !email_rate($base, "em:" . $e, 3, 3600)) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
@@ -552,12 +552,12 @@ function email_main($k, $base, $app) {
   }
   if ($U === null) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
   $pf = "$base/emailv"; if (!is_dir($pf)) { @mkdir($pf, 0700, true); } $pending = "$pf/$H.json";
-  if ($act === "link") {
+  if ($act === "link") {   /* l'adresse est enregistrée directement (pas de code de vérification) */
     $e = strtolower(trim((string)($b["email"] ?? ""))); if (!email_ok($e)) { http_response_code(400); echo "{\"error\":\"email\"}"; return; }
-    if (!email_rate($base, "link:" . $H, 4, 3600)) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
-    $code = (string)random_int(100000, 999999); file_put_contents($pending, json_encode(["email" => $e, "ch" => hash("sha256", $code . $H), "exp" => time() + 900, "tries" => 0]), LOCK_EX);
-    $ok = email_send($base, $e, "Ton code de vérification : $code · 验证码", "<p>Ton code pour relier cette adresse à ton compte : <b style=\"font-size:22px;letter-spacing:3px\">$code</b></p><p>用于绑定邮箱的验证码：<b style=\"font-size:22px;letter-spacing:3px\">$code</b></p><p>Valable 15 minutes. · 15分钟内有效。</p>", "Code / 验证码 : $code (15 min)");
-    echo json_encode(["ok" => $ok]); return;
+    if (!email_rate($base, "link:" . $H, 10, 3600)) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
+    if (!empty($U["email"])) { email_idx_del($base, (string)$U["email"], $H); }
+    $U["email"] = $e; file_put_contents($uf, json_encode($U, JSON_UNESCAPED_UNICODE), LOCK_EX); email_idx_add($base, $e, $H);
+    echo json_encode(["ok" => true, "linked" => email_mask($e), "email" => $e]); return;
   }
   if ($act === "verify") {
     $p = is_file($pending) ? json_decode(@file_get_contents($pending), true) : null; $c = preg_replace("/[^0-9]/", "", (string)($b["code"] ?? ""));

@@ -186,6 +186,8 @@ function mcard(m,adm,canedit,fo,i,n){const ph=m.photo?`<img src="${esc(m.photo)}
 const ROAD=[["done","🇫🇷","Niveau A1 complet","A1 全部完成","Chapitres, vocabulaire, quiz et jeux pour apprendre les bases du français.","章节、词汇、测验和游戏，学好法语基础。"],
  ["done","🗣️","Cours de prononciation","发音课程","Les sons du français avec audio, pour écouter, répéter et s'entraîner.","法语发音配有音频，可以听、读、练。"],
  ["doing","📘","Notions de grammaire simplifiées","简明语法知识点","Toutes les règles du A1 expliquées simplement, avec exemples audio et traduction en chinois.","用简单的方式讲解 A1 的全部规则，配有音频例句和中文翻译。"],
+ ["next","🌐","Avoir un nom de domaine","拥有自己的域名","Une adresse simple et professionnelle pour le site (au lieu d'une adresse GitHub), plus facile à retenir et plus fiable partout, y compris en Chine.","为网站申请一个简单、专业的网址（代替 GitHub 地址），更好记，在各地（包括中国）也更稳定。"],
+ ["next","📧","Ajouter un serveur mail","增加邮件服务器","Des e-mails fiables pour retrouver son compte et recevoir les nouveautés, envoyés depuis l'adresse du projet.","可靠的邮件功能：用于找回账号和接收新动态，由项目自己的邮箱地址发送。"],
  ["next","🎓","Ajouter le niveau A2","增加 A2 级别","Nouveaux chapitres, vocabulaire, quiz et fiches de grammaire pour continuer après le A1.","新的章节、词汇、测验和语法卡片，在 A1 之后继续学习。"],
  ["next","🌍","Ajouter l'anglais","增加英语支持","L'application et les explications aussi en anglais, pour accueillir encore plus d'apprenants.","应用和讲解也提供英语版本，欢迎更多学习者。"],
  ["next","🎨","Améliorer l'interface graphique","改进界面设计","Une navigation plus claire, plus agréable et plus rapide, sur téléphone comme sur ordinateur.","更清晰、更舒适、更快的导航，手机和电脑都适用。"],
