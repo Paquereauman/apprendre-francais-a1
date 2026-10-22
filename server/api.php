@@ -42,6 +42,7 @@ if (isset($_GET["classes"])) {
   echo json_encode($o, JSON_UNESCAPED_UNICODE); exit;
 }
 if (isset($_GET["setcls"])) { self_setcls($k, $base, $app); exit; }
+if (isset($_GET["email"])) { email_main($k, $base, $app); exit; }
 if (isset($_GET["recover"])) { recover_main($base, $app); exit; }
 if (isset($_GET["avail"])) { echo json_encode(["free" => ($app !== "" ? name_free($base, clean_name($_GET["n"] ?? "", 20), "") : true)]); exit; }
 if (isset($_GET["quiz"])) { quiz_main($k, $base, $app); exit; }
@@ -465,6 +466,84 @@ function donate_main($k, $base) {
   if ($act === "deldonor") { $i = (int)($b["i"] ?? -1); $L = $D["donors"] ?? []; if ($i >= 0 && $i < count($L)) { array_splice($L, $i, 1); $D["donors"] = $L; cm_write($f, $D); } echo "{\"ok\":true}"; return; }
   http_response_code(400); echo "{\"error\":\"act\"}";
 }
+
+// ---- E-mail de récupération : relier une adresse à son compte, recevoir un code pour changer son mot de passe. ----
+// Envoi via une API (Brevo ou Resend) configurée par le fondateur (clé stockée côté serveur, jamais renvoyée au navigateur).
+function email_cfg($base) { $f = "$base/mail.json"; $c = is_file($f) ? json_decode(@file_get_contents($f), true) : null; return (is_array($c) && !empty($c["key"]) && !empty($c["from"])) ? $c : null; }
+function email_ok($e) { return (bool)preg_match('/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/', $e) && strlen($e) <= 120; }
+function email_mask($e) { $p = explode("@", $e, 2); if (count($p) < 2) return ""; $l = $p[0]; return mb_substr($l, 0, 1) . str_repeat("*", max(2, min(6, mb_strlen($l) - 1))) . "@" . $p[1]; }
+function email_send($base, $to, $subject, $html, $text) {
+  $c = email_cfg($base); if (!$c || !email_ok($to)) return false;
+  $name = (string)($c["name"] ?? "Je parle baguette");
+  if (($c["provider"] ?? "brevo") === "resend") {
+    $url = "https://api.resend.com/emails"; $hdr = ["Authorization: Bearer " . $c["key"], "Content-Type: application/json"];
+    $body = ["from" => $name . " <" . $c["from"] . ">", "to" => [$to], "subject" => $subject, "html" => $html, "text" => $text];
+  } else {
+    $url = "https://api.brevo.com/v3/smtp/email"; $hdr = ["api-key: " . $c["key"], "Content-Type: application/json", "accept: application/json"];
+    $body = ["sender" => ["name" => $name, "email" => $c["from"]], "to" => [["email" => $to]], "subject" => $subject, "htmlContent" => $html, "textContent" => $text];
+  }
+  $ch = curl_init($url); curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_HTTPHEADER => $hdr, CURLOPT_POSTFIELDS => json_encode($body, JSON_UNESCAPED_UNICODE), CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 15]);
+  $r = curl_exec($ch); $code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE); curl_close($ch);
+  return $code >= 200 && $code < 300;
+}
+function email_rate($base, $key, $max, $secs) {   /* limite de demandes : renvoie false si dépassée */
+  $d = "$base/emailrate"; if (!is_dir($d)) { @mkdir($d, 0700, true); } $f = "$d/" . hash("sha256", $key) . ".json"; $now = time();
+  $a = is_file($f) ? (json_decode(@file_get_contents($f), true) ?: []) : []; $a = array_values(array_filter($a, function ($t) use ($now, $secs) { return $now - (int)$t < $secs; }));
+  if (count($a) >= $max) return false; $a[] = $now; file_put_contents($f, json_encode($a), LOCK_EX); return true;
+}
+function email_idx_add($base, $email, $h) { $d = "$base/emailidx"; if (!is_dir($d)) { @mkdir($d, 0700, true); } $f = "$d/" . hash("sha256", strtolower($email)) . ".json"; $a = is_file($f) ? (json_decode(@file_get_contents($f), true) ?: []) : []; if (!in_array($h, $a, true)) { $a[] = $h; } file_put_contents($f, json_encode(array_slice($a, 0, 5)), LOCK_EX); }
+function email_idx_del($base, $email, $h) { $f = "$base/emailidx/" . hash("sha256", strtolower($email)) . ".json"; if (!is_file($f)) return; $a = array_values(array_diff(json_decode(@file_get_contents($f), true) ?: [], [$h])); if ($a) { file_put_contents($f, json_encode($a), LOCK_EX); } else { @unlink($f); } }
+function email_main($k, $base, $app) {
+  $act = (string)($_GET["email"] ?? "status"); $cfg = email_cfg($base); $H = ""; $U = null; $uf = "";
+  if (preg_match("/^[a-z0-9]{8,40}$/", (string)$k)) { $H = hash("sha256", $k); $uf = "$base/users/$H.json"; $U = is_file($uf) ? json_decode(@file_get_contents($uf), true) : null; if (!is_array($U)) { $U = null; } }
+  $founder = $U !== null && substr($H, 0, 8) === "095ad09e";
+  if ($act === "status") { echo json_encode(["enabled" => $cfg !== null, "linked" => ($U !== null && !empty($U["email"])) ? email_mask((string)$U["email"]) : null, "founder" => $founder, "from" => $founder && $cfg ? $cfg["from"] : null, "provider" => $founder && $cfg ? ($cfg["provider"] ?? "brevo") : null]); return; }
+  if ($_SERVER["REQUEST_METHOD"] !== "POST") { http_response_code(405); echo "{\"error\":\"post\"}"; return; }
+  $b = json_decode(file_get_contents("php://input", false, null, 0, 2001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
+  if ($act === "cfg") {   /* configuration de l'envoi : fondateur seulement */
+    if (!$founder) { http_response_code(403); echo "{\"error\":\"founder only\"}"; return; }
+    $prov = in_array($b["provider"] ?? "", ["brevo", "resend"], true) ? $b["provider"] : "brevo"; $from = trim((string)($b["from"] ?? "")); $key = trim((string)($b["key"] ?? ""));
+    $old = email_cfg($base); if ($key === "" && $old) { $key = $old["key"]; }
+    if (!email_ok($from) || strlen($key) < 10 || strlen($key) > 300) { http_response_code(400); echo "{\"error\":\"invalid\"}"; return; }
+    file_put_contents("$base/mail.json", json_encode(["provider" => $prov, "from" => $from, "key" => $key, "name" => "Je parle baguette"]), LOCK_EX); @chmod("$base/mail.json", 0600);
+    $ok = true; if (!empty($b["test"]) && email_ok((string)$b["test"])) { $ok = email_send($base, $b["test"], "Test — Je parle baguette", "<p>L'envoi d'e-mails fonctionne ✅</p><p>邮件发送正常 ✅</p>", "L'envoi d'e-mails fonctionne. 邮件发送正常。"); }
+    echo json_encode(["ok" => true, "test" => $ok]); return;
+  }
+  if (!$cfg) { http_response_code(503); echo "{\"error\":\"disabled\"}"; return; }
+  if ($act === "forgot") {   /* sans connexion : on envoie un code de récupération aux comptes reliés à cette adresse (réponse toujours identique) */
+    $e = strtolower(trim((string)($b["email"] ?? ""))); $ip = (string)($_SERVER["REMOTE_ADDR"] ?? "");
+    if (!email_ok($e)) { echo "{\"ok\":true}"; return; }
+    if (!email_rate($base, "ip:" . $ip, 8, 3600) || !email_rate($base, "em:" . $e, 3, 3600)) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
+    $f = "$base/emailidx/" . hash("sha256", $e) . ".json"; $ids = is_file($f) ? (json_decode(@file_get_contents($f), true) ?: []) : [];
+    $rd = "$base/recover"; if (!is_dir($rd)) { @mkdir($rd, 0700, true); } $al = "abcdefghjkmnpqrstuvwxyz23456789"; $lines = []; $tl = [];
+    foreach (array_slice($ids, 0, 3) as $id) { if (!preg_match("/^[a-f0-9]{64}$/", $id) || !is_file("$base/users/$id.json")) continue;
+      $u = json_decode(@file_get_contents("$base/users/$id.json"), true); if (!is_array($u) || strtolower((string)($u["email"] ?? "")) !== $e) continue;
+      $code = ""; for ($i = 0; $i < 12; $i++) { $code .= $al[random_int(0, strlen($al) - 1)]; } file_put_contents("$rd/" . hash("sha256", $code) . ".json", json_encode(["id" => $id, "exp" => time() + 1800]), LOCK_EX);
+      $cf = substr($code, 0, 4) . "-" . substr($code, 4, 4) . "-" . substr($code, 8, 4); $nm = htmlspecialchars((string)($u["name"] ?? "?"), ENT_QUOTES, "UTF-8");
+      $lines[] = "<p>Compte / 用户名 : <b>$nm</b><br>Code / 代码 : <b style=\"font-size:20px;letter-spacing:2px\">$cf</b></p>"; $tl[] = "Compte / 用户名 : " . ($u["name"] ?? "?") . " — Code / 代码 : $cf"; }
+    if ($lines) { email_send($base, $e, "Ton code pour changer ton mot de passe · 修改密码的代码", "<p>Bonjour ! Pour changer ton mot de passe : site → Connexion → <b>« Mot de passe oublié »</b> → nom de compte + code ci-dessous → nouveau mot de passe. Valable <b>30 minutes</b>, une seule fois.</p><p>你好！修改密码：打开网站 → 登录 → <b>「忘记密码」</b> → 输入用户名和下面的代码 → 设置新密码。<b>30分钟</b>内有效，仅限一次。</p>" . implode("", $lines) . "<p style=\"color:#888\">Si ce n'est pas toi, ignore ce message. · 如果不是你本人操作，请忽略此邮件。</p>", "Mot de passe oublié (valable 30 min) / 忘记密码（30分钟内有效）\n" . implode("\n", $tl)); }
+    echo "{\"ok\":true}"; return;
+  }
+  if ($U === null) { http_response_code(403); echo "{\"error\":\"no account\"}"; return; }
+  $pf = "$base/emailv"; if (!is_dir($pf)) { @mkdir($pf, 0700, true); } $pending = "$pf/$H.json";
+  if ($act === "link") {
+    $e = strtolower(trim((string)($b["email"] ?? ""))); if (!email_ok($e)) { http_response_code(400); echo "{\"error\":\"email\"}"; return; }
+    if (!email_rate($base, "link:" . $H, 4, 3600)) { http_response_code(429); echo "{\"error\":\"limit\"}"; return; }
+    $code = (string)random_int(100000, 999999); file_put_contents($pending, json_encode(["email" => $e, "ch" => hash("sha256", $code . $H), "exp" => time() + 900, "tries" => 0]), LOCK_EX);
+    $ok = email_send($base, $e, "Ton code de vérification : $code · 验证码", "<p>Ton code pour relier cette adresse à ton compte : <b style=\"font-size:22px;letter-spacing:3px\">$code</b></p><p>用于绑定邮箱的验证码：<b style=\"font-size:22px;letter-spacing:3px\">$code</b></p><p>Valable 15 minutes. · 15分钟内有效。</p>", "Code / 验证码 : $code (15 min)");
+    echo json_encode(["ok" => $ok]); return;
+  }
+  if ($act === "verify") {
+    $p = is_file($pending) ? json_decode(@file_get_contents($pending), true) : null; $c = preg_replace("/[^0-9]/", "", (string)($b["code"] ?? ""));
+    if (!is_array($p) || (int)$p["exp"] < time() || (int)$p["tries"] >= 5) { http_response_code(400); echo "{\"error\":\"expired\"}"; return; }
+    if (!hash_equals($p["ch"], hash("sha256", $c . $H))) { $p["tries"] = (int)$p["tries"] + 1; file_put_contents($pending, json_encode($p), LOCK_EX); http_response_code(400); echo "{\"error\":\"code\"}"; return; }
+    if (!empty($U["email"])) { email_idx_del($base, (string)$U["email"], $H); }
+    $U["email"] = $p["email"]; file_put_contents($uf, json_encode($U, JSON_UNESCAPED_UNICODE), LOCK_EX); email_idx_add($base, $p["email"], $H); @unlink($pending);
+    echo json_encode(["ok" => true, "linked" => email_mask($p["email"])]); return;
+  }
+  if ($act === "unlink") { if (!empty($U["email"])) { email_idx_del($base, (string)$U["email"], $H); unset($U["email"]); file_put_contents($uf, json_encode($U, JSON_UNESCAPED_UNICODE), LOCK_EX); } echo "{\"ok\":true}"; return; }
+  http_response_code(400); echo "{\"error\":\"act\"}";
+}
 // ---- Administration : les administrateurs sont des profils (hash de la clé) listés dans admins.json.
 // Premier administrateur : jeton de première activation (hash dans admin_setup.sha256), utilisable une seule fois.
 // Classes : classes.json ; chaque compte nommé a une entrée users/<hash>.json {name, ts, cls}. cls = "" pour un élève individuel.
@@ -628,6 +707,7 @@ function recover_main($base, $app) {
     if (!is_file("$base/$old.json")) { $fail("gone"); return; }
     rename("$base/$old.json", "$base/$new.json");
     foreach (["users/$old.json" => "users/$new.json", "rankout/$old" => "rankout/$new", "quizres/$old.json" => "quizres/$new.json"] as $from => $to) { if (is_file("$base/$from")) { @rename("$base/$from", "$base/$to"); } }
+    $uu = is_file("$base/users/$new.json") ? json_decode(@file_get_contents("$base/users/$new.json"), true) : null; if (is_array($uu) && !empty($uu["email"])) { email_idx_del($base, (string)$uu["email"], $old); email_idx_add($base, (string)$uu["email"], $new); }
     $adm = admin_load($base);
     if (in_array($old, $adm, true)) { $adm = array_diff($adm, [$old]); $adm[] = $new; admin_save($base, $adm); }
   }

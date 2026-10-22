@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.42 — 2026-10-22 — E-mail de récupération
+
+- **Relier son e-mail** (Profil → Réglages) avec un code de vérification à 6 chiffres (15 min), adresse masquée à l'affichage, bouton « Retirer ».
+- **Mot de passe oublié par e-mail** : un code de récupération (30 min, usage unique) est envoyé aux comptes reliés à l'adresse ; il se saisit dans le formulaire existant. Réponse identique que l'adresse existe ou non ; limites de demandes.
+- **Fondateur** : réglage de l'envoi (Brevo ou Resend) dans Profil → Réglages ; la clé API est enregistrée côté serveur et jamais réaffichée. Tant que l'envoi n'est pas configuré, la fonction affiche « Bientôt disponible ».
+- Serveur : points d'accès `email` (status, link, verify, unlink, forgot, cfg) ; l'adresse suit le compte lors d'une récupération.
+
+---
+
 ## v6.41 — 2026-10-22 — Réinitialiser un mot de passe en un clic
 
 - **Administration** : bouton 🔑 sur chaque élève (onglets « Ma classe » et « Élèves ») : génère un code de réinitialisation et l'affiche dans une fenêtre (code en grand, « Copier le code », « Copier le message complet » en français + chinois avec les étapes pour l'élève). Code valable 72 h, utilisable une seule fois. Le mot de passe actuel n'est jamais visible (il est chiffré).

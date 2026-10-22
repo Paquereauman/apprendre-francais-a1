@@ -358,6 +358,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
    <div class="rp-lab">Ta devise · 你的座右铭</div><input id="mt" placeholder="Ma devise / 座右铭（40字内）" maxlength="40">
    <div class="rp-lab">Titre · 称号</div><select id="tsel"></select>
    <div class="rp-lab">🏫 Ma classe · 我的班级</div><select id="mcls"></select>
+   <div class="rp-lab">📧 E-mail de récupération · 找回邮箱</div><div id="mmail" style="font-size:.9rem"></div>
    <div id="madm" style="display:none;margin-top:8px"><label class="pcl"><input type="checkbox" id="madmc"> 🛡️ Administrateur : ligne dorée dans le classement · 管理员：排行榜金色行</label></div>
   </details></div>
  <div class="rp-right" id="pfinv"></div></div>
@@ -365,6 +366,7 @@ body.inquiz #bnav{display:none!important}@media(max-width:700px){body.inquiz{pad
 <div class="nav rp-foot"><button onclick="meSave()">💾 Enregistrer · 保存</button><button class="alt" onclick="meClose()">← Retour · 返回</button></div>
 <div style="text-align:center;margin-top:6px"><span class="lb-leave" role="button" onclick="meClose();profOut()">Se déconnecter · 退出登录</span></div></div></div>
 <div class="modal" id="rec"><div class="box"><h3>🔑 Mot de passe oublié · 忘记密码</h3><p style="color:var(--mut);font-size:.9rem">Demande un code de récupération à ton professeur (administrateur), puis choisis un nouveau mot de passe : tu retrouves toute ta progression. · 请向老师（管理员）索取找回代码，然后设置新密码，即可找回全部学习进度。</p>
+<div id="rmailbox" style="display:none;margin-bottom:8px"><button class="alt" onclick="document.getElementById('rmail').style.display='block';this.style.display='none'">📧 Je n'ai pas de code : le recevoir par e-mail · 没有代码？通过邮件获取</button><div id="rmail" style="display:none;margin-top:6px"><input id="rem" type="email" placeholder="ton@email.com" autocomplete="email"><div class="nav" style="margin-top:6px"><button onclick="mailForgot()">Envoyer le code · 发送代码</button></div><div id="rmailmsg" class="evd"></div></div></div>
 <input id="rn" placeholder="Nom de compte / 用户名" autocomplete="username"><input id="rc" placeholder="Code (xxxx-xxxx-xxxx) / 找回代码" autocomplete="off"><input id="rp" type="password" placeholder="Nouveau mot de passe (6 min.) / 新密码（至少6位）" autocomplete="new-password" onkeydown="if(event.key==='Enter')recGo()">
 <div id="rmsg" class="evd"></div><div class="nav"><button onclick="recGo()">Récupérer mon compte · 找回账号</button><button class="alt" onclick="recClose()">Fermer · 关闭</button></div></div></div>
 <div class="modal" id="avp" onclick="if(event.target===this)avClose()"><div class="box avbox">
@@ -1193,7 +1195,29 @@ function admAdd(){const n=document.getElementById("ncl").value.trim();if(n.lengt
 function admRen(id){const c=((ADM&&ADM.classes)||[]).find(x=>x.id===id),n=prompt(locText("Nouveau nom de la classe · 班级新名称"),c?c.name:"");if(n&&n.trim().length>=2)admDo("renameclass",{cls:id,name:n.trim()})}
 function admDel(id){if(confirm(locText("Supprimer cette classe ? Ses élèves deviendront « individuels ». · 删除该班级？其学生将变为“个人学员”。")))admDo("delclass",{cls:id})}
 /* ---- récupération de compte (code généré par un administrateur) ---- */
-function recOpen(){profClose();document.getElementById("rmsg").textContent="";document.getElementById("rn").value=PNAME||"";document.getElementById("rc").value="";document.getElementById("rp").value="";document.getElementById("rec").classList.add("on")}
+function recOpen(){mailStatus().then(s=>{const b=document.getElementById("rmailbox");if(b)b.style.display=s&&s.enabled?"block":"none"});profClose();document.getElementById("rmsg").textContent="";document.getElementById("rn").value=PNAME||"";document.getElementById("rc").value="";document.getElementById("rp").value="";document.getElementById("rec").classList.add("on")}
+let MAILS=null;
+async function mailApi(act,body){const r=await fetch(API+"?email="+act+"&k="+CODE+APPQ,body!==undefined?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{cache:"no-store"});let j={};try{j=await r.json()}catch(e){}return{ok:r.ok,status:r.status,j}}
+async function mailStatus(){try{const r=await mailApi("status");MAILS=r.ok?r.j:null}catch(e){MAILS=null}return MAILS}
+function mailCfgHtml(s){return`<details style="margin-top:10px"><summary><b>🛠 Envoi des e-mails (fondateur) · 邮件发送设置</b></summary><div class="evd">1) Crée un compte gratuit sur <b>brevo.com</b> (ou resend.com). 2) Vérifie l'adresse d'expédition. 3) Copie la clé API ici. La clé n'est jamais réaffichée. · 注册 brevo.com 或 resend.com，验证发件邮箱，把 API 密钥粘贴到这里；密钥不会再次显示。</div>
+  <select id="mcp"><option value="brevo"${s.provider==="resend"?"":" selected"}>Brevo</option><option value="resend"${s.provider==="resend"?" selected":""}>Resend</option></select>
+  <input id="mcf" type="email" placeholder="Adresse d'expédition · 发件邮箱" value="${escH(s.from||"")}"><input id="mck" type="password" placeholder="Clé API${s.enabled?" (vide = garder)":""} · API 密钥" autocomplete="off"><input id="mct" type="email" placeholder="Envoyer un test à… · 发送测试到…">
+  <div class="nav" style="margin-top:6px"><button onclick="mailCfgSave()">💾 Enregistrer · 保存</button></div></details>`}
+async function mailUI(){const el=document.getElementById("mmail");if(!el)return;const s=await mailStatus();if(!s){el.textContent="";return}
+  let h="";if(!s.enabled)h=`<div class="evd">Bientôt disponible. · 即将开放。</div>`;
+  else if(s.linked)h=`<div>✅ <b>${escH(s.linked)}</b> <button class="alt" style="padding:3px 9px" onclick="mailUnlink()">Retirer · 移除</button></div><div class="evd">Tu peux retrouver ton compte toi-même : « Mot de passe oublié » → e-mail. · 你可以自己找回账号：「忘记密码」→ 邮件。</div>`;
+  else h=`<input id="mem" type="email" placeholder="ton@email.com" autocomplete="email"><div class="nav" style="margin-top:6px"><button onclick="mailSend()">Envoyer le code · 发送验证码</button></div><div id="mcodebox"></div><div class="evd">Ton e-mail sert seulement à retrouver ton compte. · 邮箱仅用于找回账号。</div>`;
+  el.innerHTML=h+(s.founder?mailCfgHtml(s):"");loc(el)}
+async function mailSend(){const e=(document.getElementById("mem").value||"").trim();if(!/^\S+@\S+\.\S+$/.test(e)){toast("Adresse invalide · 邮箱无效");return}
+  const r=await mailApi("link",{email:e}).catch(()=>null);if(!r||!r.ok||!r.j.ok){toast(r&&r.status===429?"Trop de demandes, réessaie plus tard · 请求过多":"Envoi impossible · 无法发送");return}
+  document.getElementById("mcodebox").innerHTML=`<input id="mcd" inputmode="numeric" maxlength="6" placeholder="Code reçu (6 chiffres) · 验证码"><div class="nav" style="margin-top:6px"><button onclick="mailVerify()">Confirmer · 确认</button></div>`;loc(document.getElementById("mcodebox"));toast("📧 Code envoyé · 验证码已发送"+(r.j.dev?" ("+r.j.dev+")":""))}
+async function mailVerify(){const c=document.getElementById("mcd").value;const r=await mailApi("verify",{code:c}).catch(()=>null);if(r&&r.ok){toast("✅ E-mail relié · 邮箱已绑定");mailUI()}else toast("Code incorrect ou expiré · 验证码错误或已过期")}
+async function mailUnlink(){if(!confirm(locText("Retirer cet e-mail ? · 移除此邮箱？")))return;await mailApi("unlink",{}).catch(()=>0);mailUI()}
+async function mailCfgSave(){const r=await mailApi("cfg",{provider:document.getElementById("mcp").value,from:document.getElementById("mcf").value,key:document.getElementById("mck").value,test:document.getElementById("mct").value}).catch(()=>null);
+  if(r&&r.ok){toast(r.j.test===false?"Enregistré, mais l'envoi du test a échoué · 已保存，但测试邮件发送失败":"✅ Enregistré · 已保存");document.getElementById("mck").value="";mailUI()}else toast("Refusé ou incomplet · 被拒绝或不完整")}
+async function mailForgot(){const e=(document.getElementById("rem").value||"").trim(),m=document.getElementById("rmailmsg");if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent="Adresse invalide · 邮箱无效";return}
+  const r=await mailApi("forgot",{email:e}).catch(()=>null);m.textContent=r&&r.status===429?"Trop de demandes, réessaie plus tard. · 请求过多，请稍后再试。":"Si un compte est relié à cette adresse, un code vient d'être envoyé (valable 30 min). Entre-le ci-dessous avec ton nom de compte. · 如果该邮箱已绑定账号，代码已发送（30分钟内有效）。请连同用户名填写在下面。"+(r&&r.j&&r.j.dev?" [test : "+r.j.dev+"]":"");loc(m)}
+{const _m0=meOpen;meOpen=async function(){const x=await _m0.apply(this,arguments);mailUI();return x}}
 function recClose(){document.getElementById("rec").classList.remove("on")}
 async function recGo(){const n=document.getElementById("rn").value.trim(),code=document.getElementById("rc").value.trim(),pw=document.getElementById("rp").value,m=document.getElementById("rmsg");
   if(n.length<2||pw.length<6||code.replace(/[^a-zA-Z0-9]/g,"").length!==12){m.textContent="Nom (2 car. min.), code à 12 caractères et mot de passe (6 min.) requis. · 请填写用户名（至少2个字符）、12位代码和密码（至少6位）。";return}
