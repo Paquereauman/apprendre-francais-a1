@@ -469,12 +469,18 @@ function donate_main($k, $base) {
 
 // ---- E-mail de récupération : relier une adresse à son compte, recevoir un code pour changer son mot de passe. ----
 // Envoi via une API (Brevo ou Resend) configurée par le fondateur (clé stockée côté serveur, jamais renvoyée au navigateur).
-function email_cfg($base) { $f = "$base/mail.json"; $c = is_file($f) ? json_decode(@file_get_contents($f), true) : null; return (is_array($c) && !empty($c["key"]) && !empty($c["from"])) ? $c : null; }
+function email_cfg($base) { $f = "$base/mail.json"; $c = is_file($f) ? json_decode(@file_get_contents($f), true) : null; return (is_array($c) && !empty($c["from"]) && (!empty($c["key"]) || ($c["provider"] ?? "") === "local")) ? $c : null; }
 function email_ok($e) { return (bool)preg_match('/^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$/', $e) && strlen($e) <= 120; }
 function email_mask($e) { $p = explode("@", $e, 2); if (count($p) < 2) return ""; $l = $p[0]; return mb_substr($l, 0, 1) . str_repeat("*", max(2, min(6, mb_strlen($l) - 1))) . "@" . $p[1]; }
 function email_send($base, $to, $subject, $html, $text) {
   $c = email_cfg($base); if (!$c || !email_ok($to)) return false;
   $name = (string)($c["name"] ?? "Je parle baguette");
+  if (($c["provider"] ?? "") === "local") {   /* e-mail envoyé par le serveur lui-même (Postfix, signé DKIM) */
+    $b = "jpb" . bin2hex(random_bytes(8)); $dom = substr(strrchr($c["from"], "@"), 1);
+    $h = "From: =?UTF-8?B?" . base64_encode($name) . "?= <" . $c["from"] . ">\r\nMIME-Version: 1.0\r\nMessage-ID: <" . bin2hex(random_bytes(10)) . "@" . $dom . ">\r\nAuto-Submitted: auto-generated\r\nContent-Type: multipart/alternative; boundary=\"$b\"";
+    $body = "--$b\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($text)) . "--$b\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($html)) . "--$b--\r\n";
+    return @mail($to, "=?UTF-8?B?" . base64_encode($subject) . "?=", $body, $h, "-f" . $c["from"]);
+  }
   if (($c["provider"] ?? "brevo") === "resend") {
     $url = "https://api.resend.com/emails"; $hdr = ["Authorization: Bearer " . $c["key"], "Content-Type: application/json"];
     $body = ["from" => $name . " <" . $c["from"] . ">", "to" => [$to], "subject" => $subject, "html" => $html, "text" => $text];
@@ -502,10 +508,10 @@ function email_main($k, $base, $app) {
   $b = json_decode(file_get_contents("php://input", false, null, 0, 2001), true); if (!is_array($b)) { http_response_code(400); echo "{\"error\":\"body\"}"; return; }
   if ($act === "cfg") {   /* configuration de l'envoi : fondateur seulement */
     if (!$founder) { http_response_code(403); echo "{\"error\":\"founder only\"}"; return; }
-    $prov = in_array($b["provider"] ?? "", ["brevo", "resend"], true) ? $b["provider"] : "brevo"; $from = trim((string)($b["from"] ?? "")); $key = trim((string)($b["key"] ?? ""));
+    $prov = in_array($b["provider"] ?? "", ["brevo", "resend", "local"], true) ? $b["provider"] : "brevo"; $from = trim((string)($b["from"] ?? "")); $key = trim((string)($b["key"] ?? ""));
     $old = email_cfg($base); if ($key === "" && $old) { $key = $old["key"]; }
-    if (!email_ok($from) || strlen($key) < 10 || strlen($key) > 300) { http_response_code(400); echo "{\"error\":\"invalid\"}"; return; }
-    file_put_contents("$base/mail.json", json_encode(["provider" => $prov, "from" => $from, "key" => $key, "name" => "Je parle baguette"]), LOCK_EX); @chmod("$base/mail.json", 0600);
+    if (!email_ok($from) || ($prov !== "local" && (strlen($key) < 10 || strlen($key) > 300))) { http_response_code(400); echo "{\"error\":\"invalid\"}"; return; }
+    file_put_contents("$base/mail.json", json_encode(["provider" => $prov, "from" => $from, "key" => ($prov === "local" ? "-" : $key), "name" => "Je parle baguette"]), LOCK_EX); @chmod("$base/mail.json", 0600);
     $ok = true; if (!empty($b["test"]) && email_ok((string)$b["test"])) { $ok = email_send($base, $b["test"], "Test — Je parle baguette", "<p>L'envoi d'e-mails fonctionne ✅</p><p>邮件发送正常 ✅</p>", "L'envoi d'e-mails fonctionne. 邮件发送正常。"); }
     echo json_encode(["ok" => true, "test" => $ok]); return;
   }

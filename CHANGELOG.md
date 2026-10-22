@@ -14,6 +14,13 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.43 — 2026-10-22 — Envoi des e-mails par le serveur du site
+
+- L'envoi des e-mails de récupération peut se faire par le serveur du site lui-même (option « Serveur du site » dans le réglage fondateur), en plus de Brevo et Resend. Messages signés (DKIM).
+- Serveur : Postfix (envoi seulement, non joignable depuis Internet) et OpenDKIM installés ; envoi activé.
+
+---
+
 ## v6.42 — 2026-10-22 — E-mail de récupération
 
 - **Relier son e-mail** (Profil → Réglages) avec un code de vérification à 6 chiffres (15 min), adresse masquée à l'affichage, bouton « Retirer ».

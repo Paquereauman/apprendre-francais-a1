@@ -1200,8 +1200,8 @@ let MAILS=null;
 async function mailApi(act,body){const r=await fetch(API+"?email="+act+"&k="+CODE+APPQ,body!==undefined?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)}:{cache:"no-store"});let j={};try{j=await r.json()}catch(e){}return{ok:r.ok,status:r.status,j}}
 async function mailStatus(){try{const r=await mailApi("status");MAILS=r.ok?r.j:null}catch(e){MAILS=null}return MAILS}
 function mailCfgHtml(s){return`<details style="margin-top:10px"><summary><b>🛠 Envoi des e-mails (fondateur) · 邮件发送设置</b></summary><div class="evd">1) Crée un compte gratuit sur <b>brevo.com</b> (ou resend.com). 2) Vérifie l'adresse d'expédition. 3) Copie la clé API ici. La clé n'est jamais réaffichée. · 注册 brevo.com 或 resend.com，验证发件邮箱，把 API 密钥粘贴到这里；密钥不会再次显示。</div>
-  <select id="mcp"><option value="brevo"${s.provider==="resend"?"":" selected"}>Brevo</option><option value="resend"${s.provider==="resend"?" selected":""}>Resend</option></select>
-  <input id="mcf" type="email" placeholder="Adresse d'expédition · 发件邮箱" value="${escH(s.from||"")}"><input id="mck" type="password" placeholder="Clé API${s.enabled?" (vide = garder)":""} · API 密钥" autocomplete="off"><input id="mct" type="email" placeholder="Envoyer un test à… · 发送测试到…">
+  <select id="mcp"><option value="brevo"${s.provider==="resend"?"":" selected"}>Brevo</option><option value="resend"${s.provider==="resend"?" selected":""}>Resend</option><option value="local"${s.provider==="local"?" selected":""}>Serveur du site · 本站服务器</option></select>
+  <input id="mcf" type="email" placeholder="Adresse d'expédition · 发件邮箱" value="${escH(s.from||"")}"><input id="mck" type="password" placeholder="Clé API (inutile pour « Serveur du site ») · API 密钥" autocomplete="off"><input id="mct" type="email" placeholder="Envoyer un test à… · 发送测试到…">
   <div class="nav" style="margin-top:6px"><button onclick="mailCfgSave()">💾 Enregistrer · 保存</button></div></details>`}
 async function mailUI(){const el=document.getElementById("mmail");if(!el)return;const s=await mailStatus();if(!s){el.textContent="";return}
   let h="";if(!s.enabled)h=`<div class="evd">Bientôt disponible. · 即将开放。</div>`;
