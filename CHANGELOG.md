@@ -14,6 +14,15 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.46 — 2026-10-22 — E-mail obligatoire à l'inscription, rappels en rouge
+
+- **Inscription** : champ e-mail obligatoire (quand l'envoi d'e-mails est actif) ; un code de vérification est envoyé tout de suite et une fenêtre permet de le saisir (ou « Plus tard »).
+- **Profil → Réglages** : affiche l'adresse reliée ; sinon un message en rouge explique de la relier, et la section s'ouvre automatiquement.
+- **Accueil** : bandeau rouge « Relie ton e-mail… » tant que l'e-mail n'est pas relié (masquable 7 jours).
+- Serveur : l'adresse complète n'est renvoyée qu'à son propriétaire connecté.
+
+---
+
 ## v6.45 — 2026-10-22 — E-mails : envoi par SMTP (boîte OVH)
 
 - Nouvelle option d'envoi « SMTP » (réglage fondateur) : serveur, port, identifiant et mot de passe d'une boîte e-mail existante (ex. OVH `ssl0.ovh.net`, port 465). Meilleure délivrabilité que l'envoi direct depuis le serveur (qui est refusé par certains fournisseurs faute de nom inverse).
