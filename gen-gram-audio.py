@@ -2,7 +2,7 @@
    et les ajoute à audio-fr/map.js. Usage : python gen-gram-audio.py [url-api]   (par défaut : API en ligne)"""
 import asyncio, json, hashlib, os, re, sys, urllib.request
 import edge_tts
-API = sys.argv[1] if len(sys.argv) > 1 else "https://chinois.45-192-198-98.sslip.io/api.php?gram=list&app=fr"
+API = sys.argv[1] if len(sys.argv) > 1 else "https://chinois.122-10-114-57.sslip.io/api.php?gram=list&app=fr"
 VOICE = 'fr-FR-DeniseNeural'
 sheets = json.load(urllib.request.urlopen(API))["sheets"]
 texts = []
