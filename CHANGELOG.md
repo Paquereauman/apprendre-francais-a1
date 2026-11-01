@@ -14,6 +14,14 @@ git checkout main            # revenir à la dernière version
 
 ---
 
+## v6.50 — 2026-11-01 — Illustrations : bannière et mascotte baguette
+
+- Accueil : bannière illustrée (la mascotte baguette entre la tour Eiffel et une pagode).
+- Parcours : une vignette illustrée devant le titre de chacun des 17 chapitres.
+- Images en SVG dans `img-ill/` (~85 Ko au total), nettes à toutes les tailles.
+
+---
+
 ## v6.49 — 2026-10-22 — E-mails sans OVH : Gmail / Outlook
 
 - Réglage fondateur : boutons « Gmail », « Outlook / Hotmail », « OVH » qui remplissent le serveur SMTP ; explication du mot de passe d'application pour envoyer depuis sa propre boîte e-mail, sans domaine ni DNS.
