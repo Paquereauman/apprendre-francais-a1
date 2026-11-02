@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="64 76 506 490" width="506" height="490"><ellipse cx="300" cy="548" rx="150" ry="16" fill="#000" opacity=".08"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="64 76 506 459" width="506" height="459">
 <path d="M90 300 L190 220 L290 300 V430 H90 Z" fill="#fff" opacity=".9"/><path d="M70 310 L190 200 L310 310" fill="none" stroke="#ff4b4b" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="165" y="350" width="50" height="80" rx="8" fill="#a0673a"/>
 <g transform="translate(210 380) scale(0.6) rotate(-6)">
