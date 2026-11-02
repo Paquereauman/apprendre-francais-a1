@@ -1,6 +1,6 @@
 /* Je parle baguette — cache des fichiers du site pour des ouvertures plus rapides.
    Pages : réseau d'abord (3 s max) puis cache ; fichiers versionnés, audios et images : cache d'abord. L'API n'est jamais interceptée. */
-const CACHE="jpb-v1";
+const CACHE="jpb-v2";
 self.addEventListener("install",e=>self.skipWaiting());
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 const put=(req,res)=>{if(res&&res.ok&&res.type==="basic"){const c=res.clone();caches.open(CACHE).then(ca=>ca.put(req,c)).catch(()=>{})}return res};
